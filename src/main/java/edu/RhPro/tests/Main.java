@@ -1,48 +1,69 @@
 package edu.RhPro.tests;
 
-import edu.RhPro.entities.Prime;
-import edu.RhPro.entities.Salaire;
-import edu.RhPro.services.PrimeService;
-import edu.RhPro.services.SalaireService;
+import edu.RhPro.entities.Conge;
+import edu.RhPro.services.CongeService;
 
-import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.time.LocalDate;
 
 public class Main {
     public static void main(String[] args) {
+        CongeService congeService = new CongeService();
+
         try {
-            SalaireService salaireService = new SalaireService();
-            PrimeService primeService = new PrimeService();
-
-            // ADD SALAIRE
-            Salaire s = new Salaire(
-                    2, 2026,
-                    new BigDecimal("1500.00"),
-                    LocalDate.now(),
-                    "PAYE",
-                    1, 2
+            // Création d'un nouveau congé
+            /*Conge nouveauConge = new Conge(
+                    "Annuel",                  // Type de congé
+                    LocalDate.of(2023, 12, 20),     // Date de début
+                    LocalDate.of(2023, 12, 31),     // Date de fin
+                    "En attente",                   // Statut
+                    "Demande de congé de fin d'année", // Description
+                    4
             );
-            salaireService.addEntity(s);
-            System.out.println("✅ Salaire ajouté : " + s);
 
-            // ADD PRIME
-            Prime p = new Prime(
-                    new BigDecimal("200.00"),
-                    LocalDate.now(),
-                    "Prime test",
-                    1, 2
+            // Ajout du congé dans la base de données
+            congeService.addEntity(nouveauConge);
+            System.out.println("Congé ajouté avec succès!");*/
+
+
+
+
+            // Update congé
+            /*Conge nouveauConge = new Conge(7,
+                    "Annuel",                  // Type de congé
+                    LocalDate.of(2023, 12, 20),     // Date de début
+                    LocalDate.of(2023, 12, 31),     // Date de fin
+                    "En attente",                   // Statut
+                    "yna3n omk", // Description
+                    4
             );
-            primeService.addEntity(p);
-            System.out.println("✅ Prime ajoutée : " + p);
 
-            // SHOW (just to confirm)
-            System.out.println("\n--- Dernier état ---");
-            System.out.println("Salaires count = " + salaireService.getData().size());
-            System.out.println("Primes count   = " + primeService.getData().size());
+            // Ajout du congé dans la base de données
+            congeService.updateEntity(nouveauConge);
+            System.out.println("Congé updated avec succès!");*/
+
+
+
+
+
+
+            // delete congé
+            Conge nouveauConge = new Conge(13,
+                    "Annuel",                  // Type de congé
+                    LocalDate.of(2023, 12, 20),     // Date de début
+                    LocalDate.of(2023, 12, 31),     // Date de fin
+                    "En attente",                   // Statut
+                    "yna3n omk", // Description
+                    4
+            );
+
+            // Ajout du congé dans la base de données
+            congeService.deleteEntity(nouveauConge);
+            System.out.println("Congé deleted avec succès!");
+
 
         } catch (SQLException e) {
-            System.out.println("❌ SQL Error: " + e.getMessage());
+            System.err.println("Erreur lors de l'ajout du congé:");
             e.printStackTrace();
         }
     }
