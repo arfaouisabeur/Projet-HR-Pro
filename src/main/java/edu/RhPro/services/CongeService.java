@@ -51,7 +51,7 @@ public class CongeService implements ICongeService {
 
     @Override
     public void updateEntity(Conge conge) throws SQLException {
-        String sql = "UPDATE conge_tt SET type_conge=?, date_debut=?, date_fin=?, statut=?, description=?, employe_id=? " +
+        String sql = "UPDATE conge_tt SET type_conge=?, date_debut=?, date_fin=?, statut=?, description=?, employee_id=? " +
                 "WHERE id=?";
 
         try (PreparedStatement ps = cnx.prepareStatement(sql)) {
@@ -80,7 +80,7 @@ public class CongeService implements ICongeService {
 
     @Override
     public List<Conge> getData() throws SQLException {
-        String sql = "SELECT id, type_conge, date_debut, date_fin, statut, description, employe_id FROM conge_tt";
+        String sql = "SELECT id, type_conge, date_debut, date_fin, statut, description, employee_id FROM conge_tt";
         List<Conge> list = new ArrayList<>();
 
         try (PreparedStatement ps = cnx.prepareStatement(sql);
@@ -93,7 +93,7 @@ public class CongeService implements ICongeService {
                         rs.getDate("date_fin") != null ? rs.getDate("date_fin").toLocalDate() : null,
                         rs.getString("statut"),
                         rs.getString("description"),
-                        rs.getLong("employe_id")
+                        rs.getLong("employee_id")
                 );
                 list.add(conge);
             }
@@ -102,7 +102,7 @@ public class CongeService implements ICongeService {
     }
 
     public Conge getById(long id) throws SQLException {
-        String sql = "SELECT id, type_conge, date_debut, date_fin, statut, description, employe_id " +
+        String sql = "SELECT id, type_conge, date_debut, date_fin, statut, description, employee_id " +
                 "FROM conge_tt WHERE id = ?";
 
         try (PreparedStatement ps = cnx.prepareStatement(sql)) {
@@ -116,7 +116,7 @@ public class CongeService implements ICongeService {
                             rs.getDate("date_fin") != null ? rs.getDate("date_fin").toLocalDate() : null,
                             rs.getString("statut"),
                             rs.getString("description"),
-                            rs.getLong("employe_id")
+                            rs.getLong("employee_id")
                     );
                 }
             }
