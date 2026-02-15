@@ -39,7 +39,7 @@
 
         <HBox spacing="10" alignment="CENTER_LEFT">
             <Button text="📩 Envoyer la demande" onAction="#onSubmit"
-                    style="-fx-background-color:#0f766e; -fx-text-fill:white; -fx-background-radius:14; -fx-padding:12 14; -fx-font-weight:900;"/>
+                    style="-fx-background-color:#ddd6fe; -fx-text-fill:#000000; -fx-background-radius:14; -fx-padding:12 14; -fx-font-weight:900;"/>
             <Label fx:id="lblMsg" text="" style="-fx-text-fill:#b91c1c; -fx-font-weight:900;"/>
         </HBox>
     </VBox>

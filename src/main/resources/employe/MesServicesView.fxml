@@ -5,7 +5,7 @@
 
 <VBox xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="edu.RhPro.controllers.employe.MesServicesController"
-      spacing="14">
+      spacing="14" style="-fx-padding:20; -fx-background-color:#f9fafb;">
 
     <Label text="Mes demandes de service"
            style="-fx-font-size:20px; -fx-font-weight:900; -fx-text-fill:#111827;"/>
@@ -25,7 +25,7 @@
 
         <HBox spacing="10" alignment="CENTER_LEFT">
             <Button text="📩 Envoyer la demande" onAction="#onSubmit"
-                    style="-fx-background-color:#0f766e; -fx-text-fill:white; -fx-background-radius:14; -fx-padding:12 14; -fx-font-weight:900;"/>
+                    style="-fx-background-color:#ddd6fe; -fx-text-fill:rgb(0,0,0); -fx-background-radius:14; -fx-padding:12 14; -fx-font-weight:900;"/>
             <Label fx:id="lblMsg" text="" style="-fx-text-fill:#b91c1c; -fx-font-weight:900;"/>
         </HBox>
     </VBox>
@@ -40,10 +40,13 @@
         <TableView fx:id="table" prefHeight="450"
                    style="-fx-background-color:white; -fx-background-radius:18; -fx-border-radius:18; -fx-border-color:#ececf5; -fx-padding:8;">
             <columns>
-                <TableColumn fx:id="colTitre" text="Titre" prefWidth="260"/>
+                <TableColumn fx:id="colTitre" text="Titre" prefWidth="200"/>
+                <TableColumn fx:id="colDescription" text="Description" prefWidth="300"/>
                 <TableColumn fx:id="colDate" text="Date" prefWidth="160"/>
-                <TableColumn fx:id="colStatut" text="Statut" prefWidth="160"/>
-                <TableColumn fx:id="colReponse" text="Réponse RH" prefWidth="540"/>
+                <TableColumn fx:id="colStatut" text="Statut" prefWidth="120"/>
+                <TableColumn fx:id="colReponse" text="Réponse RH" prefWidth="300"/>
+                <TableColumn fx:id="colModifier" text="Modifier" prefWidth="100"/>
+                <TableColumn fx:id="colSupprimer" text="Supprimer" prefWidth="100"/>
             </columns>
         </TableView>
 

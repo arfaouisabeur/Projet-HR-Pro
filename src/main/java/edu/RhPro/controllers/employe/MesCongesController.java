@@ -74,8 +74,7 @@ public class MesCongesController {
         LocalDate debut = dpDebut.getValue();
         LocalDate fin = dpFin.getValue();
 
-        if (type == null || debut == null || fin == null) {
-            setMsg("Veuillez remplir Type + Dates.", true);
+        if (!validateForm()) {
             return;
         }
 
@@ -121,7 +120,7 @@ public class MesCongesController {
             private final Button btn = new Button("✏");
 
             {
-                btn.setStyle("-fx-background-color:#2563eb; -fx-text-fill:white; -fx-font-weight:900;");
+                btn.setStyle("-fx-background-color:#6d2269; -fx-text-fill:white; -fx-font-weight:900;");
 
                 btn.setOnAction(event -> {
                     RowConge row = getTableView().getItems().get(getIndex());
@@ -280,4 +279,39 @@ public class MesCongesController {
         public String getDescription() {return conge.getDescription(); }
         public String getReponseRh() { return reponseRh; }
     }
+    private boolean validateForm() {
+
+        if (cbType.getValue() == null) {
+            setMsg("Veuillez choisir un type de congé.", true);
+            return false;
+        }
+
+        if (dpDebut.getValue() == null) {
+            setMsg("Veuillez choisir une date de début.", true);
+            return false;
+        }
+
+        if (dpFin.getValue() == null) {
+            setMsg("Veuillez choisir une date de fin.", true);
+            return false;
+        }
+
+        if (dpFin.getValue().isBefore(dpDebut.getValue())) {
+            setMsg("La date fin doit être après la date début.", true);
+            return false;
+        }
+
+        if (dpDebut.getValue().isBefore(LocalDate.now())) {
+            setMsg("La date début ne peut pas être dans le passé.", true);
+            return false;
+        }
+
+        if (taDescription.getText() == null || taDescription.getText().isBlank()) {
+            setMsg("Veuillez saisir une description.", true);
+            return false;
+        }
+
+        return true;
+    }
+
 }
