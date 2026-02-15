@@ -102,4 +102,59 @@ public class CandidatureService {
 
         return new Candidature(id, dateCandidature, statut, cv, candidatId, offreEmploiId);
     }
+    public List<Candidature> findByCandidatId(long candidatId) throws SQLException {
+        List<Candidature> list = new ArrayList<>();
+        String sql = "SELECT * FROM candidature WHERE candidat_id = ? ORDER BY date_candidature DESC";
+        try (PreparedStatement ps = cnx.prepareStatement(sql)) {
+            ps.setLong(1, candidatId);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) list.add(map(rs));
+            }
+        }
+        return list;
+    }
+    public void updateStatus(int candidatureId, String newStatus) throws SQLException {
+        String sql = "UPDATE candidature SET statut=? WHERE id=?";
+        try (PreparedStatement ps = cnx.prepareStatement(sql)) {
+            ps.setString(1, newStatus);
+            ps.setInt(2, candidatureId);
+            ps.executeUpdate();
+        }
+    }
+
+    public List<CandidatureAdminRow> findAllForAdmin() throws SQLException {
+        List<CandidatureAdminRow> list = new ArrayList<>();
+        String sql =
+                "SELECT c.id, c.date_candidature, c.statut, c.cv, " +
+                        "       u.id AS candidat_user_id, u.nom, u.prenom, u.email, " +
+                        "       o.id AS offre_id, o.titre AS offre_titre, o.localisation AS offre_localisation, o.type_contrat AS offre_type " +
+                        "FROM candidature c " +
+                        "JOIN users u ON c.candidat_id = u.id " +
+                        "JOIN offre_emploi o ON c.offre_emploi_id = o.id " +
+                        "ORDER BY c.date_candidature DESC";
+
+        try (PreparedStatement ps = cnx.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                CandidatureAdminRow r = new CandidatureAdminRow();
+                r.setId(rs.getInt("id"));
+                Date dc = rs.getDate("date_candidature");
+                r.setDateCandidature(dc != null ? dc.toLocalDate() : LocalDate.now());
+                r.setStatut(rs.getString("statut"));
+
+                r.setCandidatUserId(rs.getInt("candidat_user_id"));
+                r.setCandidatNom(rs.getString("nom"));
+                r.setCandidatPrenom(rs.getString("prenom"));
+                r.setCandidatEmail(rs.getString("email"));
+
+                r.setOffreId(rs.getInt("offre_id"));
+                r.setOffreTitre(rs.getString("offre_titre"));
+                r.setOffreLocalisation(rs.getString("offre_localisation"));
+                r.setOffreTypeContrat(rs.getString("offre_type"));
+
+                list.add(r);
+            }
+        }
+        return list;
+    }
 }

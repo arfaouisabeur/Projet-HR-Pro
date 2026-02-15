@@ -45,3 +45,40 @@ public class TestCandidature {
         }
     }
 }
+//                                 ** TEST update **
+//package edu.RhPro.tests;
+//
+//import edu.RhPro.services.CandidatureService;
+//
+//public class TestUpdateCandidature {
+//    public static void main(String[] args) {
+//        try {
+//            CandidatureService service = new CandidatureService();
+//
+//            service.updateStatut(1, "ACCEPTEE"); // ID EXISTANT
+//            System.out.println("✅ Statut candidature mis à jour");
+//
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//    }
+//}
+
+//                          ** DELETE **
+//package edu.RhPro.tests;
+//
+//import edu.RhPro.services.CandidatureService;
+//
+//public class TestDeleteCandidature {
+//    public static void main(String[] args) {
+//        try {
+//            CandidatureService service = new CandidatureService();
+//
+//            service.delete(1); // ID EXISTANT
+//            System.out.println("🗑️ Candidature supprimée");
+//
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//    }
+//}

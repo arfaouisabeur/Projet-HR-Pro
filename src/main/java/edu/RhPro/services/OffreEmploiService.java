@@ -16,7 +16,6 @@ public class OffreEmploiService implements IOffreEmploiService {
     @Override
     public void add(offreEmploi o) throws SQLException {
 
-        // ✅ Bloquer directement si rhId est null (car la colonne est NOT NULL)
         if (o.getRhId() == null) {
             throw new IllegalArgumentException("rh_id est obligatoire. Mets un RH existant (ex: 1).");
         }
@@ -32,11 +31,17 @@ public class OffreEmploiService implements IOffreEmploiService {
             ps.setDate(5, Date.valueOf(o.getDatePublication()));
             ps.setDate(6, Date.valueOf(o.getDateExpiration()));
             ps.setString(7, o.getStatut());
-            ps.setInt(8, o.getRhId()); // ✅ toujours une valeur
-
+            ps.setInt(8, o.getRhId());
             ps.executeUpdate();
+
+        } catch (SQLException e) {
+            if (e.getErrorCode() == 1062) {
+                throw new IllegalArgumentException("Cette offre existe déjà (même titre/localisation/contrat).");
+            }
+            throw e;
         }
     }
+
 
     @Override
     public void update(offreEmploi o) throws SQLException {
@@ -137,4 +142,16 @@ public class OffreEmploiService implements IOffreEmploiService {
 
         return new offreEmploi(id, titre, description, localisation, typeContrat, datePublication, dateExpiration, statut, rhId);
     }
+    public int countByStatut(String statut) throws SQLException {
+        String sql = "SELECT COUNT(*) FROM offre_emploi WHERE statut = ?";
+        try (PreparedStatement ps = cnx.prepareStatement(sql)) {
+            ps.setString(1, statut);
+            try (ResultSet rs = ps.executeQuery()) {
+                rs.next();
+                return rs.getInt(1);
+            }
+        }
+    }
+
+
 }

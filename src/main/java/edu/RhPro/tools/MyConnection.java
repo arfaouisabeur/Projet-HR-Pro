@@ -13,14 +13,18 @@ public class MyConnection {
 
     private MyConnection(){
         try {
-            cnx=DriverManager.getConnection(url,login,pwd);
+            cnx= DriverManager.getConnection(url,login,pwd);
             System.out.println("connection etablie yaa rojlaaaaaaaa ya lbabour ya mon amour");
         } catch (SQLException e) {
-            System.out.println(e.getMessage());        }
+            System.out.println("Erreur connexion MySQL ❌ : " + e.getMessage());
+            e.printStackTrace();
+        }
     }
+
     public Connection getCnx() {
         return cnx;
     }
+
     public static MyConnection getInstance(){
         if (instance == null){
             instance = new MyConnection();
