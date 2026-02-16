@@ -5,7 +5,7 @@
 
 <VBox spacing="14" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.RhPro.controllers.rh.CongesManageController">
 
-    <Label style="-fx-font-size:20px; -fx-font-weight:900; -fx-text-fill:#111827;" text="Gestion des Congés / TT (EN_ATTENTE)" />
+    <Label style="-fx-font-size:20px; -fx-font-weight:900; -fx-text-fill:#111827;" text="Gestion des Congés" />
 
     <HBox spacing="14">
 
@@ -39,8 +39,8 @@
             <TextArea fx:id="taCommentaire" prefHeight="102.0" prefRowCount="5" prefWidth="255.0" wrapText="true" />
 
             <HBox spacing="10">
-                <Button onAction="#onAccept" prefHeight="42.0" prefWidth="237.0" style="-fx-background-color:#ddd6fe; -fx-text-fill:white; -fx-background-radius:14; -fx-padding:12 14; -fx-font-weight:900;" text="✅ Accepter" />
-                <Button onAction="#onRefuse" prefHeight="42.0" prefWidth="243.0" style="-fx-background-color:#b91c1c; -fx-text-fill:white; -fx-background-radius:14; -fx-padding:12 14; -fx-font-weight:900;" text="❌ Refuser" />
+                <Button onAction="#onAccept" prefHeight="42.0" prefWidth="237.0" style="-fx-background-color:#ddd6fe; -fx-text-fill:#000000; -fx-background-radius:14; -fx-padding:12 14; -fx-font-weight:900;" text="✅ Accepter" />
+                <Button onAction="#onRefuse" prefHeight="42.0" prefWidth="243.0" style="-fx-background-color:#b91c1c; -fx-text-fill:#000000; -fx-background-radius:14; -fx-padding:12 14; -fx-font-weight:900;" text="❌ Refuser" />
             </HBox>
 
             <Label style="-fx-text-fill:#6b7280;" text="Sélectionne une ligne dans la table puis clique accepter/refuser." />

@@ -53,7 +53,7 @@ public class ServicesManageController {
 
     @FXML
     private void onTraiter() {
-        handleDecision("TRAITEE");
+        handleDecision("ACCEPTEE");
     }
 
     @FXML
