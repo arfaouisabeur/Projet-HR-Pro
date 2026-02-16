@@ -1,0 +1,161 @@
+package edu.RhPro.services;
+
+import edu.RhPro.tools.MyConnection;
+
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
+
+public class ParticipationService implements IParticipationService {
+
+    private final Connection cnx = MyConnection.getInstance().getCnx();
+
+    @Override
+    public void addEntity(Participation p) throws SQLException {
+        String sql = "INSERT INTO event_participation (date_inscription, statut, evenement_id, employe_id) " +
+                "VALUES (?, ?, ?, ?)";
+
+        try (PreparedStatement ps = cnx.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+
+            if (p.getDateInscription() != null)
+                ps.setDate(1, Date.valueOf(p.getDateInscription()));
+            else
+                ps.setNull(1, Types.DATE);
+
+            ps.setString(2, p.getStatut());
+            ps.setLong(3, p.getEvenementId());
+            ps.setLong(4, p.getEmployeId());
+
+            ps.executeUpdate();
+
+            try (ResultSet rs = ps.getGeneratedKeys()) {
+                if (rs.next()) p.setId(rs.getLong(1));
+            }
+        }
+    }
+
+    @Override
+    public void deleteEntity(Participation p) throws SQLException {
+        String sql = "DELETE FROM event_participation WHERE id = ?";
+        try (PreparedStatement ps = cnx.prepareStatement(sql)) {
+            ps.setLong(1, p.getId());
+            ps.executeUpdate();
+        }
+    }
+
+    @Override
+    public void updateEntity(Participation p) throws SQLException {
+        String sql = "UPDATE event_participation SET date_inscription=?, statut=?, evenement_id=?, employe_id=? WHERE id=?";
+
+        try (PreparedStatement ps = cnx.prepareStatement(sql)) {
+
+            if (p.getDateInscription() != null)
+                ps.setDate(1, Date.valueOf(p.getDateInscription()));
+            else
+                ps.setNull(1, Types.DATE);
+
+            ps.setString(2, p.getStatut());
+            ps.setLong(3, p.getEvenementId());
+            ps.setLong(4, p.getEmployeId());
+            ps.setLong(5, p.getId());
+
+            ps.executeUpdate();
+        }
+    }
+
+    @Override
+    public List<Participation> getData() throws SQLException {
+        String sql = "SELECT * FROM event_participation";
+        List<Participation> list = new ArrayList<>();
+
+        try (PreparedStatement ps = cnx.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                Participation p = new Participation();
+                p.setId(rs.getLong("id"));
+
+                Date di = rs.getDate("date_inscription");
+                if (di != null) p.setDateInscription(di.toLocalDate());
+
+                p.setStatut(rs.getString("statut"));
+                p.setEvenementId(rs.getLong("evenement_id"));
+                p.setEmployeId(rs.getLong("employe_id"));
+
+                list.add(p);
+            }
+        }
+        return list;
+    }
+
+    // ✅ Helpers for UI (super useful)
+    public boolean isAlreadyRegistered(long employeId, long evenementId) throws SQLException {
+        String sql = "SELECT 1 FROM event_participation WHERE employe_id=? AND evenement_id=? LIMIT 1";
+        try (PreparedStatement ps = cnx.prepareStatement(sql)) {
+            ps.setLong(1, employeId);
+            ps.setLong(2, evenementId);
+            try (ResultSet rs = ps.executeQuery()) {
+                return rs.next();
+            }
+        }
+    }
+
+
+
+    public List<Participation> findByEvenementId(long eventId) throws SQLException {
+        String sql = "SELECT * FROM event_participation WHERE evenement_id=? ORDER BY date_inscription DESC";
+        List<Participation> list = new ArrayList<>();
+        try (PreparedStatement ps = cnx.prepareStatement(sql)) {
+            ps.setLong(1, eventId);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Participation p = new Participation();
+                    p.setId(rs.getLong("id"));
+
+                    Date di = rs.getDate("date_inscription");
+                    if (di != null) p.setDateInscription(di.toLocalDate());
+
+                    p.setStatut(rs.getString("statut"));
+                    p.setEvenementId(rs.getLong("evenement_id"));
+                    p.setEmployeId(rs.getLong("employe_id"));
+                    list.add(p);
+                }
+            }
+        }
+        return list;
+    }
+
+    public void updateStatus(long participationId, String statut) throws SQLException {
+        String sql = "UPDATE event_participation SET statut=? WHERE id=?";
+        try (PreparedStatement ps = cnx.prepareStatement(sql)) {
+            ps.setString(1, statut);
+            ps.setLong(2, participationId);
+            ps.executeUpdate();
+        }
+    }
+    public List<Participation> findByEmployeId(long employeId) throws SQLException {
+        String sql = "SELECT * FROM event_participation WHERE employe_id=? ORDER BY date_inscription DESC";
+        List<Participation> list = new ArrayList<>();
+
+        try (PreparedStatement ps = cnx.prepareStatement(sql)) {
+            ps.setLong(1, employeId);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Participation p = new Participation();
+                    p.setId(rs.getLong("id"));
+
+                    Date di = rs.getDate("date_inscription");
+                    if (di != null) p.setDateInscription(di.toLocalDate());
+
+                    p.setStatut(rs.getString("statut"));
+                    p.setEvenementId(rs.getLong("evenement_id"));
+                    p.setEmployeId(rs.getLong("employe_id"));
+
+                    list.add(p);
+                }
+            }
+        }
+        return list;
+    }
+
+}

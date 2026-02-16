@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane prefHeight="540" prefWidth="900" style="-fx-font-family:'Segoe UI'; -fx-background-color:#0b0b10;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.RhPro.controllers.auth.LoginController">
+
+    <!-- RIGHT LOGIN CARD -->
+    <center>
+        <StackPane style="-fx-padding: 48; -fx-background-color: #5b2b82;">
+            <VBox maxWidth="420" spacing="16" style="-fx-background-color:white; -fx-background-radius:22; -fx-border-radius:22; -fx-border-color:#ececf5; -fx-padding:28;">
+
+                <VBox spacing="4">
+                    <ImageView fitHeight="400" fitWidth="400" preserveRatio="true">
+                        <image>
+                            <Image url="@/images/logo.png" />
+                        </image>
+                    </ImageView>
+               <Region minHeight="100.0" prefHeight="100.0" prefWidth="400.0" />
+                    <Label style="-fx-font-size:22px; -fx-font-weight:900; -fx-text-fill:#111827;" text="Connexion" />
+                    <Label style="-fx-text-fill:#6b7280; -fx-font-size:13px;" text="Entre tes identifiants pour continuer." />
+                </VBox>
+
+                <Separator style="-fx-opacity:0.35;" />
+
+                <!-- Email -->
+                <VBox spacing="6">
+                    <Label style="-fx-text-fill:#374151; -fx-font-weight:800;" text="Email" />
+                    <TextField fx:id="emailField" promptText="ex: nom.prenom@mail.com" style="-fx-background-radius:14; -fx-border-radius:14; -fx-border-color:#ececf5; -fx-padding:12 14; -fx-font-size:13px;" />
+                </VBox>
+
+                <!-- Password -->
+                <VBox spacing="6">
+                    <Label style="-fx-text-fill:#374151; -fx-font-weight:800;" text="Mot de passe" />
+                    <PasswordField fx:id="passField" promptText="••••••••" style="-fx-background-radius:14; -fx-border-radius:14; -fx-border-color:#ececf5; -fx-padding:12 14; -fx-font-size:13px;" />
+                </VBox>
+
+                <!-- Buttons -->
+                <HBox alignment="CENTER_LEFT" spacing="10">
+                    <Button onAction="#onLogin" prefHeight="39.0" prefWidth="174.0" style="-fx-background-color:#5b2b82; -fx-text-fill:white; -fx-background-radius:14; -fx-padding:12 16; -fx-font-weight:900;" text="Se connecter" />
+
+                    <Button onAction="#back" prefHeight="41.0" prefWidth="195.0" style="-fx-background-color:white; -fx-border-color:#ececf5; -fx-background-radius:14; -fx-border-radius:14; -fx-padding:12 16; -fx-font-weight:900;" text="Retour" />
+                </HBox>
+
+                <!-- Message -->
+                <Label fx:id="msgLabel" style="-fx-text-fill:#b91c1c; -fx-font-weight:800;" text="" />
+
+            </VBox>
+        </StackPane>
+    </center>
+
+</BorderPane>

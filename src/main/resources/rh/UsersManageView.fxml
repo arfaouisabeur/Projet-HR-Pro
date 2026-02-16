@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx/20" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="edu.RhPro.controllers.rh.UsersManageController"
+      spacing="14">
+
+    <Label text="Gestion des utilisateurs (acteurs)"
+           style="-fx-font-size:20px; -fx-font-weight:900; -fx-text-fill:#111827;"/>
+
+    <TableView fx:id="table" prefHeight="420"
+               style="-fx-background-color:white; -fx-background-radius:18; -fx-border-radius:18; -fx-border-color:#ececf5; -fx-padding:8;">
+        <columns>
+            <TableColumn fx:id="colId" text="ID" prefWidth="70"/>
+            <TableColumn fx:id="colNom" text="Nom" prefWidth="160"/>
+            <TableColumn fx:id="colPrenom" text="Prénom" prefWidth="160"/>
+            <TableColumn fx:id="colEmail" text="Email" prefWidth="240"/>
+            <TableColumn fx:id="colTel" text="Téléphone" prefWidth="140"/>
+            <TableColumn fx:id="colRole" text="Rôle" prefWidth="120"/>
+        </columns>
+    </TableView>
+
+    <HBox spacing="10">
+        <Button text="🔄 Rafraîchir" onAction="#refresh"
+                style="-fx-background-color:white; -fx-border-color:#ececf5; -fx-background-radius:14; -fx-border-radius:14; -fx-padding:12 14; -fx-font-weight:900;"/>
+        <Button text="🧹 Clear" onAction="#clearForm"
+                style="-fx-background-color:white; -fx-border-color:#ececf5; -fx-background-radius:14; -fx-border-radius:14; -fx-padding:12 14; -fx-font-weight:900;"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Label fx:id="msgLabel" text="" style="-fx-text-fill:#6b7280;"/>
+    </HBox>
+
+    <Separator style="-fx-opacity:0.35;"/>
+
+    <Label text="Ajouter / Modifier"
+           style="-fx-font-size:14px; -fx-font-weight:900; -fx-text-fill:#111827;"/>
+
+    <GridPane hgap="12" vgap="10">
+        <columnConstraints>
+            <ColumnConstraints prefWidth="160"/>
+            <ColumnConstraints hgrow="ALWAYS"/>
+            <ColumnConstraints prefWidth="160"/>
+            <ColumnConstraints hgrow="ALWAYS"/>
+        </columnConstraints>
+
+        <Label text="Nom"/>
+        <TextField fx:id="nomField" GridPane.columnIndex="1"/>
+
+        <Label text="Prénom" GridPane.columnIndex="2"/>
+        <TextField fx:id="prenomField" GridPane.columnIndex="3"/>
+
+        <Label text="Email" GridPane.rowIndex="1"/>
+        <TextField fx:id="emailField" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+        <Label text="Mot de passe" GridPane.rowIndex="1" GridPane.columnIndex="2"/>
+        <PasswordField fx:id="passwordField" GridPane.rowIndex="1" GridPane.columnIndex="3" promptText="laisser vide pour ne pas changer"/>
+
+        <Label text="Téléphone" GridPane.rowIndex="2"/>
+        <TextField fx:id="telField" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+
+        <Label text="Adresse" GridPane.rowIndex="2" GridPane.columnIndex="2"/>
+        <TextField fx:id="adresseField" GridPane.rowIndex="2" GridPane.columnIndex="3"/>
+
+        <Label text="Rôle" GridPane.rowIndex="3"/>
+        <ComboBox fx:id="roleCombo" GridPane.rowIndex="3" GridPane.columnIndex="1" promptText="RH / EMPLOYE / CANDIDAT"/>
+    </GridPane>
+
+    <HBox spacing="10">
+        <Button text="➕ Ajouter" onAction="#add"
+                style="-fx-background-color:#111827; -fx-text-fill:white; -fx-background-radius:14; -fx-padding:12 14; -fx-font-weight:900;"/>
+        <Button text="✏️ Mettre à jour" onAction="#update"
+                style="-fx-background-color:white; -fx-border-color:#ececf5; -fx-background-radius:14; -fx-border-radius:14; -fx-padding:12 14; -fx-font-weight:900;"/>
+        <Button text="🗑️ Supprimer" onAction="#delete"
+                style="-fx-background-color:#b91c1c; -fx-text-fill:white; -fx-background-radius:14; -fx-padding:12 14; -fx-font-weight:900;"/>
+    </HBox>
+
+</VBox>

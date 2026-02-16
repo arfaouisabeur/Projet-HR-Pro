@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1"
+      alignment="CENTER" spacing="12" style="-fx-padding:30;">
+    <Label text="Employé Home (test)" style="-fx-font-size:22; -fx-font-weight:900;"/>
+    <Label text="Routing OK ✅"/>
+</VBox>
