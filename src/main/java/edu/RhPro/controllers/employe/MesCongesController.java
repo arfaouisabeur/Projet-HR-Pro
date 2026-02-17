@@ -130,7 +130,6 @@ public class MesCongesController {
         label.setManaged(false);
     }
 
-    /*** Correction ici (long) ***/
     private boolean isDuplicate(String type,
                                 LocalDate debut,
                                 LocalDate fin,
@@ -140,7 +139,6 @@ public class MesCongesController {
 
         for (Conge c : allConges) {
 
-            // 🔥 CORRECTION
             if (excludeId != null && c.getId() == excludeId)
                 continue;
 
@@ -272,14 +270,15 @@ public class MesCongesController {
 
             for (Conge c : allConges) {
 
+                // 🔑 Récupérer la réponse complète (décision + commentaire)
                 Reponse rep =
                         reponseService.getOneByCongeId(c.getId());
 
-                String repTxt =
-                        (rep == null) ? "-"
-                                : rep.getDecision();
+                // Passer le commentaire réel au lieu de rep.getDecision()
+                String commentaire = (rep == null || rep.getCommentaire() == null) ? "" : rep.getCommentaire();
 
-                VBox card = createCard(c, repTxt);
+                VBox card = createCard(c, commentaire);
+
                 cardContainer.getChildren().add(card);
 
                 animateNode(card);
@@ -290,7 +289,7 @@ public class MesCongesController {
         }
     }
 
-    private VBox createCard(Conge c, String rep) {
+    private VBox createCard(Conge c, String commentaire) {
 
         VBox card = new VBox(12);
         card.setPadding(new Insets(18));
@@ -329,25 +328,17 @@ public class MesCongesController {
                         "-fx-text-fill:white;"
         );
 
-        String statut = c.getStatut();
-
-        if (statut == null) statut = "";
-
-        statut = statut.trim().toLowerCase();
+        String statut = (c.getStatut() != null) ? c.getStatut().trim().toLowerCase() : "";
 
         if (statut.contains("attente")) {
             statutBadge.setStyle(statutBadge.getStyle() + "-fx-background-color:#6d2269;");
-        }
-        else if (statut.contains("accept")) {
+        } else if (statut.contains("accept")) {
             statutBadge.setStyle(statutBadge.getStyle() + "-fx-background-color:#059669;");
-        }
-        else if (statut.contains("refus")) {
+        } else if (statut.contains("refus")) {
             statutBadge.setStyle(statutBadge.getStyle() + "-fx-background-color:#dc2626;");
-        }
-        else {
+        } else {
             statutBadge.setStyle(statutBadge.getStyle() + "-fx-background-color:gray;");
         }
-
 
         // ===== DESCRIPTION =====
         Label descTitle = new Label("DESCRIPTION");
@@ -363,9 +354,20 @@ public class MesCongesController {
         Label repTitle = new Label("RÉPONSE RH");
         repTitle.setStyle("-fx-font-size:11px; -fx-text-fill:#6d2269; -fx-font-weight:bold;");
 
-        Label repValue = new Label(rep);
+        Label repValue = new Label(commentaire.isEmpty() ? "-" : "Voir commentaire");
         repValue.setWrapText(true);
-        repValue.setStyle("-fx-font-size:13px; -fx-text-fill:#111111;");
+        repValue.setStyle("-fx-font-size:13px; -fx-text-fill:#111111; -fx-underline:true; -fx-cursor:hand;");
+
+        // ===== CLICK POUR POPUP COMMENTAIRE =====
+        if (!commentaire.isEmpty()) {
+            repValue.setOnMouseClicked(e -> {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Commentaire RH");
+                alert.setHeaderText("Commentaire sur votre demande");
+                alert.setContentText(commentaire);
+                alert.showAndWait();
+            });
+        }
 
         VBox repBox = new VBox(3, repTitle, repValue);
 
@@ -408,7 +410,6 @@ public class MesCongesController {
         });
 
         del.setOnAction(e -> {
-
             Alert confirmation = new Alert(Alert.AlertType.CONFIRMATION);
             confirmation.setTitle("Confirmation");
             confirmation.setHeaderText("Suppression d'une demande");
@@ -420,7 +421,6 @@ public class MesCongesController {
             confirmation.getButtonTypes().setAll(btnOui, btnNon);
 
             confirmation.showAndWait().ifPresent(response -> {
-
                 if (response == btnOui) {
                     try {
                         congeService.deleteEntity(c);
@@ -432,11 +432,8 @@ public class MesCongesController {
                         lblMsg.setStyle("-fx-text-fill:#dc2626;");
                     }
                 }
-
             });
-
         });
-
 
         HBox actionBox = new HBox(12, edit, del);
         actionBox.setAlignment(javafx.geometry.Pos.CENTER_RIGHT);
@@ -457,9 +454,6 @@ public class MesCongesController {
 
         return card;
     }
-
-
-
 
     private void clearForm() {
         cbType.setValue(null);

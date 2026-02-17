@@ -3,47 +3,81 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox spacing="14" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.RhPro.controllers.rh.CongesManageController">
+<VBox spacing="20" style="-fx-background-color:#f8f6fb; -fx-padding:30;"
+      xmlns="http://javafx.com/javafx/17.0.12"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="edu.RhPro.controllers.rh.CongesManageController">
 
-    <Label style="-fx-font-size:20px; -fx-font-weight:900; -fx-text-fill:#111827;" text="Gestion des Congés" />
+    <!-- HEADER -->
+    <Label style="-fx-font-size:30px; -fx-font-weight:900; -fx-text-fill:#6d2269;"
+           text="Gestion des Congés" />
 
-    <HBox spacing="14">
+    <HBox spacing="25">
 
-        <!-- Table Card -->
-        <VBox spacing="10" style="-fx-background-color:white; -fx-background-radius:18; -fx-border-radius:18; -fx-border-color:#ececf5; -fx-padding:16;" HBox.hgrow="ALWAYS">
-            <Label style="-fx-font-size:14px; -fx-font-weight:900; -fx-text-fill:#111827;" text="Demandes en attente" />
+        <!-- ================= LEFT CARD ================= -->
+        <VBox spacing="18" style="-fx-background-color:white; -fx-background-radius:25; -fx-padding:25; -fx-effect:dropshadow(gaussian, rgba(0,0,0,0.08), 25,0,0,8);"
+              HBox.hgrow="ALWAYS">
 
-            <TableView fx:id="table" prefHeight="520" prefWidth="750" style="-fx-background-color:white; -fx-background-radius:18; -fx-border-radius:18; -fx-border-color:#ececf5; -fx-padding:8;">
+            <!-- 🔎 RECHERCHE + TRI -->
+            <HBox alignment="CENTER_LEFT" spacing="15">
+
+                <Label style="-fx-font-weight:800; -fx-text-fill:#6d2269; -fx-font-size:14px;"
+                       text="Filtrer / Recherche" />
+
+                <ComboBox fx:id="cbCriteria" prefWidth="150"
+                          style="-fx-background-radius:15; -fx-border-radius:15; -fx-border-color:#ddd6fe;" />
+
+                <TextField fx:id="tfSearch" prefWidth="180" promptText="Tape ici..."
+                           style="-fx-background-radius:15; -fx-border-radius:15; -fx-border-color:#ddd6fe; -fx-focus-color:#6d2269;" />
+
+                <Button text="Filtrer" onAction="#onFilter"
+                        style="-fx-background-color:#6d2269; -fx-text-fill:white; -fx-font-weight:800; -fx-background-radius:15; -fx-padding:8 15;" />
+
+                <Button text="Reset" onAction="#onReset"
+                        style="-fx-background-color:#ddd6fe; -fx-text-fill:#6d2269; -fx-font-weight:800; -fx-background-radius:15; -fx-padding:8 15;" />
+            </HBox>
+
+            <!-- TABLE -->
+            <TableView fx:id="table" prefHeight="520"
+                       style="-fx-background-radius:20; -fx-border-radius:20; -fx-border-color:#ddd6fe;">
                 <columns>
-                    <TableColumn fx:id="colId" prefWidth="100" text="ID" />
-                    <TableColumn fx:id="colEmploye" prefWidth="100" text="Employé ID" />
-                    <TableColumn fx:id="colType" prefWidth="100" text="Type" />
-                    <TableColumn fx:id="colDebut" prefWidth="120" text="Début" />
-                    <TableColumn fx:id="colFin" prefWidth="120" text="Fin" />
-                    <TableColumn fx:id="colDesc" prefWidth="200" text="Description" />
+                    <TableColumn fx:id="colId" text="ID" />
+                    <TableColumn fx:id="colEmploye" text="Employé" />
+                    <TableColumn fx:id="colType" text="Type" />
+                    <TableColumn fx:id="colDebut" text="Début" />
+                    <TableColumn fx:id="colFin" text="Fin" />
+                    <TableColumn fx:id="colDesc" text="Description" />
                 </columns>
             </TableView>
 
-            <HBox alignment="CENTER_LEFT" spacing="10">
-                <Button onAction="#refresh" style="-fx-background-color:white; -fx-border-color:#ececf5; -fx-background-radius:14; -fx-border-radius:14; -fx-padding:12 14; -fx-font-weight:900;" text="🔄 Rafraîchir" />
-                <Label fx:id="msgLabel" style="-fx-text-fill:#6b7280; -fx-font-weight:900;" text="" />
-            </HBox>
+            <Label fx:id="msgLabel" style="-fx-text-fill:#6d2269; -fx-font-weight:800;" />
+
         </VBox>
 
-        <!-- Action Card -->
-        <VBox prefHeight="638.0" prefWidth="382.0" spacing="10" style="-fx-background-color:white; -fx-background-radius:18; -fx-border-radius:18; -fx-border-color:#ececf5; -fx-padding:16;">
+        <!-- ================= RIGHT CARD ================= -->
+        <VBox spacing="18" prefWidth="300"
+              style="-fx-background-color:white; -fx-background-radius:25; -fx-padding:25; -fx-effect:dropshadow(gaussian, rgba(0,0,0,0.08), 25,0,0,8);">
 
-            <Label style="-fx-font-size:14px; -fx-font-weight:900; -fx-text-fill:#111827;" text="Décision RH" />
+            <Label text="Décision RH"
+                   style="-fx-font-size:20px; -fx-font-weight:900; -fx-text-fill:#6d2269;" />
 
-            <Label text="Commentaire (optionnel)" />
-            <TextArea fx:id="taCommentaire" prefHeight="102.0" prefRowCount="5" prefWidth="255.0" wrapText="true" />
+            <Label text="Commentaire" style="-fx-font-weight:700;" />
 
-            <HBox spacing="10">
-                <Button onAction="#onAccept" prefHeight="42.0" prefWidth="237.0" style="-fx-background-color:#ddd6fe; -fx-text-fill:#000000; -fx-background-radius:14; -fx-padding:12 14; -fx-font-weight:900;" text="✅ Accepter" />
-                <Button onAction="#onRefuse" prefHeight="42.0" prefWidth="243.0" style="-fx-background-color:#b91c1c; -fx-text-fill:#000000; -fx-background-radius:14; -fx-padding:12 14; -fx-font-weight:900;" text="❌ Refuser" />
+            <TextArea fx:id="taCommentaire" prefRowCount="5" wrapText="true"
+                      style="-fx-background-radius:15; -fx-border-radius:15; -fx-border-color:#ddd6fe; -fx-focus-color:#6d2269;" />
+
+            <HBox spacing="15" alignment="CENTER">
+                <Button text="✅ Accepter" prefWidth="120" onAction="#onAccept"
+                        style="-fx-background-color:#6d2269; -fx-text-fill:white; -fx-font-weight:900;
+                               -fx-background-radius:20; -fx-padding:10 15;" />
+                <Button text="❌ Refuser" prefWidth="120" onAction="#onRefuse"
+                        style="-fx-background-color:black; -fx-text-fill:white; -fx-font-weight:900;
+                               -fx-background-radius:20; -fx-padding:10 15;" />
+                <Button text="💬 Commenter" prefWidth="120" onAction="#onComment"
+                        style="-fx-background-color:#6d2269; -fx-text-fill:white; -fx-font-weight:900;
+                               -fx-background-radius:20; -fx-padding:10 15;" />
             </HBox>
 
-            <Label style="-fx-text-fill:#6b7280;" text="Sélectionne une ligne dans la table puis clique accepter/refuser." />
         </VBox>
 
     </HBox>

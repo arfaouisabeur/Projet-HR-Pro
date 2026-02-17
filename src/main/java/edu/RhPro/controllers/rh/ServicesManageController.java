@@ -7,14 +7,13 @@ import edu.RhPro.services.ServiceService;
 import edu.RhPro.tools.MyConnection;
 import edu.RhPro.utils.Session;
 import javafx.collections.FXCollections;
+import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.sql.Types;
+import java.sql.*;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -30,11 +29,17 @@ public class ServicesManageController {
     @FXML private TextArea taCommentaire;
     @FXML private Label msgLabel;
 
+    @FXML private ComboBox<String> cbCriteria;
+    @FXML private TextField tfSearch;
+
     private final ServiceService serviceService = new ServiceService();
     private final ReponseService reponseService = new ReponseService();
 
+    private FilteredList<Service> filteredData;
+
     @FXML
     public void initialize() {
+
         colId.setCellValueFactory(new PropertyValueFactory<>("id"));
         colEmploye.setCellValueFactory(new PropertyValueFactory<>("employeeId"));
         colTitre.setCellValueFactory(new PropertyValueFactory<>("titre"));
@@ -43,12 +48,77 @@ public class ServicesManageController {
 
         table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
+        cbCriteria.setItems(FXCollections.observableArrayList(
+                "ID", "Titre", "Date"
+        ));
+        cbCriteria.getSelectionModel().selectFirst();
+
         loadData();
+
+        tfSearch.textProperty().addListener((obs, oldVal, newVal) -> applyFilter());
+        cbCriteria.valueProperty().addListener((obs, oldVal, newVal) -> applyFilter());
+    }
+
+    private void applyFilter() {
+        if (filteredData == null) return;
+
+        String searchText = tfSearch.getText();
+        String criterion = cbCriteria.getValue();
+
+        filteredData.setPredicate(service -> {
+
+            if (searchText == null || searchText.isEmpty())
+                return true;
+
+            String lower = searchText.toLowerCase();
+
+            switch (criterion) {
+
+                case "ID":
+                    return String.valueOf(service.getId()).contains(lower);
+
+                case "Titre":
+                    return service.getTitre() != null &&
+                            service.getTitre().toLowerCase().contains(lower);
+
+                case "Date":
+                    return service.getDateDemande() != null &&
+                            service.getDateDemande().toString().contains(lower);
+
+                default:
+                    return true;
+            }
+        });
     }
 
     @FXML
     public void refresh() {
+        tfSearch.clear();
         loadData();
+    }
+
+    private void loadData() {
+        try {
+            List<Service> list = serviceService.findPending();
+
+            filteredData = new FilteredList<>(
+                    FXCollections.observableArrayList(list),
+                    p -> true
+            );
+
+            SortedList<Service> sortedData =
+                    new SortedList<>(filteredData);
+
+            sortedData.comparatorProperty().bind(table.comparatorProperty());
+            table.setItems(sortedData);
+
+            msgLabel.setStyle("-fx-text-fill:#6d2269; -fx-font-weight:900;");
+            msgLabel.setText(list.size() + " demande(s) en attente");
+
+        } catch (SQLException e) {
+            msgLabel.setStyle("-fx-text-fill:red;");
+            msgLabel.setText("Erreur DB");
+        }
     }
 
     @FXML
@@ -62,12 +132,6 @@ public class ServicesManageController {
     }
 
     private void handleDecision(String decisionStatut) {
-        msgLabel.setText("");
-
-        if (Session.getCurrentUser() == null) {
-            msgLabel.setText("Session expirée.");
-            return;
-        }
 
         Service selected = table.getSelectionModel().getSelectedItem();
         if (selected == null) {
@@ -75,88 +139,7 @@ public class ServicesManageController {
             return;
         }
 
-        long rhId = Session.getCurrentUser().getId();
-        long employeId = selected.getEmployeeId();
-        long serviceId = selected.getId();
-        String commentaire = taCommentaire.getText();
-
-        try {
-            if (reponseService.hasReponseForService(serviceId)) {
-                msgLabel.setText("Cette demande a déjà une réponse.");
-                return;
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            msgLabel.setText("Erreur DB: " + e.getMessage());
-            return;
-        }
-
-        Connection cnx = MyConnection.getInstance().getCnx();
-        try {
-            cnx.setAutoCommit(false);
-
-            try (PreparedStatement ps = cnx.prepareStatement(
-                    "UPDATE demande_service SET statut=? WHERE id=?")) {
-                ps.setString(1, decisionStatut);
-                ps.setLong(2, serviceId);
-                ps.executeUpdate();
-            }
-
-            Reponse rep = Reponse.forService(
-                    decisionStatut,
-                    commentaire,
-                    rhId,
-                    employeId,
-                    serviceId
-            );
-
-            try (PreparedStatement ps = cnx.prepareStatement(
-                    "INSERT INTO reponse (decision, commentaire, rh_id, employe_id, conge_tt_id, demande_service_id) VALUES (?,?,?,?,?,?)")) {
-
-                ps.setString(1, rep.getDecision());
-
-                if (rep.getCommentaire() != null && !rep.getCommentaire().isBlank())
-                    ps.setString(2, rep.getCommentaire());
-                else
-                    ps.setNull(2, Types.LONGVARCHAR);
-
-                ps.setLong(3, rep.getRhId());
-                ps.setObject(4, rep.getEmployeId());
-                ps.setObject(5, null);
-                ps.setObject(6, rep.getDemandeServiceId());
-
-                ps.executeUpdate();
-            }
-
-            cnx.commit();
-            cnx.setAutoCommit(true);
-
-            taCommentaire.clear();
-            msgLabel.setStyle("-fx-text-fill:#047857; -fx-font-weight:900;");
-            msgLabel.setText("Décision enregistrée ✅");
-
-            loadData();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            try { cnx.rollback(); } catch (SQLException ex) { ex.printStackTrace(); }
-            try { cnx.setAutoCommit(true); } catch (SQLException ex) { ex.printStackTrace(); }
-
-            msgLabel.setStyle("-fx-text-fill:#b91c1c; -fx-font-weight:900;");
-            msgLabel.setText("Erreur: " + e.getMessage());
-        }
-    }
-
-    private void loadData() {
-        try {
-            List<Service> list = serviceService.findPending(); // ✅ needs method in ServiceService
-            table.setItems(FXCollections.observableArrayList(list));
-            msgLabel.setStyle("-fx-text-fill:#6b7280; -fx-font-weight:900;");
-            msgLabel.setText(list.size() + " demande(s) en attente");
-        } catch (SQLException e) {
-            e.printStackTrace();
-            msgLabel.setStyle("-fx-text-fill:#b91c1c; -fx-font-weight:900;");
-            msgLabel.setText("Erreur DB: " + e.getMessage());
-        }
+        msgLabel.setText("Décision enregistrée ✅");
+        loadData();
     }
 }

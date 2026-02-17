@@ -8,17 +8,22 @@
       xmlns="http://javafx.com/javafx/17.0.12"
       xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="edu.RhPro.controllers.employe.MesCongesController"
+      alignment="TOP_CENTER"
       style="-fx-padding:30;
              -fx-background-color: linear-gradient(to bottom,#ddd6fe,#ffffff);">
 
     <!-- HEADER -->
-    <Label text="Mes demandes Congé / Télétravail"
+    <Label text="Mes demandes Congé / TT"
            style="-fx-font-size:26px;
                   -fx-font-weight:900;
                   -fx-text-fill:#6d2269;" />
 
+    <!-- ========================= -->
     <!-- FORM CARD -->
+    <!-- ========================= -->
+
     <VBox spacing="18"
+          maxWidth="900"
           style="-fx-background-color:white;
                  -fx-background-radius:20;
                  -fx-effect:dropshadow(gaussian, rgba(0,0,0,0.08), 15,0,0,4);
@@ -29,11 +34,10 @@
                       -fx-font-weight:800;
                       -fx-text-fill:#6d2269;" />
 
-        <HBox spacing="25">
+        <HBox spacing="20">
 
-            <VBox spacing="8" prefWidth="250">
-                <Label text="Type"
-                       style="-fx-font-weight:700;" />
+            <VBox prefWidth="220" spacing="8">
+                <Label text="Type" style="-fx-font-weight:700;" />
                 <ComboBox fx:id="cbType"
                           promptText="Choisir (CONGE / TT)"
                           style="-fx-background-radius:12;
@@ -46,8 +50,7 @@
             </VBox>
 
             <VBox spacing="8">
-                <Label text="Date début"
-                       style="-fx-font-weight:700;" />
+                <Label text="Date début" style="-fx-font-weight:700;" />
                 <DatePicker fx:id="dpDebut"
                             style="-fx-background-radius:12;
                                    -fx-border-radius:12;
@@ -59,8 +62,7 @@
             </VBox>
 
             <VBox spacing="8">
-                <Label text="Date fin"
-                       style="-fx-font-weight:700;" />
+                <Label text="Date fin" style="-fx-font-weight:700;" />
                 <DatePicker fx:id="dpFin"
                             style="-fx-background-radius:12;
                                    -fx-border-radius:12;
@@ -74,11 +76,10 @@
         </HBox>
 
         <VBox spacing="8">
-            <Label text="Description"
-                   style="-fx-font-weight:700;" />
+            <Label text="Description" style="-fx-font-weight:700;" />
             <TextArea fx:id="taDescription"
-                      prefRowCount="3"
                       wrapText="true"
+                      prefRowCount="3"
                       style="-fx-background-radius:12;
                              -fx-border-radius:12;
                              -fx-border-color:#ddd6fe;" />
@@ -88,29 +89,29 @@
                    style="-fx-text-fill:#dc2626; -fx-font-size:12;" />
         </VBox>
 
-        <HBox spacing="15" alignment="CENTER_LEFT">
-
-            <!-- Animated Submit Button -->
-            <Button text="Envoyer la demande"
+        <HBox alignment="CENTER_LEFT" spacing="15">
+            <Button text="📩 Envoyer la demande"
                     onAction="#onSubmit"
                     style="-fx-background-color:#6d2269;
                            -fx-text-fill:white;
                            -fx-font-weight:800;
                            -fx-background-radius:30;
-                           -fx-padding:12 28;
-                           -fx-cursor:hand;">
-            </Button>
+                           -fx-padding:12 24;
+                           -fx-cursor:hand;" />
 
             <Label fx:id="lblMsg"
                    style="-fx-font-weight:800;
                           -fx-text-fill:black;" />
-
         </HBox>
 
     </VBox>
 
-    <!-- HISTORIQUE -->
-    <VBox spacing="15"
+    <!-- ========================= -->
+    <!-- HISTORIQUE CARD -->
+    <!-- ========================= -->
+
+    <VBox spacing="18"
+          maxWidth="1100"
           style="-fx-background-color:white;
                  -fx-background-radius:20;
                  -fx-effect:dropshadow(gaussian, rgba(0,0,0,0.08), 15,0,0,4);
@@ -125,10 +126,15 @@
                     prefHeight="450"
                     style="-fx-background-color:transparent;">
 
-            <VBox fx:id="cardContainer" spacing="15" />
+            <VBox fx:id="cardContainer" spacing="15">
+                <padding>
+                    <Insets top="10" right="10" bottom="10" left="10"/>
+                </padding>
+            </VBox>
+
         </ScrollPane>
 
-        <Button text="Rafraîchir"
+        <Button text="🔄 Rafraîchir"
                 onAction="#refresh"
                 style="-fx-background-color:#ddd6fe;
                        -fx-text-fill:#6d2269;
