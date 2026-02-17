@@ -9,7 +9,10 @@ import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.StackPane;
+import edu.RhPro.utils.Session;
 
+
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
@@ -52,4 +55,26 @@ public class CandidatShellController {
         Session.clear();
         Router.go("/auth/Welcome.fxml", "RHPro", 520, 360);
     }
+
+
+    @FXML
+    private void goProfil() {
+        try {
+
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/candidat/ProfilCandidat.fxml")
+            );
+
+            Parent root = loader.load();
+
+            contentPane.getChildren().setAll(root);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
+
 }

@@ -3,7 +3,7 @@ package edu.RhPro.utils;
 import edu.RhPro.entities.User;
 
 public class Session {
-    private static User currentUser;
+    public static User currentUser;
     private static String selectedRole; // chosen at welcome screen
 
     public static User getCurrentUser() { return currentUser; }

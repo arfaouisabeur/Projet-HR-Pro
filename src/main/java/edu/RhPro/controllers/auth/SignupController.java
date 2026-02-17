@@ -57,19 +57,47 @@ public class SignupController {
                 return;
             }
 
-            // basic validation
-            if (nomField.getText().isBlank() || prenomField.getText().isBlank() ||
-                    emailField.getText().isBlank() || passField.getText().isBlank()) {
+            String nom = nomField.getText().trim();
+            String prenom = prenomField.getText().trim();
+            String email = emailField.getText().trim();
+            String password = passField.getText().trim();
+
+            // basic empty validation
+            if (nom.isBlank() || prenom.isBlank() ||
+                    email.isBlank() || password.isBlank()) {
                 msgLabel.setText("Nom, prénom, email et mot de passe sont obligatoires.");
+                return;
+            }
+
+            // ✅ Validation nom/prénom (lettres uniquement)
+            if (!isValidName(nom)) {
+                msgLabel.setText("Le nom ne doit contenir que des lettres.");
+                return;
+            }
+
+            if (!isValidName(prenom)) {
+                msgLabel.setText("Le prénom ne doit contenir que des lettres.");
+                return;
+            }
+
+            // ✅ Validation email format
+            if (!isValidEmail(email)) {
+                msgLabel.setText("Email invalide. Il doit contenir '@'.");
+                return;
+            }
+
+            // ✅ Validation mot de passe sécurisé
+            if (!isValidPassword(password)) {
+                msgLabel.setText("Mot de passe faible ! Min 8 caractères avec chiffre et symbole.");
                 return;
             }
 
             // Create user
             User u = new User(
-                    nomField.getText().trim(),
-                    prenomField.getText().trim(),
-                    emailField.getText().trim(),
-                    passField.getText().trim(),
+                    nom,
+                    prenom,
+                    email,
+                    password,
                     telField.getText().trim(),
                     adresseField.getText().trim(),
                     role.toUpperCase()
@@ -116,4 +144,19 @@ public class SignupController {
     public void back() {
         Router.go("/auth/Welcome.fxml", "RHPro", 520, 360);
     }
+
+    // ================= VALIDATIONS =================
+
+    private boolean isValidName(String name) {
+        return name.matches("^[a-zA-ZÀ-ÿ\\s]+$");
+    }
+
+    private boolean isValidEmail(String email) {
+        return email.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$");
+    }
+
+    private boolean isValidPassword(String password) {
+        return password.matches("^(?=.*[0-9])(?=.*[!@#$%^&*()_+=-]).{8,}$");
+    }
+
 }
