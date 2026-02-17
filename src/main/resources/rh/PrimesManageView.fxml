@@ -1,46 +1,144 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1"
+<VBox xmlns="http://javafx.com/javafx/25"
+      xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="edu.RhPro.controllers.rh.PrimesManageController"
-      spacing="14">
+      spacing="14"
+      style="-fx-background-color: transparent;">
 
-    <Label text="Gestion des Primes"
-           style="-fx-font-size:20px; -fx-font-weight:900; -fx-text-fill:#111827;"/>
+    <!-- Header -->
+    <HBox alignment="CENTER_LEFT" spacing="10" style="-fx-padding: 4 2 0 2;">
+        <VBox spacing="2">
+            <Label text="Gestion des primes"
+                   style="-fx-font-size: 22px; -fx-font-weight: 900; -fx-text-fill: #111827;"/>
+            <Label text="Ajouter, filtrer, modifier et supprimer les primes"
+                   style="-fx-font-size: 12px; -fx-text-fill: #6b7280;"/>
+        </VBox>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Label fx:id="msgLabel" text=""
+               style="-fx-text-fill:#6b7280; -fx-font-weight: 900; -fx-background-color:#f3f4f6;
+                      -fx-background-radius: 999; -fx-padding: 6 10;"/>
+    </HBox>
 
-    <HBox spacing="14">
+    <HBox spacing="14" VBox.vgrow="ALWAYS">
+
         <!-- Form Card -->
-        <VBox spacing="10" prefWidth="420"
-              style="-fx-background-color:white; -fx-background-radius:18; -fx-border-radius:18; -fx-border-color:#ececf5; -fx-padding:16;">
-            <Label text="Ajouter une prime" style="-fx-font-weight:900;"/>
+        <VBox spacing="10" prefWidth="420" VBox.vgrow="ALWAYS"
+              style="-fx-background-color: white; -fx-background-radius: 18;
+                     -fx-border-color: #ececf5; -fx-border-radius: 18;
+                     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.10), 18, 0.15, 0, 6);">
+            <padding>
+                <Insets top="14" right="14" bottom="14" left="14"/>
+            </padding>
 
-            <Label text="Employé ID"/>
-            <TextField fx:id="tfEmployeId" promptText="ex: 12"/>
+            <HBox alignment="CENTER_LEFT" spacing="10">
+                <Label text="Ajouter une prime"
+                       style="-fx-font-weight: 900; -fx-font-size: 14px; -fx-text-fill:#111827;"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Label text="✍"
+                       style="-fx-background-color:#ede9fe; -fx-text-fill:#5b21b6; -fx-font-weight:900;
+                              -fx-background-radius: 999; -fx-padding: 6 10;"/>
+            </HBox>
 
-            <Label text="Montant"/>
-            <TextField fx:id="tfMontant" promptText="ex: 150.00"/>
+            <VBox spacing="6">
+                <Label text="Employé ID" style="-fx-text-fill:#374151; -fx-font-weight:700;"/>
+                <TextField fx:id="tfEmployeId" promptText="ex: 12"
+                           style="-fx-background-radius: 10; -fx-border-radius: 10; -fx-border-color:#e5e7eb; -fx-padding: 8 10;"/>
+            </VBox>
 
-            <Label text="Date attribution"/>
-            <DatePicker fx:id="dpAttribution"/>
+            <HBox spacing="10">
+                <VBox spacing="6" HBox.hgrow="ALWAYS">
+                    <Label text="Montant" style="-fx-text-fill:#374151; -fx-font-weight:700;"/>
+                    <TextField fx:id="tfMontant" promptText="ex: 150.00"
+                               style="-fx-background-radius: 10; -fx-border-radius: 10; -fx-border-color:#e5e7eb; -fx-padding: 8 10;"/>
+                </VBox>
 
-            <Label text="Description"/>
-            <TextArea fx:id="taDescription" prefRowCount="4" wrapText="true"/>
+                <VBox spacing="6" HBox.hgrow="ALWAYS">
+                    <Label text="Date attribution" style="-fx-text-fill:#374151; -fx-font-weight:700;"/>
+                    <DatePicker fx:id="dpAttribution"
+                                style="-fx-background-radius: 10; -fx-border-radius: 10; -fx-border-color:#e5e7eb; -fx-padding: 4 6;"/>
+                </VBox>
+            </HBox>
 
-            <Button text="➕ Ajouter" onAction="#onAdd"
-                    style="-fx-background-color:#111827; -fx-text-fill:white; -fx-background-radius:14; -fx-padding:12 14; -fx-font-weight:900;"/>
+            <VBox spacing="6" VBox.vgrow="ALWAYS">
+                <Label text="Description" style="-fx-text-fill:#374151; -fx-font-weight:700;"/>
+                <TextArea fx:id="taDescription" prefRowCount="6" wrapText="true"
+                          style="-fx-background-radius: 10; -fx-border-radius: 10; -fx-border-color:#e5e7eb; -fx-padding: 8 10;"
+                          VBox.vgrow="ALWAYS"/>
+            </VBox>
 
-            <Label fx:id="msgLabel" text="" style="-fx-text-fill:#6b7280; -fx-font-weight:900;"/>
+            <HBox spacing="10" alignment="CENTER_LEFT">
+                <Button text="➕ Ajouter" onAction="#onAdd"
+                        style="-fx-background-color:#6d28d9; -fx-text-fill:white; -fx-background-radius:12;
+                               -fx-padding:10 14; -fx-font-weight:900;"/>
+                <Label text="Double-clic sur une ligne pour modifier"
+                       style="-fx-text-fill:#9ca3af; -fx-font-size: 11px;"/>
+            </HBox>
         </VBox>
 
         <!-- Table Card -->
-        <VBox spacing="10" HBox.hgrow="ALWAYS"
-              style="-fx-background-color:white; -fx-background-radius:18; -fx-border-radius:18; -fx-border-color:#ececf5; -fx-padding:16;">
-            <Label text="Toutes les primes" style="-fx-font-weight:900;"/>
+        <VBox spacing="10" HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS"
+              style="-fx-background-color: white; -fx-background-radius: 18;
+                     -fx-border-color: #ececf5; -fx-border-radius: 18;
+                     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.10), 18, 0.15, 0, 6);">
+            <padding>
+                <Insets top="14" right="14" bottom="14" left="14"/>
+            </padding>
 
-            <TableView fx:id="table" prefHeight="520"
-                       style="-fx-background-color:white; -fx-background-radius:18; -fx-border-radius:18; -fx-border-color:#ececf5; -fx-padding:8;">
+            <HBox alignment="CENTER_LEFT" spacing="10">
+                <VBox spacing="2">
+                    <Label text="Toutes les primes"
+                           style="-fx-font-weight: 900; -fx-font-size: 14px; -fx-text-fill:#111827;"/>
+                    <Label text="Filtres + résumé pour gérer rapidement"
+                           style="-fx-text-fill:#6b7280; -fx-font-size: 12px;"/>
+                </VBox>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Button text="🔄 Rafraîchir" onAction="#refresh"
+                        style="-fx-background-color: transparent; -fx-border-color:#d1d5db;
+                               -fx-background-radius:12; -fx-border-radius:12;
+                               -fx-padding:10 14; -fx-font-weight:900; -fx-text-fill:#111827;"/>
+                <Button text="🗑️ Supprimer" onAction="#onDelete"
+                        style="-fx-background-color:#b91c1c; -fx-text-fill:white; -fx-background-radius:12;
+                               -fx-padding:10 14; -fx-font-weight:900;"/>
+            </HBox>
+
+            <!-- Summary cards -->
+            <HBox spacing="10">
+                <VBox style="-fx-background-color:#f9fafb; -fx-background-radius:14; -fx-padding:10;" HBox.hgrow="ALWAYS">
+                    <Label text="Total primes" style="-fx-text-fill:#6b7280; -fx-font-size:11px;"/>
+                    <Label fx:id="lblPrimeTotalCount" text="0" style="-fx-font-weight:900; -fx-font-size:18px;"/>
+                </VBox>
+                <VBox style="-fx-background-color:#f9fafb; -fx-background-radius:14; -fx-padding:10;" HBox.hgrow="ALWAYS">
+                    <Label text="Ce mois" style="-fx-text-fill:#6b7280; -fx-font-size:11px;"/>
+                    <Label fx:id="lblPrimeThisMonthCount" text="0" style="-fx-font-weight:900; -fx-font-size:18px;"/>
+                </VBox>
+                <VBox style="-fx-background-color:#f9fafb; -fx-background-radius:14; -fx-padding:10;" HBox.hgrow="ALWAYS">
+                    <Label text="Total ce mois" style="-fx-text-fill:#6b7280; -fx-font-size:11px;"/>
+                    <Label fx:id="lblPrimeThisMonthAmount" text="0.00 $" style="-fx-font-weight:900; -fx-font-size:18px;"/>
+                </VBox>
+            </HBox>
+
+            <!-- Filters -->
+            <HBox spacing="10" alignment="CENTER_LEFT">
+                <TextField fx:id="tfFilterEmploye" promptText="Employé ID"
+                           style="-fx-background-radius:10; -fx-border-radius:10; -fx-border-color:#e5e7eb; -fx-padding:8 10;"
+                           prefWidth="140"/>
+                <DatePicker fx:id="dpFilterFrom" promptText="Du" prefWidth="160"/>
+                <DatePicker fx:id="dpFilterTo" promptText="Au" prefWidth="160"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Button fx:id="btnClearFilters" text="✖ Effacer" onAction="#clearFilters"
+                        style="-fx-background-color: transparent; -fx-border-color:#d1d5db;
+                               -fx-background-radius:12; -fx-border-radius:12;
+                               -fx-padding:10 14; -fx-font-weight:900; -fx-text-fill:#111827;"/>
+            </HBox>
+
+            <TableView fx:id="table" prefHeight="520" VBox.vgrow="ALWAYS"
+                       style="-fx-background-color: transparent; -fx-background-insets: 0;
+                              -fx-border-color: #e5e7eb; -fx-border-radius: 14; -fx-background-radius: 14;">
                 <columns>
                     <TableColumn fx:id="colId" text="ID" prefWidth="70"/>
                     <TableColumn fx:id="colEmploye" text="Employé ID" prefWidth="120"/>
@@ -50,13 +148,15 @@
                 </columns>
             </TableView>
 
-            <HBox spacing="10">
-                <Button text="🔄 Rafraîchir" onAction="#refresh"
-                        style="-fx-background-color:white; -fx-border-color:#ececf5; -fx-background-radius:14; -fx-border-radius:14; -fx-padding:12 14; -fx-font-weight:900;"/>
-                <Button text="🗑️ Supprimer sélection" onAction="#onDelete"
-                        style="-fx-background-color:#b91c1c; -fx-text-fill:white; -fx-background-radius:14; -fx-padding:12 14; -fx-font-weight:900;"/>
+            <HBox spacing="10" alignment="CENTER_LEFT" style="-fx-padding: 2 2 0 2;">
+                <Label text="ℹ"
+                       style="-fx-background-color:#f3f4f6; -fx-text-fill:#111827; -fx-font-weight:900;
+                              -fx-background-radius: 999; -fx-padding: 6 10;"/>
+                <Label text="Double-clic sur une ligne pour modifier"
+                       style="-fx-text-fill:#9ca3af; -fx-font-size: 11px;"/>
             </HBox>
         </VBox>
+
     </HBox>
 
 </VBox>
