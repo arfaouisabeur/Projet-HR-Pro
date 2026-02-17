@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="edu.RhPro.controllers.rh.EventParticipantsController"
+      spacing="14">
+
+    <Label fx:id="titleLabel" text="Participants"
+           style="-fx-font-size:20px; -fx-font-weight:900; -fx-text-fill:#111827;"/>
+
+    <TableView fx:id="table" prefHeight="580"
+               style="-fx-background-color:white; -fx-background-radius:18; -fx-border-radius:18; -fx-border-color:#ececf5; -fx-padding:8;">
+        <columns>
+            <TableColumn fx:id="colId" text="ID" prefWidth="90"/>
+            <TableColumn fx:id="colEmployeId" text="Employé ID" prefWidth="180"/>
+            <TableColumn fx:id="colDate" text="Date inscription" prefWidth="220"/>
+            <TableColumn fx:id="colStatut" text="Statut" prefWidth="220"/>
+        </columns>
+    </TableView>
+
+    <HBox spacing="10" alignment="CENTER_LEFT">
+        <Button text="✅ Accepter" onAction="#accept"
+                style="-fx-background-color:#111827; -fx-text-fill:white; -fx-background-radius:14; -fx-padding:12 14; -fx-font-weight:900;"/>
+        <Button text="❌ Refuser" onAction="#refuse"
+                style="-fx-background-color:white; -fx-border-color:#ef4444; -fx-text-fill:#ef4444; -fx-background-radius:14; -fx-border-radius:14; -fx-padding:12 14; -fx-font-weight:900;"/>
+
+        <Region HBox.hgrow="ALWAYS"/>
+        <Button text="🔄 Rafraîchir" onAction="#refresh"
+                style="-fx-background-color:white; -fx-border-color:#ececf5; -fx-background-radius:14; -fx-border-radius:14; -fx-padding:12 14; -fx-font-weight:900;"/>
+
+        <Label fx:id="msgLabel" text="" style="-fx-text-fill:#6b7280;"/>
+    </HBox>
+
+</VBox>

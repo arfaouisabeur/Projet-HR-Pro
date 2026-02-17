@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.paint.Color?>
+
+<VBox xmlns="http://javafx.com/javafx/20" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="edu.RhPro.controllers.employe.EventActivitesController"
+      spacing="20" style="-fx-background-color: #f8fafc;">
+
+    <padding>
+        <Insets top="25" right="25" bottom="25" left="25"/>
+    </padding>
+
+    <!-- Header with gradient -->
+    <HBox alignment="CENTER_LEFT" spacing="15">
+        <Label text="🎯" style="-fx-font-size: 32px;"/>
+        <VBox spacing="5">
+            <Label fx:id="titleLabel" text="Activités"
+                   style="-fx-font-size: 24px; -fx-font-weight: 800; -fx-text-fill: linear-gradient(to right, #1e293b, #0f172a);"/>
+            <Label text="Découvrez toutes les activités de cet événement"
+                   style="-fx-font-size: 14px; -fx-text-fill: #64748b;"/>
+        </VBox>
+        <Region HBox.hgrow="ALWAYS"/>
+
+        <!-- Stats pill -->
+        <HBox style="-fx-background-color: white; -fx-background-radius: 30; -fx-padding: 8 20; -fx-border-color: #e2e8f0; -fx-border-width: 1; -fx-border-radius: 30;" spacing="10">
+            <Label text="📊" style="-fx-font-size: 16px;"/>
+            <Label fx:id="statsLabel" text="0 activités" style="-fx-font-size: 14px; -fx-font-weight: 600; -fx-text-fill: #1e293b;"/>
+        </HBox>
+    </HBox>
+
+    <!-- Search and filter bar -->
+    <HBox spacing="15" alignment="CENTER_LEFT">
+        <TextField fx:id="searchField" promptText="Rechercher une activité..."
+                   style="-fx-background-color: white; -fx-background-radius: 25; -fx-border-radius: 25; -fx-border-color: #e2e8f0; -fx-border-width: 1; -fx-padding: 12 20; -fx-pref-width: 350; -fx-font-size: 13px;"/>
+
+        <Button text="🔄 Rafraîchir" onAction="#refresh"
+                style="-fx-background-color: white; -fx-border-color: #e2e8f0; -fx-border-width: 1; -fx-background-radius: 25; -fx-border-radius: 25; -fx-padding: 12 25; -fx-font-weight: 600; -fx-font-size: 13px; -fx-cursor: hand;"/>
+
+        <Region HBox.hgrow="ALWAYS"/>
+
+        <!-- View toggle -->
+        <ToggleButton fx:id="gridViewToggle" text="📱 Grille" selected="true"
+                      style="-fx-background-color: #1e293b; -fx-text-fill: white; -fx-background-radius: 20 0 0 20; -fx-padding: 8 16; -fx-font-size: 12px; -fx-cursor: hand;"/>
+        <ToggleButton fx:id="listViewToggle" text="📋 Liste"
+                      style="-fx-background-color: white; -fx-text-fill: #1e293b; -fx-border-color: #e2e8f0; -fx-border-width: 1; -fx-background-radius: 0 20 20 0; -fx-padding: 8 16; -fx-font-size: 12px; -fx-cursor: hand;"/>
+    </HBox>
+
+    <!-- Activities Grid (Cards) -->
+    <ScrollPane fitToWidth="true" style="-fx-background-color: transparent; -fx-background: transparent; -fx-border-color: transparent;"
+                vbarPolicy="AS_NEEDED" hbarPolicy="NEVER" VBox.vgrow="ALWAYS">
+        <FlowPane fx:id="cardsContainer" hgap="20" vgap="20" style="-fx-padding: 10 0 20 0;"
+                  prefWrapLength="1000" alignment="TOP_LEFT"/>
+    </ScrollPane>
+
+    <!-- Message Label -->
+    <Label fx:id="msgLabel" text="" style="-fx-text-fill: #64748b; -fx-font-size: 13px; -fx-padding: 10 0 0 0;"/>
+
+</VBox>

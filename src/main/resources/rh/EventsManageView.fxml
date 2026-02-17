@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="edu.RhPro.controllers.rh.EventsManageController"
+      spacing="10" style="-fx-background-color: #f8fafc; -fx-padding: 16;">
+
+    <padding>
+        <Insets top="16" right="16" bottom="16" left="16"/>
+    </padding>
+
+    <!-- Header -->
+    <Label text="Gestion des événements"
+           style="-fx-font-size:20px; -fx-font-weight:800; -fx-text-fill: #1e293b; -fx-padding: 0 0 5 0;"/>
+
+    <!-- Table - More height -->
+    <TableView fx:id="table" prefHeight="350"
+               style="-fx-background-color: white; -fx-background-radius: 12; -fx-border-radius: 12; -fx-border-color: #e2e8f0; -fx-border-width: 1;">
+        <columns>
+            <TableColumn fx:id="colId" text="ID" prefWidth="50"/>
+            <TableColumn fx:id="colTitre" text="Titre" prefWidth="140"/>
+            <TableColumn fx:id="colDebut" text="Début" prefWidth="120"/>
+            <TableColumn fx:id="colFin" text="Fin" prefWidth="120"/>
+            <TableColumn fx:id="colLieu" text="Lieu" prefWidth="100"/>
+            <TableColumn fx:id="colImage" text="Image" prefWidth="100"/>
+            <TableColumn fx:id="colDesc" text="Description" prefWidth="200"/>
+        </columns>
+    </TableView>
+
+    <!-- Action buttons -->
+    <HBox spacing="8" alignment="CENTER_LEFT">
+        <Button text="🔄 Rafraîchir" onAction="#refresh"
+                style="-fx-background-color: white; -fx-border-color: #e2e8f0; -fx-border-width: 1; -fx-background-radius: 8; -fx-border-radius: 8; -fx-padding: 6 12; -fx-font-size: 12px; -fx-cursor: hand;"/>
+        <Button text="📋 Activités" onAction="#openActivites"
+                style="-fx-background-color: #1e293b; -fx-text-fill: white; -fx-background-radius: 8; -fx-padding: 6 12; -fx-font-size: 12px; -fx-cursor: hand;"/>
+        <Button text="👥 Participations" onAction="#openParticipations"
+                style="-fx-background-color: #334155; -fx-text-fill: white; -fx-background-radius: 8; -fx-padding: 6 12; -fx-font-size: 12px; -fx-cursor: hand;"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Label fx:id="msgLabel" text="" style="-fx-text-fill: #64748b; -fx-font-size: 12px;"/>
+    </HBox>
+
+    <Separator style="-fx-padding: 5 0 5 0;"/>
+
+    <!-- Compact Form with Grid -->
+    <GridPane hgap="10" vgap="8" style="-fx-background-color: white; -fx-background-radius: 12; -fx-border-radius: 12; -fx-border-color: #e2e8f0; -fx-border-width: 1; -fx-padding: 12;">
+
+        <columnConstraints>
+            <ColumnConstraints prefWidth="70"/>
+            <ColumnConstraints prefWidth="200"/>
+            <ColumnConstraints prefWidth="70"/>
+            <ColumnConstraints prefWidth="200"/>
+        </columnConstraints>
+
+        <!-- Row 0: Titre and Lieu -->
+        <Label text="Titre *" style="-fx-font-weight: 600; -fx-font-size: 12px;" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+        <VBox spacing="2" GridPane.rowIndex="0" GridPane.columnIndex="1">
+            <TextField fx:id="titreField" promptText="Titre" style="-fx-background-radius: 6; -fx-border-radius: 6; -fx-border-color: #e2e8f0; -fx-border-width: 1; -fx-padding: 6; -fx-font-size: 12px;"/>
+            <Label fx:id="titreError" text="" style="-fx-text-fill: #dc2626; -fx-font-size: 10px;" managed="false"/>
+        </VBox>
+
+        <Label text="Lieu *" style="-fx-font-weight: 600; -fx-font-size: 12px;" GridPane.rowIndex="0" GridPane.columnIndex="2"/>
+        <VBox spacing="2" GridPane.rowIndex="0" GridPane.columnIndex="3">
+            <TextField fx:id="lieuField" promptText="Lieu" style="-fx-background-radius: 6; -fx-border-radius: 6; -fx-border-color: #e2e8f0; -fx-border-width: 1; -fx-padding: 6; -fx-font-size: 12px;"/>
+            <Label fx:id="lieuError" text="" style="-fx-text-fill: #dc2626; -fx-font-size: 10px;" managed="false"/>
+        </VBox>
+
+        <!-- Row 1: Date Debut and Date Fin -->
+        <Label text="Début *" style="-fx-font-weight: 600; -fx-font-size: 12px;" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+        <VBox spacing="2" GridPane.rowIndex="1" GridPane.columnIndex="1">
+            <HBox spacing="5">
+                <DatePicker fx:id="dateDebutPicker" promptText="Date" HBox.hgrow="ALWAYS" style="-fx-background-radius: 6; -fx-border-radius: 6; -fx-border-color: #e2e8f0; -fx-border-width: 1; -fx-font-size: 12px;"/>
+                <TextField fx:id="heureDebutField" promptText="HH:MM" prefWidth="70" style="-fx-background-radius: 6; -fx-border-radius: 6; -fx-border-color: #e2e8f0; -fx-border-width: 1; -fx-padding: 6; -fx-font-size: 12px;"/>
+            </HBox>
+            <HBox spacing="5">
+                <Label fx:id="dateDebutError" text="" style="-fx-text-fill: #dc2626; -fx-font-size: 10px;" managed="false" HBox.hgrow="ALWAYS"/>
+                <Label fx:id="heureDebutError" text="" style="-fx-text-fill: #dc2626; -fx-font-size: 10px;" managed="false" prefWidth="70"/>
+            </HBox>
+        </VBox>
+
+        <Label text="Fin *" style="-fx-font-weight: 600; -fx-font-size: 12px;" GridPane.rowIndex="1" GridPane.columnIndex="2"/>
+        <VBox spacing="2" GridPane.rowIndex="1" GridPane.columnIndex="3">
+            <HBox spacing="5">
+                <DatePicker fx:id="dateFinPicker" promptText="Date" HBox.hgrow="ALWAYS" style="-fx-background-radius: 6; -fx-border-radius: 6; -fx-border-color: #e2e8f0; -fx-border-width: 1; -fx-font-size: 12px;"/>
+                <TextField fx:id="heureFinField" promptText="HH:MM" prefWidth="70" style="-fx-background-radius: 6; -fx-border-radius: 6; -fx-border-color: #e2e8f0; -fx-border-width: 1; -fx-padding: 6; -fx-font-size: 12px;"/>
+            </HBox>
+            <HBox spacing="5">
+                <Label fx:id="dateFinError" text="" style="-fx-text-fill: #dc2626; -fx-font-size: 10px;" managed="false" HBox.hgrow="ALWAYS"/>
+                <Label fx:id="heureFinError" text="" style="-fx-text-fill: #dc2626; -fx-font-size: 10px;" managed="false" prefWidth="70"/>
+            </HBox>
+        </VBox>
+
+        <!-- Row 2: Image URL and Description -->
+        <Label text="Image *" style="-fx-font-weight: 600; -fx-font-size: 12px;" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+        <VBox spacing="2" GridPane.rowIndex="2" GridPane.columnIndex="1" GridPane.columnSpan="1">
+            <TextField fx:id="imageUrlField" promptText="URL image" style="-fx-background-radius: 6; -fx-border-radius: 6; -fx-border-color: #e2e8f0; -fx-border-width: 1; -fx-padding: 6; -fx-font-size: 12px;"/>
+            <Label fx:id="imageUrlError" text="" style="-fx-text-fill: #dc2626; -fx-font-size: 10px;" managed="false"/>
+        </VBox>
+
+        <Label text="Desc *" style="-fx-font-weight: 600; -fx-font-size: 12px;" GridPane.rowIndex="2" GridPane.columnIndex="2"/>
+        <VBox spacing="2" GridPane.rowIndex="2" GridPane.columnIndex="3">
+            <TextArea fx:id="descArea" promptText="Description" prefRowCount="2" wrapText="true" style="-fx-background-radius: 6; -fx-border-radius: 6; -fx-border-color: #e2e8f0; -fx-border-width: 1; -fx-font-size: 12px;"/>
+            <Label fx:id="descError" text="" style="-fx-text-fill: #dc2626; -fx-font-size: 10px;" managed="false"/>
+        </VBox>
+
+        <!-- Row 3: Action buttons -->
+        <HBox spacing="8" alignment="CENTER_RIGHT" GridPane.rowIndex="3" GridPane.columnIndex="0" GridPane.columnSpan="4" style="-fx-padding: 5 0 0 0;">
+            <Button text="🧹 Effacer" onAction="#clearForm"
+                    style="-fx-background-color: #f1f5f9; -fx-text-fill: #475569; -fx-background-radius: 6; -fx-padding: 6 16; -fx-font-weight: 600; -fx-font-size: 12px; -fx-cursor: hand; -fx-border-color: #e2e8f0; -fx-border-width: 1;"/>
+            <Button text="➕ Ajouter" onAction="#add"
+                    style="-fx-background-color: #059669; -fx-text-fill: white; -fx-background-radius: 6; -fx-padding: 6 16; -fx-font-weight: 600; -fx-font-size: 12px; -fx-cursor: hand;"/>
+            <Button text="✏️ Mettre à jour" onAction="#update"
+                    style="-fx-background-color: #2563eb; -fx-text-fill: white; -fx-background-radius: 6; -fx-padding: 6 16; -fx-font-weight: 600; -fx-font-size: 12px; -fx-cursor: hand;"/>
+            <Button text="🗑️ Supprimer" onAction="#delete"
+                    style="-fx-background-color: #dc2626; -fx-text-fill: white; -fx-background-radius: 6; -fx-padding: 6 16; -fx-font-weight: 600; -fx-font-size: 12px; -fx-cursor: hand;"/>
+        </HBox>
+    </GridPane>
+
+    <!-- Small status note -->
+    <HBox style="-fx-background-color: #f1f5f9; -fx-background-radius: 6; -fx-padding: 6 10;">
+        <Label text="ⓘ * Champs obligatoires" style="-fx-text-fill: #64748b; -fx-font-size: 11px;"/>
+    </HBox>
+</VBox>
