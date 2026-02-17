@@ -1,7 +1,6 @@
 package edu.RhPro.services;
 
 import edu.RhPro.entities.offreEmploi;
-import edu.RhPro.interfaces.IOffreEmploiService;
 import edu.RhPro.tools.MyConnection;
 
 import java.sql.*;
@@ -9,18 +8,69 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-public class OffreEmploiService implements IOffreEmploiService {
+public class OffreEmploiService {
 
-    private final Connection cnx = MyConnection.getInstance().getCnx();
+    private final Connection cnx;
 
-    @Override
-    public void add(offreEmploi o) throws SQLException {
+    public OffreEmploiService() {
+        this(MyConnection.getInstance().getCnx());
+    }
 
-        if (o.getRhId() == null) {
-            throw new IllegalArgumentException("rh_id est obligatoire. Mets un RH existant (ex: 1).");
+    public OffreEmploiService(Connection cnx) {
+        this.cnx = cnx;
+    }
+
+    private void validate(offreEmploi o, boolean isUpdate) {
+        if (o == null) throw new IllegalArgumentException("Offre obligatoire");
+        if (isUpdate && o.getId() <= 0) throw new IllegalArgumentException("ID obligatoire pour update");
+
+        if (o.getTitre() == null || o.getTitre().trim().length() < 5)
+            throw new IllegalArgumentException("Titre: minimum 5 caractères");
+
+        if (o.getLocalisation() == null || o.getLocalisation().trim().isEmpty())
+            throw new IllegalArgumentException("Localisation obligatoire");
+
+        if (o.getTypeContrat() == null || o.getTypeContrat().trim().length() < 2)
+            throw new IllegalArgumentException("Type contrat obligatoire");
+
+        if (o.getDatePublication() == null)
+            throw new IllegalArgumentException("Date publication obligatoire");
+
+        if (o.getDateExpiration() == null)
+            throw new IllegalArgumentException("Date expiration obligatoire");
+
+        if (!o.getDateExpiration().isAfter(o.getDatePublication()))
+            throw new IllegalArgumentException("Expiration doit être après publication");
+
+        if (o.getStatut() == null || o.getStatut().trim().isEmpty())
+            throw new IllegalArgumentException("Statut obligatoire");
+
+        if (o.getDescription() == null || o.getDescription().trim().length() < 10)
+            throw new IllegalArgumentException("Description: minimum 10 caractères");
+
+        if (o.getDescription().matches(".*\\d.*"))
+            throw new IllegalArgumentException("Description: chiffres interdits");
+
+        // ✅ rh_id obligatoire (type long)
+        if (o.getRhId() <= 0)
+            throw new IllegalArgumentException("RH (rh_id) obligatoire");
+    }
+
+    public List<offreEmploi> getAll() throws SQLException {
+        List<offreEmploi> list = new ArrayList<>();
+        String sql = "SELECT * FROM offre_emploi ORDER BY id DESC";
+        try (Statement st = cnx.createStatement();
+             ResultSet rs = st.executeQuery(sql)) {
+            while (rs.next()) list.add(map(rs));
         }
+        return list;
+    }
 
-        String sql = "INSERT INTO offre_emploi(titre, description, localisation, type_contrat, date_publication, date_expiration, statut, rh_id) " +
+    public void add(offreEmploi o) throws SQLException {
+        validate(o, false);
+
+        String sql = "INSERT INTO offre_emploi " +
+                "(titre, description, localisation, type_contrat, date_publication, date_expiration, statut, rh_id) " +
                 "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (PreparedStatement ps = cnx.prepareStatement(sql)) {
@@ -31,27 +81,17 @@ public class OffreEmploiService implements IOffreEmploiService {
             ps.setDate(5, Date.valueOf(o.getDatePublication()));
             ps.setDate(6, Date.valueOf(o.getDateExpiration()));
             ps.setString(7, o.getStatut());
-            ps.setInt(8, o.getRhId());
+            ps.setLong(8, o.getRhId());
             ps.executeUpdate();
-
-        } catch (SQLException e) {
-            if (e.getErrorCode() == 1062) {
-                throw new IllegalArgumentException("Cette offre existe déjà (même titre/localisation/contrat).");
-            }
-            throw e;
         }
     }
 
-
-    @Override
     public void update(offreEmploi o) throws SQLException {
+        validate(o, true);
 
-        // ✅ Même logique : si rh_id est NOT NULL, on ne met jamais null
-        if (o.getRhId() == null) {
-            throw new IllegalArgumentException("rh_id est obligatoire. Mets un RH existant (ex: 1).");
-        }
-
-        String sql = "UPDATE offre_emploi SET titre=?, description=?, localisation=?, type_contrat=?, date_publication=?, date_expiration=?, statut=?, rh_id=? " +
+        String sql = "UPDATE offre_emploi SET " +
+                "titre=?, description=?, localisation=?, type_contrat=?, " +
+                "date_publication=?, date_expiration=?, statut=?, rh_id=? " +
                 "WHERE id=?";
 
         try (PreparedStatement ps = cnx.prepareStatement(sql)) {
@@ -62,16 +102,12 @@ public class OffreEmploiService implements IOffreEmploiService {
             ps.setDate(5, Date.valueOf(o.getDatePublication()));
             ps.setDate(6, Date.valueOf(o.getDateExpiration()));
             ps.setString(7, o.getStatut());
-            ps.setInt(8, o.getRhId());  // ✅ jamais null
+            ps.setLong(8, o.getRhId());
             ps.setInt(9, o.getId());
-
             ps.executeUpdate();
         }
     }
 
-    // le reste de ta classe reste identique ✅
-
-    @Override
     public void delete(int id) throws SQLException {
         String sql = "DELETE FROM offre_emploi WHERE id=?";
         try (PreparedStatement ps = cnx.prepareStatement(sql)) {
@@ -80,78 +116,53 @@ public class OffreEmploiService implements IOffreEmploiService {
         }
     }
 
-    @Override
-    public void fermer(int id) throws SQLException {
-        String sql = "UPDATE offre_emploi SET statut='FERMEE' WHERE id=?";
-        try (PreparedStatement ps = cnx.prepareStatement(sql)) {
-            ps.setInt(1, id);
-            ps.executeUpdate();
-        }
-    }
-
-    @Override
-    public offreEmploi findById(int id) throws SQLException {
-        String sql = "SELECT * FROM offre_emploi WHERE id=?";
-        try (PreparedStatement ps = cnx.prepareStatement(sql)) {
-            ps.setInt(1, id);
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) return map(rs);
-            }
-        }
-        return null;
-    }
-
-    @Override
-    public List<offreEmploi> findAll() throws SQLException {
-        List<offreEmploi> list = new ArrayList<>();
-        String sql = "SELECT * FROM offre_emploi";
-        try (Statement st = cnx.createStatement();
-             ResultSet rs = st.executeQuery(sql)) {
-            while (rs.next()) list.add(map(rs));
-        }
-        return list;
-    }
-
-    @Override
-    public List<offreEmploi> findActives() throws SQLException {
-        List<offreEmploi> list = new ArrayList<>();
-        String sql = "SELECT * FROM offre_emploi WHERE statut='ACTIVE'";
-        try (Statement st = cnx.createStatement();
-             ResultSet rs = st.executeQuery(sql)) {
-            while (rs.next()) list.add(map(rs));
-        }
-        return list;
-    }
-
     private offreEmploi map(ResultSet rs) throws SQLException {
         int id = rs.getInt("id");
         String titre = rs.getString("titre");
-        String description = rs.getString("description");
-        String localisation = rs.getString("localisation");
-        String typeContrat = rs.getString("type_contrat");
+        String loc = rs.getString("localisation");
+        String type = rs.getString("type_contrat");
 
-        Date dp = rs.getDate("date_publication");
-        Date de = rs.getDate("date_expiration");
-        LocalDate datePublication = (dp != null) ? dp.toLocalDate() : LocalDate.now();
-        LocalDate dateExpiration = (de != null) ? de.toLocalDate() : LocalDate.now();
+        LocalDate pub = rs.getDate("date_publication").toLocalDate();
+        LocalDate exp = rs.getDate("date_expiration").toLocalDate();
 
         String statut = rs.getString("statut");
+        String desc = rs.getString("description");
 
-        int rh = rs.getInt("rh_id");
-        Integer rhId = rs.wasNull() ? null : rh;
+        long rhId = rs.getLong("rh_id");
+        offreEmploi o = new offreEmploi(id, titre, loc, type, pub, exp, statut, desc);
+        o.setRhId(rhId);
+        return o;
 
-        return new offreEmploi(id, titre, description, localisation, typeContrat, datePublication, dateExpiration, statut, rhId);
     }
-    public int countByStatut(String statut) throws SQLException {
-        String sql = "SELECT COUNT(*) FROM offre_emploi WHERE statut = ?";
+
+    public List<offreEmploi> findActives() throws SQLException {
+        List<offreEmploi> list = new ArrayList<>();
+        String sql = "SELECT * FROM offre_emploi WHERE statut=? ORDER BY id DESC";
         try (PreparedStatement ps = cnx.prepareStatement(sql)) {
-            ps.setString(1, statut);
+            ps.setString(1, "OUVERTE");
             try (ResultSet rs = ps.executeQuery()) {
-                rs.next();
-                return rs.getInt(1);
+                while (rs.next()) list.add(map(rs));
             }
+        }
+        return list;
+    }
+
+    public int countAll() throws SQLException {
+        String sql = "SELECT COUNT(*) FROM offre_emploi";
+        try (Statement st = cnx.createStatement();
+             ResultSet rs = st.executeQuery(sql)) {
+            return rs.next() ? rs.getInt(1) : 0;
         }
     }
 
-
+    public int countByStatut(String statut) throws SQLException {
+        String sql = "SELECT COUNT(*) FROM offre_emploi WHERE statut=?";
+        try (PreparedStatement ps = cnx.prepareStatement(sql)) {
+            ps.setString(1, statut);
+            try (ResultSet rs = ps.executeQuery()) {
+                return rs.next() ? rs.getInt(1) : 0;
+            }
+        }
+    }
 }
+e

@@ -8,41 +8,26 @@
       fx:controller="edu.RhPro.controllers.rh.OffresManageController"
       spacing="14">
 
-
-
-
-    <!-- 🔥 Header : titre + bouton stats -->
     <HBox spacing="10" alignment="CENTER_LEFT">
         <Label text="Gestion des Offres"
                style="-fx-font-size:20px; -fx-font-weight:900; -fx-text-fill:#111827;"/>
 
         <Region HBox.hgrow="ALWAYS"/>
 
-        <!-- ✅ Icône Stats -->
         <Button onAction="#onShowStats"
-                prefWidth="50"
-                prefHeight="50"
-                style="
-            -fx-background-color: linear-gradient(to right, #6d2a74, #8b3a8f);
-            -fx-background-radius: 50;
-            -fx-cursor: hand;
-            -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.25), 10, 0, 0, 3);
-        ">
-
+                prefWidth="50" prefHeight="50"
+                style="-fx-background-color: linear-gradient(to right, #6d2a74, #8b3a8f);
+                       -fx-background-radius: 50;
+                       -fx-cursor: hand;
+                       -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.25), 10, 0, 0, 3);">
             <graphic>
-                <FontIcon iconLiteral="fas-chart-pie"
-                          iconSize="26"
-                          iconColor="white"/>
+                <FontIcon iconLiteral="fas-chart-pie" iconSize="26" iconColor="white"/>
             </graphic>
-
             <tooltip>
                 <Tooltip text="Voir les statistiques des offres"/>
             </tooltip>
         </Button>
-
     </HBox>
-
-
 
     <HBox spacing="16">
 
@@ -66,18 +51,28 @@
 
             <TextField fx:id="titreField" promptText="Titre"
                        style="-fx-background-radius:14; -fx-border-radius:14; -fx-border-color:#ececf5; -fx-padding:12;"/>
+            <Label fx:id="titreErrorLabel" textFill="red" visible="false" managed="false"/>
+
             <TextField fx:id="locField" promptText="Localisation"
                        style="-fx-background-radius:14; -fx-border-radius:14; -fx-border-color:#ececf5; -fx-padding:12;"/>
+            <Label fx:id="locErrorLabel" textFill="red" visible="false" managed="false"/>
+
             <TextField fx:id="typeField" promptText="Type contrat (CDI, CDD, Stage...)"
                        style="-fx-background-radius:14; -fx-border-radius:14; -fx-border-color:#ececf5; -fx-padding:12;"/>
+            <Label fx:id="typeErrorLabel" textFill="red" visible="false" managed="false"/>
 
             <DatePicker fx:id="pubPicker" promptText="Date publication"/>
+            <Label fx:id="pubErrorLabel" textFill="red" visible="false" managed="false"/>
+
             <DatePicker fx:id="expPicker" promptText="Date expiration"/>
+            <Label fx:id="expErrorLabel" textFill="red" visible="false" managed="false"/>
 
             <ComboBox fx:id="statutBox" promptText="Statut"/>
+            <Label fx:id="statutErrorLabel" textFill="red" visible="false" managed="false"/>
 
             <TextArea fx:id="descArea" promptText="Description" prefHeight="160" wrapText="true"
                       style="-fx-background-radius:14; -fx-border-radius:14; -fx-border-color:#ececf5; -fx-padding:10;"/>
+            <Label fx:id="descErrorLabel" textFill="red" visible="false" managed="false"/>
 
             <HBox spacing="10">
                 <Button text="➕ Ajouter" onAction="#onAdd"
@@ -96,7 +91,7 @@
             <Button text="🔄 Rafraîchir" onAction="#refresh"
                     style="-fx-background-color:white; -fx-border-color:#ececf5; -fx-background-radius:14; -fx-border-radius:14; -fx-padding:12 14; -fx-font-weight:900;"/>
 
-            <Label fx:id="msgLabel" text="" style="-fx-text-fill:#b91c1c;"/>
+            <Label fx:id="msgLabel" text="" style="-fx-text-fill:#6b7280;"/>
         </VBox>
 
     </HBox>

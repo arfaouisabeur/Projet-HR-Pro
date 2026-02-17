@@ -10,7 +10,17 @@ import java.util.List;
 
 public class CandidatureService {
 
-    private final Connection cnx = MyConnection.getInstance().getCnx();
+    private final Connection cnx;
+
+    // ✅ Constructeur normal (application)
+    public CandidatureService() {
+        this(MyConnection.getInstance().getCnx());
+    }
+
+    // ✅ Constructeur pour tests (injection)
+    public CandidatureService(Connection cnx) {
+        this.cnx = cnx;
+    }
 
     // CREATE
     public void add(Candidature c) throws SQLException {
@@ -89,19 +99,6 @@ public class CandidatureService {
         return list;
     }
 
-    private Candidature map(ResultSet rs) throws SQLException {
-        int id = rs.getInt("id");
-
-        Date dc = rs.getDate("date_candidature");
-        LocalDate dateCandidature = (dc != null) ? dc.toLocalDate() : LocalDate.now();
-
-        String statut = rs.getString("statut");
-        String cv = rs.getString("cv");
-        long candidatId = rs.getLong("candidat_id");
-        long offreEmploiId = rs.getLong("offre_emploi_id");
-
-        return new Candidature(id, dateCandidature, statut, cv, candidatId, offreEmploiId);
-    }
     public List<Candidature> findByCandidatId(long candidatId) throws SQLException {
         List<Candidature> list = new ArrayList<>();
         String sql = "SELECT * FROM candidature WHERE candidat_id = ? ORDER BY date_candidature DESC";
@@ -113,6 +110,7 @@ public class CandidatureService {
         }
         return list;
     }
+
     public void updateStatus(int candidatureId, String newStatus) throws SQLException {
         String sql = "UPDATE candidature SET statut=? WHERE id=?";
         try (PreparedStatement ps = cnx.prepareStatement(sql)) {
@@ -156,5 +154,19 @@ public class CandidatureService {
             }
         }
         return list;
+    }
+
+    private Candidature map(ResultSet rs) throws SQLException {
+        int id = rs.getInt("id");
+
+        Date dc = rs.getDate("date_candidature");
+        LocalDate dateCandidature = (dc != null) ? dc.toLocalDate() : LocalDate.now();
+
+        String statut = rs.getString("statut");
+        String cv = rs.getString("cv");
+        long candidatId = rs.getLong("candidat_id");
+        long offreEmploiId = rs.getLong("offre_emploi_id");
+
+        return new Candidature(id, dateCandidature, statut, cv, candidatId, offreEmploiId);
     }
 }

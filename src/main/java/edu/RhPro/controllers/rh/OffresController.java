@@ -1,4 +1,4 @@
-package edu.RhPro.controllers.rh;
+package edu.RhPro.controllers.candidat;
 
 import edu.RhPro.entities.Candidature;
 import edu.RhPro.entities.offreEmploi;
@@ -14,6 +14,14 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
+
+import javafx.scene.Scene;
+import javafx.scene.chart.BarChart;
+import javafx.scene.chart.CategoryAxis;
+import javafx.scene.chart.NumberAxis;
+import javafx.scene.chart.XYChart;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 
 
 public class OffresController {
