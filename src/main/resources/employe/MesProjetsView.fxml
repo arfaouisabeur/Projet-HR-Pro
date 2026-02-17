@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="edu.RhPro.controllers.employe.MesProjetsController"
+      spacing="14" style="-fx-padding: 20; -fx-background-color: #f3f4f6;">
+
+    <!-- Header with search -->
+    <HBox alignment="CENTER_LEFT" spacing="10">
+        <Label text="Mes projets"
+               style="-fx-font-size:24px; -fx-font-weight:900; -fx-text-fill:#111827;"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <TextField fx:id="searchField" promptText="🔍 Rechercher un projet..."
+                   prefWidth="300"
+                   style="-fx-background-radius:20; -fx-border-radius:20; -fx-border-color:#e5e7eb; -fx-padding:10 15;"/>
+    </HBox>
+
+    <!-- Stats card -->
+    <HBox style="-fx-background-color: white; -fx-background-radius: 18; -fx-padding: 15;">
+        <Label fx:id="msgLabel" text="Chargement..." style="-fx-text-fill:#4b5563; -fx-font-size:14px;"/>
+    </HBox>
+
+    <!-- Modern Table -->
+    <TableView fx:id="table" VBox.vgrow="ALWAYS"
+               style="-fx-background-color: white; -fx-background-radius: 18; -fx-border-radius: 18; -fx-border-color: #e5e7eb;">
+        <columns>
+            <TableColumn fx:id="colId" text="ID" prefWidth="60"/>
+            <TableColumn fx:id="colTitre" text="Titre" prefWidth="200"/>
+            <TableColumn fx:id="colStatut" text="Statut" prefWidth="100"/>
+            <TableColumn fx:id="colDebut" text="Date début" prefWidth="120"/>
+            <TableColumn fx:id="colFin" text="Date fin" prefWidth="120"/>
+            <TableColumn fx:id="colDesc" text="Description" prefWidth="300"/>
+            <TableColumn fx:id="colActions" text="Actions" prefWidth="100"/>
+        </columns>
+        <columnResizePolicy>
+            <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+        </columnResizePolicy>
+    </TableView>
+
+    <!-- Bottom buttons -->
+    <HBox spacing="10" alignment="CENTER_RIGHT">
+        <Button text="Rafraîchir" onAction="#refresh"
+                style="-fx-background-color: white; -fx-border-color: #e5e7eb; -fx-background-radius: 14; -fx-border-radius: 14; -fx-padding: 10 20; -fx-cursor: hand;"/>
+        <Button text="Gérer les tâches" onAction="#openTasks"
+                style="-fx-background-color: #065f46; -fx-text-fill: white; -fx-background-radius: 14; -fx-padding: 10 20; -fx-cursor: hand; -fx-font-weight: bold;"/>
+    </HBox>
+
+</VBox>

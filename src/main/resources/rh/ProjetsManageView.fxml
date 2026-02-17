@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="edu.RhPro.controllers.rh.ProjetsManageController"
+      spacing="14" style="-fx-padding: 20;">
+
+    <Label text="Gestion des projets"
+           style="-fx-font-size:20px; -fx-font-weight:900; -fx-text-fill:#111827;"/>
+
+    <!-- FORM with validation labels -->
+    <VBox spacing="5" style="-fx-background-color:white; -fx-background-radius:18; -fx-border-radius:18; -fx-border-color:#ececf5; -fx-padding:14;">
+
+        <!-- First row of fields -->
+        <HBox spacing="10" alignment="CENTER_LEFT">
+            <!-- Titre field with validation label -->
+            <VBox spacing="2" prefWidth="220">
+                <TextField fx:id="titreField" promptText="Titre du projet"
+                           style="-fx-background-radius:14; -fx-border-radius:14; -fx-border-color:#ececf5; -fx-padding:10 12;"/>
+                <Label fx:id="titreErrorLabel" text="Champ requis (min 5 caractères)"
+                       style="-fx-text-fill: red; -fx-font-size: 11px;" managed="false" visible="false"/>
+            </VBox>
+
+            <!-- Description field (optional) -->
+            <VBox spacing="2" prefWidth="260">
+                <TextField fx:id="descField" promptText="Description"
+                           style="-fx-background-radius:14; -fx-border-radius:14; -fx-border-color:#ececf5; -fx-padding:10 12;"/>
+                <Label fx:id="descErrorLabel" text=""
+                       style="-fx-text-fill: red; -fx-font-size: 11px;" managed="false" visible="false"/>
+            </VBox>
+
+            <!-- Statut field with validation label -->
+            <VBox spacing="2" prefWidth="140">
+                <ComboBox fx:id="statutCombo" promptText="Statut"
+                          style="-fx-background-radius:14; -fx-border-radius:14; -fx-border-color:#ececf5; -fx-padding:6 10;"/>
+                <Label fx:id="statutErrorLabel" text="Statut requis"
+                       style="-fx-text-fill: red; -fx-font-size: 11px;" managed="false" visible="false"/>
+            </VBox>
+
+            <!-- Responsable field with validation label -->
+            <VBox spacing="2" prefWidth="250">
+                <ComboBox fx:id="responsableCombo" promptText="Responsable"
+                          style="-fx-background-radius:14; -fx-border-radius:14; -fx-border-color:#ececf5; -fx-padding:6 10;"/>
+                <Label fx:id="responsableErrorLabel" text="Responsable requis"
+                       style="-fx-text-fill: red; -fx-font-size: 11px;" managed="false" visible="false"/>
+            </VBox>
+        </HBox>
+
+        <!-- Second row with Date pickers and buttons -->
+        <HBox spacing="10" alignment="CENTER_LEFT">
+            <!-- Date début with validation label -->
+            <VBox spacing="2" prefWidth="160">
+                <DatePicker fx:id="dateDebutPicker" promptText="Date début"
+                            style="-fx-border-color:#ececf5; -fx-border-radius:14; -fx-background-radius:14;"/>
+                <Label fx:id="dateDebutErrorLabel" text="Date début requise"
+                       style="-fx-text-fill: red; -fx-font-size: 11px;" managed="false" visible="false"/>
+            </VBox>
+
+            <!-- Date fin with validation label -->
+            <VBox spacing="2" prefWidth="160">
+                <DatePicker fx:id="dateFinPicker" promptText="Date fin"
+                            style="-fx-border-color:#ececf5; -fx-border-radius:14; -fx-background-radius:14;"/>
+                <Label fx:id="dateFinErrorLabel" text="Date fin requise"
+                       style="-fx-text-fill: red; -fx-font-size: 11px;" managed="false" visible="false"/>
+            </VBox>
+
+            <Button text="Ajouter" onAction="#addProjet"
+                    style="-fx-background-color:#111827; -fx-text-fill:white; -fx-background-radius:14; -fx-padding:10 14; -fx-font-weight:900;"/>
+            <Button text="Modifier" onAction="#updateProjet"
+                    style="-fx-background-color:#6d2a74; -fx-text-fill:white; -fx-background-radius:14; -fx-padding:10 14; -fx-font-weight:900;"/>
+            <Button text="Effacer" onAction="#clearForm"
+                    style="-fx-background-color:white; -fx-border-color:#ececf5; -fx-background-radius:14; -fx-border-radius:14; -fx-padding:10 14; -fx-font-weight:900;"/>
+        </HBox>
+    </VBox>
+
+    <!-- TABLE -->
+    <TableView fx:id="table" prefHeight="450"
+               style="-fx-background-color:white; -fx-background-radius:18; -fx-border-radius:18; -fx-border-color:#ececf5;">
+        <columns>
+            <TableColumn fx:id="colId" text="ID" prefWidth="70"/>
+            <TableColumn fx:id="colTitre" text="Titre" prefWidth="200"/>
+            <TableColumn fx:id="colStatut" text="Statut" prefWidth="100"/>
+            <TableColumn fx:id="colResp" text="Responsable ID" prefWidth="120"/>
+            <TableColumn fx:id="colDebut" text="Date début" prefWidth="130"/>
+            <TableColumn fx:id="colFin" text="Date fin" prefWidth="130"/>
+            <TableColumn fx:id="colDesc" text="Description" prefWidth="400"/>
+        </columns>
+    </TableView>
+
+    <!-- Bottom buttons -->
+    <HBox spacing="10" alignment="CENTER_LEFT">
+        <Button text="Rafraîchir" onAction="#refresh"
+                style="-fx-background-color:white; -fx-border-color:#ececf5; -fx-background-radius:14; -fx-border-radius:14; -fx-padding:12 14; -fx-font-weight:900;"/>
+        <Button text="Supprimer" onAction="#deleteSelected"
+                style="-fx-background-color:#991b1b; -fx-text-fill:white; -fx-background-radius:14; -fx-padding:12 14; -fx-font-weight:900;"/>
+        <Label fx:id="msgLabel" text="" style="-fx-text-fill:#6b7280;"/>
+    </HBox>
+
+</VBox>
