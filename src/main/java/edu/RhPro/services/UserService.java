@@ -14,10 +14,33 @@ import java.util.List;
 
 public class UserService implements IUser {
 
-    private final Connection cnx = MyConnection.getInstance().getCnx();
+    private final Connection cnx;
+
+    public UserService(Connection cnx) {
+        this.cnx = cnx;
+    }
+
+
 
     @Override
     public void addUser(User user) throws SQLException {
+
+        // 1️⃣ Vérifier si email existe déjà
+        String checkEmail = "SELECT COUNT(*) FROM users WHERE email = ?";
+        try (PreparedStatement checkPst = cnx.prepareStatement(checkEmail)) {
+            checkPst.setString(1, user.getEmail());
+            ResultSet rs = checkPst.executeQuery();
+
+            if (rs.next() && rs.getInt(1) > 0) {
+                throw new SQLException("Cet email est déjà utilisé.");
+            }
+        }
+
+
+        // 2️⃣ Hash du mot de passe avant insertion
+        String hashedPassword = hashPassword(user.getMot_de_passe());
+
+        // 3️⃣ Insertion utilisateur
         String requete = "INSERT INTO users (nom, prenom, email, mot_de_passe, telephone, adresse, role) " +
                 "VALUES (?, ?, ?, ?, ?, ?, ?)";
 
@@ -25,13 +48,14 @@ public class UserService implements IUser {
             pst.setString(1, user.getNom());
             pst.setString(2, user.getPrenom());
             pst.setString(3, user.getEmail());
-            pst.setString(4, user.getMot_de_passe());
+            pst.setString(4, hashedPassword); // 🔒 mot de passe hashé
             pst.setString(5, user.getTelephone());
             pst.setString(6, user.getAdresse());
             pst.setString(7, user.getRole());
             pst.executeUpdate();
         }
     }
+
 
     @Override
     public void updateUser(User user) throws SQLException {
@@ -166,4 +190,47 @@ public class UserService implements IUser {
             ps.executeUpdate();
         }
     }
+    private String hashPassword(String password) {
+        try {
+            java.security.MessageDigest md = java.security.MessageDigest.getInstance("SHA-256");
+            byte[] hashedBytes = md.digest(password.getBytes(java.nio.charset.StandardCharsets.UTF_8));
+
+            StringBuilder sb = new StringBuilder();
+            for (byte b : hashedBytes) {
+                sb.append(String.format("%02x", b));
+            }
+            return sb.toString();
+
+        } catch (Exception e) {
+            throw new RuntimeException("Erreur lors du hash du mot de passe", e);
+        }
+    }
+    public boolean emailExists(String email) {
+        String query = "SELECT COUNT(*) FROM users WHERE email = ?";
+        try {
+            PreparedStatement pst = cnx.prepareStatement(query);
+            pst.setString(1, email);
+            ResultSet rs = pst.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1) > 0;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+    public boolean isMatriculeExist(String matricule) throws SQLException {
+        String query = "SELECT COUNT(*) FROM users WHERE matricule = ?";
+        try (PreparedStatement pst = cnx.prepareStatement(query)) {
+            pst.setString(1, matricule);
+            ResultSet rs = pst.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1) > 0;
+            }
+            return false;
+        }
+    }
+
+
+
 }

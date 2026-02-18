@@ -6,6 +6,10 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import java.sql.Connection;
+import edu.RhPro.tools.MyConnection;
+import edu.RhPro.services.UserService;
+
 
 import java.util.List;
 
@@ -19,7 +23,8 @@ public class UsersManageController {
     @FXML private ComboBox<String> roleCombo;
     @FXML private Label msgLabel;
 
-    private final UserService service = new UserService();
+    private Connection cnx;
+    private final UserService service = new UserService(cnx);
 
     @FXML
     public void initialize() {

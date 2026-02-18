@@ -14,8 +14,9 @@
 
     <left>
         <VBox spacing="12" style="-fx-padding: 22; -fx-background-color: linear-gradient(to bottom, #5b2b82, #3b1b57); -fx-pref-width: 300;">
+            <Button layoutX="560" layoutY="10" onAction="#goProfil" prefHeight="30" prefWidth="30" style="-fx-background-color:transparent;                -fx-font-size:18px;                -fx-cursor:hand;" text="Profile" textFill="#0082ff" wrapText="true" />
 
-            <ImageView fitWidth="250" fitHeight="250" preserveRatio="true">
+            <ImageView fitWidth="150" fitHeight="150" preserveRatio="true">
                 <image>
                     <Image url="@/images/logo.png"/>
                 </image>
@@ -49,6 +50,7 @@
             <Region VBox.vgrow="ALWAYS" />
 
             <Button onAction="#logout" style="-fx-background-color: rgba(255,255,255,0.10); -fx-text-fill:white; -fx-background-radius:14; -fx-padding:14; -fx-font-weight:900;" text="🚪 Déconnexion" />
+
         </VBox>
     </left>
 

@@ -20,7 +20,6 @@
                 <content>
                     <VBox alignment="CENTER" style="-fx-padding: 10;">
 
-                        <!-- CARD -->
                         <VBox maxWidth="520" spacing="16"
                               style="-fx-background-color:white; -fx-background-radius:22; -fx-border-radius:22; -fx-border-color:#ececf5; -fx-padding:28;">
 
@@ -50,13 +49,26 @@
                                         <Label text="Nom" style="-fx-text-fill:#374151; -fx-font-weight:800;"/>
                                         <TextField fx:id="nomField" promptText="Nom"
                                                    style="-fx-background-radius:14; -fx-border-radius:14; -fx-border-color:#ececf5; -fx-padding:12 14; -fx-font-size:13px;"/>
+                                        <Label fx:id="nomError" text=""
+                                               style="-fx-text-fill:#dc2626; -fx-font-size:11px; -fx-font-weight:600;"/>
                                     </VBox>
+                                    <Label fx:id="nomErrorLabel"
+                                           textFill="red"
+                                           visible="false"
+                                           managed="false"/>
+
 
                                     <VBox spacing="6" HBox.hgrow="ALWAYS">
                                         <Label text="Prénom" style="-fx-text-fill:#374151; -fx-font-weight:800;"/>
                                         <TextField fx:id="prenomField" promptText="Prénom"
                                                    style="-fx-background-radius:14; -fx-border-radius:14; -fx-border-color:#ececf5; -fx-padding:12 14; -fx-font-size:13px;"/>
+                                        <Label fx:id="prenomError" text=""
+                                               style="-fx-text-fill:#dc2626; -fx-font-size:11px; -fx-font-weight:600;"/>
                                     </VBox>
+                                    <Label fx:id="prenomErrorLabel"
+                                           textFill="red"
+                                           visible="false"
+                                           managed="false"/>
                                 </HBox>
                             </VBox>
 
@@ -69,13 +81,25 @@
                                     <Label text="Email" style="-fx-text-fill:#374151; -fx-font-weight:800;"/>
                                     <TextField fx:id="emailField" promptText="ex: nom.prenom@mail.com"
                                                style="-fx-background-radius:14; -fx-border-radius:14; -fx-border-color:#ececf5; -fx-padding:12 14; -fx-font-size:13px;"/>
+                                    <Label fx:id="emailError" text=""
+                                           style="-fx-text-fill:#dc2626; -fx-font-size:11px; -fx-font-weight:600;"/>
                                 </VBox>
+                                <Label fx:id="emailErrorLabel"
+                                       textFill="red"
+                                       visible="false"
+                                       managed="false"/>
 
                                 <VBox spacing="6">
                                     <Label text="Mot de passe" style="-fx-text-fill:#374151; -fx-font-weight:800;"/>
                                     <PasswordField fx:id="passField" promptText="••••••••"
                                                    style="-fx-background-radius:14; -fx-border-radius:14; -fx-border-color:#ececf5; -fx-padding:12 14; -fx-font-size:13px;"/>
+                                    <Label fx:id="passError" text=""
+                                           style="-fx-text-fill:#dc2626; -fx-font-size:11px; -fx-font-weight:600;"/>
                                 </VBox>
+                                <Label fx:id="passwordErrorLabel"
+                                       textFill="red"
+                                       visible="false"
+                                       managed="false"/>
                             </VBox>
 
                             <!-- Contact -->
@@ -98,7 +122,7 @@
                                 </HBox>
                             </VBox>
 
-                            <!-- CANDIDAT fields -->
+                            <!-- CANDIDAT -->
                             <VBox fx:id="candidatBox" spacing="10" visible="false" managed="false"
                                   style="-fx-padding:14; -fx-background-color:#faf7ff; -fx-background-radius:18; -fx-border-radius:18; -fx-border-color:#efe7ff;">
                                 <Label text="Informations Candidat"
@@ -125,7 +149,7 @@
                                 </HBox>
                             </VBox>
 
-                            <!-- EMPLOYE fields -->
+                            <!-- EMPLOYE -->
                             <VBox fx:id="employeBox" spacing="10" visible="false" managed="false"
                                   style="-fx-padding:14; -fx-background-color:#f0fdfa; -fx-background-radius:18; -fx-border-radius:18; -fx-border-color:#d1fae5;">
                                 <Label text="Informations Employé"
@@ -154,7 +178,6 @@
 
                             <Separator style="-fx-opacity:0.35;"/>
 
-                            <!-- Buttons -->
                             <HBox spacing="10" alignment="CENTER_LEFT">
                                 <Button text="Créer" onAction="#onSignup"
                                         style="-fx-background-color:#5b2b82; -fx-text-fill:white; -fx-background-radius:14; -fx-padding:12 16; -fx-font-weight:900;"/>
@@ -163,7 +186,6 @@
                                 <Region HBox.hgrow="ALWAYS"/>
                             </HBox>
 
-                            <!-- Message -->
                             <Label fx:id="msgLabel" text=""
                                    style="-fx-text-fill:#b91c1c; -fx-font-weight:800;"/>
 

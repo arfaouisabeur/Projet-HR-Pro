@@ -9,13 +9,16 @@ import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 
+import java.sql.Connection;
+
 public class LoginController {
 
     @FXML private TextField emailField;
     @FXML private PasswordField passField;
     @FXML private Label msgLabel;
 
-    private final UserService userService = new UserService();
+    private Connection cnx;
+    private final UserService userService = new UserService(cnx);
 
     @FXML
     public void onLogin() {

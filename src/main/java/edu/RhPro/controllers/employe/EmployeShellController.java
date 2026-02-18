@@ -3,6 +3,7 @@ package edu.RhPro.controllers.employe;
 import edu.RhPro.entities.User;
 import edu.RhPro.utils.Router;
 import edu.RhPro.utils.Session;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -27,7 +28,7 @@ public class EmployeShellController {
 
 
         // ✅ default page (keep what you want)
-        loadPage("/employe/MesSalairesView.fxml");
+        loadPage("/employe/EmployeProfil.fxml");
     }
 
     private void loadPage(String fxml) {
@@ -58,5 +59,8 @@ public class EmployeShellController {
     public void logout() {
         Session.clear();
         Router.go("/auth/Welcome.fxml", "RHPro", 520, 360);
+    }
+
+    public void goProfil(ActionEvent actionEvent) {
     }
 }
