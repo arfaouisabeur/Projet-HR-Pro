@@ -1,8 +1,11 @@
 package edu.RhPro.controllers.rh;
 
+import com.twilio.Twilio;
 import edu.RhPro.entities.Conge;
 import edu.RhPro.services.CongeService;
 import edu.RhPro.services.ReponseService;
+import edu.RhPro.services.SmsService;
+import java.sql.ResultSet;
 import edu.RhPro.tools.MyConnection;
 
 import javafx.collections.FXCollections;
@@ -172,27 +175,80 @@ public class CongesManageController {
     private void updateStatus(String statut) {
 
         Conge selected = table.getSelectionModel().getSelectedItem();
+
         if (selected == null) {
             msgLabel.setText("Sélectionne une demande.");
             return;
         }
 
+        String commentaire = taCommentaire.getText();
+
+        if (commentaire == null || commentaire.trim().isEmpty()) {
+            msgLabel.setText("Ajoute un commentaire avant de valider.");
+            return;
+        }
+
         try {
+
             Connection cnx = MyConnection.getInstance().getCnx();
-            PreparedStatement ps = cnx.prepareStatement(
-                    "UPDATE conge_tt SET statut=? WHERE id=?");
 
-            ps.setString(1, statut);
-            ps.setLong(2, selected.getId());
-            ps.executeUpdate();
+            // 1️⃣ Mettre à jour le statut du congé
+            PreparedStatement ps1 = cnx.prepareStatement(
+                    "UPDATE conge_tt SET statut=? WHERE id=?"
+            );
 
+            ps1.setString(1, statut);
+            ps1.setLong(2, selected.getId());
+            ps1.executeUpdate();
+
+
+            // 2️⃣ Vérifier si une réponse existe déjà
+            PreparedStatement check = cnx.prepareStatement(
+                    "SELECT id FROM reponse WHERE conge_tt_id=?"
+            );
+            check.setLong(1, selected.getId());
+
+            boolean exists = check.executeQuery().next();
+
+
+            if (exists) {
+
+                // 3️⃣ Update réponse existante
+                PreparedStatement ps2 = cnx.prepareStatement(
+                        "UPDATE reponse SET decision=?, commentaire=? WHERE conge_tt_id=?"
+                );
+
+                ps2.setString(1, statut);
+                ps2.setString(2, commentaire);
+                ps2.setLong(3, selected.getId());
+                ps2.executeUpdate();
+
+            } else {
+
+                // 4️⃣ Insérer nouvelle réponse
+                PreparedStatement ps3 = cnx.prepareStatement(
+                        "INSERT INTO reponse(decision, commentaire, rh_id, employe_id, conge_tt_id) VALUES(?,?,?,?,?)"
+                );
+
+                ps3.setString(1, statut);
+                ps3.setString(2, commentaire);
+                ps3.setLong(3, 1L); // ⚠️ idéalement Session RH
+                ps3.setLong(4, selected.getEmployeeId());
+                ps3.setLong(5, selected.getId());
+                ps3.executeUpdate();
+            }
+                 // Envoi SMS
+            sendSmsToEmployee(selected, statut);
             msgLabel.setText("Décision enregistrée ✅");
+            taCommentaire.clear();
             loadData();
 
-        } catch (Exception e) {
-            msgLabel.setText("Erreur");
+        } catch (SQLException e) {
+            msgLabel.setText("Erreur DB ❌");
+            e.printStackTrace();
         }
     }
+
     // ===================== AJOUT =====================
     @FXML
     private void onComment() {
@@ -273,4 +329,111 @@ public class CongesManageController {
 
         table.refresh();
     }
-}
+
+
+    // ===================== SMS =====================
+    /*private void sendSmsToEmployee(Conge conge, String statut) {
+        try {
+            Connection cnx = MyConnection.getInstance().getCnx();
+            PreparedStatement ps = cnx.prepareStatement(
+                    "SELECT u.telephone FROM employe e " +
+                            "JOIN users u ON e.user_id = u.id " +
+                            "WHERE e.user_id = ?"
+            );
+            ps.setLong(1, conge.getEmployeeId());
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                String phone = rs.getString("telephone");
+                if (phone != null && !phone.isEmpty()) {
+                    // Normaliser numéro
+                    if (!phone.startsWith("+")) {
+                        phone = "+216" + phone;
+                    }
+
+                    String message = "Votre demande de congé a été " + statut + ".";
+                    edu.RhPro.services.SmsService.sendSms(phone, message);
+                    System.out.println("SMS envoyé au : " + phone);
+                } else {
+                    System.out.println("Numéro vide pour l'employé ID: " + conge.getEmployeeId());
+                }
+            } else {
+                System.out.println("Employé introuvable pour ID: " + conge.getEmployeeId());
+            }
+
+        } catch (Exception e) {
+            System.out.println("Erreur SMS : " + e.getMessage());
+            e.printStackTrace();
+        }
+    }*/
+
+
+
+
+
+
+
+
+
+
+    // ===================== SMS INTELLIGENT =====================
+    private void sendSmsToEmployee(Conge conge, String statut) {
+        try {
+
+            // 🔎 Vérification logique métier
+            LocalDate today = LocalDate.now();
+            LocalDate debut = conge.getDateDebut();
+
+            boolean isUrgentDate = debut != null &&
+                    (debut.isEqual(today) ||
+                            debut.isEqual(today.plusDays(1)) ||
+                            debut.isEqual(today.plusDays(2)));
+
+            boolean isUrgentType = conge.getTypeConge() != null &&
+                    (conge.getTypeConge().toLowerCase().contains("maladie") ||
+                            conge.getTypeConge().toLowerCase().contains("urgent"));
+
+            // 👉 Si pas urgent → pas de SMS
+            if (!isUrgentDate && !isUrgentType) {
+                System.out.println("SMS non envoyé (pas urgent).");
+                return;
+            }
+
+            Connection cnx = MyConnection.getInstance().getCnx();
+            PreparedStatement ps = cnx.prepareStatement(
+                    "SELECT u.telephone FROM employe e " +
+                            "JOIN users u ON e.user_id = u.id " +
+                            "WHERE e.user_id = ?"
+            );
+            ps.setLong(1, conge.getEmployeeId());
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                String phone = rs.getString("telephone");
+
+                if (phone != null && !phone.isEmpty()) {
+
+                    // 📞 Normalisation numéro Tunisie
+                    if (!phone.startsWith("+")) {
+                        phone = "+216" + phone;
+                    }
+
+                    String message =
+                            "ALERTE RH 🚨\n" +
+                                    "Votre congé (" + conge.getTypeConge() + ") du "
+                                    + conge.getDateDebut() +
+                                    " a été " + statut + ".";
+
+                    SmsService.sendSms(phone, message);
+
+                    System.out.println("SMS URGENT envoyé au : " + phone);
+
+                } else {
+                    System.out.println("Numéro vide pour employé ID: " + conge.getEmployeeId());
+                }
+            }
+
+        } catch (Exception e) {
+            System.out.println("Erreur SMS : " + e.getMessage());
+        }
+    }}

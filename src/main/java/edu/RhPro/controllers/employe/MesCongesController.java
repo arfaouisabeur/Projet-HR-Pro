@@ -354,7 +354,14 @@ public class MesCongesController {
         Label repTitle = new Label("RÉPONSE RH");
         repTitle.setStyle("-fx-font-size:11px; -fx-text-fill:#6d2269; -fx-font-weight:bold;");
 
-        Label repValue = new Label(commentaire.isEmpty() ? "-" : "Voir commentaire");
+        Label repValue;
+
+        if (commentaire != null && !commentaire.trim().isEmpty()) {
+            repValue = new Label("Voir commentaire");
+        } else {
+            repValue = new Label("-");
+        }
+
         repValue.setWrapText(true);
         repValue.setStyle("-fx-font-size:13px; -fx-text-fill:#111111; -fx-underline:true; -fx-cursor:hand;");
 

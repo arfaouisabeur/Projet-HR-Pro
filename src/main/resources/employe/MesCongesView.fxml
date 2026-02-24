@@ -13,7 +13,7 @@
              -fx-background-color: linear-gradient(to bottom,#ddd6fe,#ffffff);">
 
     <!-- HEADER -->
-    <Label text="Mes demandes Congé / TT"
+    <Label text="Mes demandes Congé"
            style="-fx-font-size:26px;
                   -fx-font-weight:900;
                   -fx-text-fill:#6d2269;" />
