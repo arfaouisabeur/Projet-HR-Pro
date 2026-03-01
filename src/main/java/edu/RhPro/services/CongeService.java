@@ -15,8 +15,10 @@ public class CongeService implements ICongeService {
 
     @Override
     public void addEntity(Conge conge) throws SQLException {
-        String sql = "INSERT INTO conge_tt (type_conge, date_debut, date_fin, statut, description, employe_id) " +
-                "VALUES (?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO conge_tt (type_conge, date_debut, date_fin, statut, " +
+                "description, employe_id, document_path, ocr_verified) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+
 
         try (PreparedStatement ps = cnx.prepareStatement(sql)) {
             ps.setString(1, conge.getTypeConge());
@@ -30,6 +32,8 @@ public class CongeService implements ICongeService {
             ps.setString(4, conge.getStatut());
             ps.setString(5, conge.getDescription());
             ps.setLong(6, conge.getEmployeeId()); // DB = employe_id
+            ps.setString(7, conge.getDocumentPath());
+            ps.setBoolean(8, conge.isOcrVerified());
 
             ps.executeUpdate();
         }
@@ -47,8 +51,8 @@ public class CongeService implements ICongeService {
     @Override
     public void updateEntity(Conge conge) throws SQLException {
         // ✅ FIX column employe_id
-        String sql = "UPDATE conge_tt SET type_conge=?, date_debut=?, date_fin=?, statut=?, description=?, employe_id=? " +
-                "WHERE id=?";
+        String sql = "UPDATE conge_tt SET type_conge=?, date_debut=?, date_fin=?, statut=?, " +
+                "description=?, employe_id=?, document_path=?, ocr_verified=? WHERE id=?";
 
         try (PreparedStatement ps = cnx.prepareStatement(sql)) {
             ps.setString(1, conge.getTypeConge());
@@ -62,7 +66,9 @@ public class CongeService implements ICongeService {
             ps.setString(4, conge.getStatut());
             ps.setString(5, conge.getDescription());
             ps.setLong(6, conge.getEmployeeId()); // DB = employe_id
-            ps.setLong(7, conge.getId());
+            ps.setString(7, conge.getDocumentPath());
+            ps.setBoolean(8, conge.isOcrVerified());
+            ps.setLong(9, conge.getId());
 
             ps.executeUpdate();
         }
@@ -71,7 +77,7 @@ public class CongeService implements ICongeService {
     @Override
     public List<Conge> getData() throws SQLException {
         // ✅ FIX column employe_id
-        String sql = "SELECT id, type_conge, date_debut, date_fin, statut, description, employe_id FROM conge_tt";
+        String sql = "SELECT id, type_conge, date_debut, date_fin, statut, description, employe_id, document_path, ocr_verified FROM conge_tt";
         List<Conge> list = new ArrayList<>();
 
         try (PreparedStatement ps = cnx.prepareStatement(sql);
@@ -83,7 +89,8 @@ public class CongeService implements ICongeService {
     }
 
     public Conge getById(long id) throws SQLException {
-        String sql = "SELECT id, type_conge, date_debut, date_fin, statut, description, employe_id FROM conge_tt WHERE id=?";
+        // ✅ CORRECT — ajoute WHERE id=?
+        String sql = "SELECT id, type_conge, date_debut, date_fin, statut, description, employe_id, document_path, ocr_verified FROM conge_tt WHERE id=?";
         try (PreparedStatement ps = cnx.prepareStatement(sql)) {
             ps.setLong(1, id);
             try (ResultSet rs = ps.executeQuery()) {
@@ -95,7 +102,7 @@ public class CongeService implements ICongeService {
 
     // ✅ Employee view only his requests
     public List<Conge> findByEmployeId(long employeId) throws SQLException {
-        String sql = "SELECT id, type_conge, date_debut, date_fin, statut, description, employe_id " +
+        String sql = "SELECT id, type_conge, date_debut, date_fin, statut, description, employe_id, document_path, ocr_verified " +
                 "FROM conge_tt WHERE employe_id=? ORDER BY date_debut DESC";
         List<Conge> list = new ArrayList<>();
         try (PreparedStatement ps = cnx.prepareStatement(sql)) {
@@ -130,10 +137,13 @@ public class CongeService implements ICongeService {
         String desc = rs.getString("description");
         long employeId = rs.getLong("employe_id");
 
-        return new Conge(id, type, dateDebut, dateFin, statut, desc, employeId);
+        Conge c = new Conge(id, type, dateDebut, dateFin, statut, desc, employeId);
+        c.setDocumentPath(rs.getString("document_path"));
+        c.setOcrVerified(rs.getBoolean("ocr_verified"));
+        return c;
     }
     public List<Conge> findPending() throws SQLException {
-        String sql = "SELECT id, type_conge, date_debut, date_fin, statut, description, employe_id " +
+        String sql = "SELECT id, type_conge, date_debut, date_fin, statut, description, employe_id, document_path, ocr_verified " +
                 "FROM conge_tt WHERE statut='EN_ATTENTE' ORDER BY date_debut DESC";
         List<Conge> list = new ArrayList<>();
         try (PreparedStatement ps = cnx.prepareStatement(sql);
