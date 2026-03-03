@@ -54,6 +54,7 @@ public class EmployeShellController {
 
     @FXML public void goEvents() { loadPage("/employe/EventsView.fxml"); }
     @FXML public void goMyParticipations() { loadPage("/employe/MyParticipationsView.fxml"); }
+    @FXML public void goStats() { loadPage("/rh/StatsView.fxml"); }
 
     @FXML
     public void logout() {

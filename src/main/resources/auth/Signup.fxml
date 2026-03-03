@@ -110,15 +110,20 @@
                                 <HBox spacing="10">
                                     <VBox spacing="6" HBox.hgrow="ALWAYS">
                                         <Label text="Téléphone" style="-fx-text-fill:#374151; -fx-font-weight:800;"/>
-                                        <TextField fx:id="telField" promptText="Téléphone"
+                                        <HBox spacing="2">
+                                          <Label fx:id="flagLabel" layoutX="300" layoutY="50" text="" />
+                                          <TextField fx:id="telField" promptText="Téléphone"
                                                    style="-fx-background-radius:14; -fx-border-radius:14; -fx-border-color:#ececf5; -fx-padding:12 14; -fx-font-size:13px;"/>
+                                        </HBox>
                                     </VBox>
+                                    <Label fx:id="telError" style="-fx-text-fill: red;" />
 
                                     <VBox spacing="6" HBox.hgrow="ALWAYS">
                                         <Label text="Adresse" style="-fx-text-fill:#374151; -fx-font-weight:800;"/>
                                         <TextField fx:id="adresseField" promptText="Adresse"
                                                    style="-fx-background-radius:14; -fx-border-radius:14; -fx-border-color:#ececf5; -fx-padding:12 14; -fx-font-size:13px;"/>
                                     </VBox>
+                                    <Label fx:id="adresseError" style="-fx-text-fill: red;" />
                                 </HBox>
                             </VBox>
 
@@ -128,11 +133,6 @@
                                 <Label text="Informations Candidat"
                                        style="-fx-text-fill:#111827; -fx-font-weight:900;"/>
 
-                                <VBox spacing="6">
-                                    <Label text="CV" style="-fx-text-fill:#374151; -fx-font-weight:800;"/>
-                                    <TextField fx:id="cvField" promptText="Texte / lien / chemin"
-                                               style="-fx-background-radius:14; -fx-border-radius:14; -fx-border-color:#ececf5; -fx-padding:12 14; -fx-font-size:13px;"/>
-                                </VBox>
 
                                 <HBox spacing="10">
                                     <VBox spacing="6" HBox.hgrow="ALWAYS">

@@ -1,269 +1,374 @@
 package edu.RhPro.controllers.auth;
 
 import edu.RhPro.entities.User;
+import edu.RhPro.services.CandidatService;
+import edu.RhPro.services.EmployeService;
+import edu.RhPro.services.RHService;
 import edu.RhPro.services.UserService;
 import edu.RhPro.utils.Router;
 import edu.RhPro.utils.Session;
+import javafx.application.Platform;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
+import javafx.geometry.Side;
 import javafx.scene.control.*;
-import javafx.scene.control.DatePicker;
 import javafx.scene.layout.VBox;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
-import java.sql.SQLException;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
 
 public class SignupController {
 
-    // === FXML fields ===
-    @FXML private Label roleTitle;
-    @FXML private VBox candidatBox;
-    @FXML private VBox employeBox;
+    @FXML
+    private Label nomError, prenomError, emailError, passError,
+            telError, adresseError,
+            niveauError, expError,
+            matriculeError, positionError, dateError;
 
-    @FXML private TextField nomField;
-    @FXML private TextField prenomField;
-    @FXML private TextField emailField;
-    @FXML private PasswordField passField;
-    @FXML private TextField telField;
-    @FXML private TextField adresseField;
+    @FXML
+    private Label roleTitle;
+    @FXML
+    private Label msgLabel;
+    @FXML
+    private Label flagLabel;
 
-    @FXML private TextField cvField;
-    @FXML private TextField niveauField;
-    @FXML private TextField expField;
+    @FXML
+    private TextField nomField, prenomField, emailField, telField, adresseField;
+    @FXML
+    private PasswordField passField;
 
-    @FXML private TextField matriculeField;
-    @FXML private TextField positionField;
-    @FXML private DatePicker dateEmbauchePicker;
+    @FXML
+    private VBox candidatBox;
+    @FXML
+    private TextField niveauField, expField;
 
-    @FXML private Label msgLabel;
+    @FXML
+    private VBox employeBox;
+    @FXML
+    private TextField matriculeField, positionField;
+    @FXML
+    private DatePicker dateEmbauchePicker;
 
-    // Map champs -> Labels d'erreur
-    private final Map<Control, Label> errorLabelsMap = new HashMap<>();
+    private final UserService userService = new UserService();
+    private final CandidatService candidatService = new CandidatService();
+    private final EmployeService employeService = new EmployeService();
+    private final RHService rhService = new RHService();
 
-    // Styles
-    private final String normalFieldStyle = "-fx-background-radius:14; -fx-border-radius:14; -fx-border-color:#ececf5; -fx-padding:12 14; -fx-font-size:13px;";
-    private final String errorFieldStyle = "-fx-background-radius:14; -fx-border-radius:14; -fx-border-color:red; -fx-padding:12 14; -fx-font-size:13px;";
-    private UserService userService;
+    private ContextMenu suggestionsMenu = new ContextMenu();
+    private List<String> allCities = new ArrayList<>();
+    private String detectedCountryCode;
 
     @FXML
     public void initialize() {
-        // Détecter le rôle
+        //flag
+        flagLabel.setStyle("-fx-font-size: 24px;");
+        flagLabel.setText("🇹🇳");
+
+
+        // Role et affichage sections
         String role = Session.getSelectedRole();
         if (role == null) role = "CANDIDAT";
         roleTitle.setText("Rôle: " + role);
 
-        candidatBox.setVisible("CANDIDAT".equalsIgnoreCase(role));
-        candidatBox.setManaged("CANDIDAT".equalsIgnoreCase(role));
-
-        employeBox.setVisible("EMPLOYE".equalsIgnoreCase(role));
-        employeBox.setManaged("EMPLOYE".equalsIgnoreCase(role));
-
-        // --- Initialiser map labels d'erreur pour tous les champs ---
-        setupErrorLabels();
-
-        // --- Ajouter listeners de validation en temps réel ---
-        addValidationListeners();
-    }
-
-    private void setupErrorLabels() {
-        // Nom & Prénom
-        errorLabelsMap.put(nomField, (Label) nomField.getParent().lookup("#nomError"));
-        errorLabelsMap.put(prenomField, (Label) prenomField.getParent().lookup("#prenomError"));
-
-        // Email & mot de passe
-        errorLabelsMap.put(emailField, (Label) emailField.getParent().lookup("#emailError"));
-        errorLabelsMap.put(passField, (Label) passField.getParent().lookup("#passError"));
-
-        // Téléphone & adresse (pas de label dans FXML, on crée un Label invisible)
-        Label telLabel = new Label(); telLabel.setVisible(false); telLabel.setManaged(false);
-        ((VBox) telField.getParent()).getChildren().add(telLabel);
-        errorLabelsMap.put(telField, telLabel);
-
-        Label adresseLabel = new Label(); adresseLabel.setVisible(false); adresseLabel.setManaged(false);
-        ((VBox) adresseField.getParent()).getChildren().add(adresseLabel);
-        errorLabelsMap.put(adresseField, adresseLabel);
-
-        // Candidat
-        errorLabelsMap.put(cvField, createLabelUnderField(cvField));
-        errorLabelsMap.put(niveauField, createLabelUnderField(niveauField));
-        errorLabelsMap.put(expField, createLabelUnderField(expField));
-
-        // Employe
-        errorLabelsMap.put(matriculeField, createLabelUnderField(matriculeField));
-        errorLabelsMap.put(positionField, createLabelUnderField(positionField));
-        errorLabelsMap.put(dateEmbauchePicker, createLabelUnderField(dateEmbauchePicker));
-    }
-
-    // Création dynamique d'un label d'erreur sous un champ
-    private Label createLabelUnderField(Control field) {
-        Label label = new Label();
-        label.setStyle("-fx-text-fill:red; -fx-font-size:11px; -fx-font-weight:600;");
-        label.setVisible(false);
-        label.setManaged(false);
-
-        if (field.getParent() instanceof VBox vbox) {
-            vbox.getChildren().add(label);
+        if ("CANDIDAT".equalsIgnoreCase(role)) {
+            candidatBox.setVisible(true);
+            candidatBox.setManaged(true);
+        } else if ("EMPLOYE".equalsIgnoreCase(role)) {
+            employeBox.setVisible(true);
+            employeBox.setManaged(true);
         }
-        return label;
+
+        // Détecte pays et applique indicatif / drapeau / villes
+        detectUserCountry();
+
+        // Autocomplete dynamique villes
+        setupDynamicAutoComplete();
+
     }
 
-    private void addValidationListeners() {
-        for (Control field : errorLabelsMap.keySet()) {
-            if (field instanceof TextField tf) {
-                tf.textProperty().addListener((obs, oldVal, newVal) -> {
-                    if (newVal != null && !newVal.trim().isEmpty()) hideError(tf);
-                });
-            }
-            if (field instanceof PasswordField pf) {
-                pf.textProperty().addListener((obs, oldVal, newVal) -> {
-                    if (newVal != null && newVal.length() >= 6) hideError(pf);
-                });
-            }
-            if (field instanceof DatePicker dp) {
-                dp.valueProperty().addListener((obs, oldVal, newVal) -> {
-                    if (newVal != null) hideError(dp);
-                });
-            }
-        }
-    }
+    // ===================== VALIDATIONS =====================
+    private boolean isValidName(String name) { return name != null && name.matches("[a-zA-ZÀ-ÿ\\s'-]+"); }
+    private boolean isValidEmail(String email) { return email != null && email.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$"); }
+    private boolean isValidPhone(String phone) { return phone != null && phone.matches("\\+\\d{1,4}\\s?\\d{8}"); }
+    private boolean isValidAdresse(String adresse) { return adresse != null && adresse.trim().length() >= 4; }
+    private boolean isValidNiveau(String niveau) { return niveau != null && (niveau.equalsIgnoreCase("Licence") || niveau.equalsIgnoreCase("Master")); }
+    private boolean isValidExperience(String exp) { return exp != null && exp.matches("\\d+"); }
+    private boolean isValidMatricule(String matricule) { return matricule != null && matricule.matches("\\d{4}"); }
 
-    private void showError(Control field, String message) {
-        field.setStyle(errorFieldStyle);
-        Label label = errorLabelsMap.get(field);
-        if (label != null) {
-            label.setText(message);
-            label.setVisible(true);
-            label.setManaged(true);
-        }
-    }
-
-    private void hideError(Control field) {
-        field.setStyle(normalFieldStyle);
-        Label label = errorLabelsMap.get(field);
-        if (label != null) {
-            label.setVisible(false);
-            label.setManaged(false);
-        }
+    private void clearErrors() {
+        nomError.setText(""); prenomError.setText(""); emailError.setText(""); passError.setText("");
+        telError.setText(""); adresseError.setText("");
+        if (niveauError != null) niveauError.setText("");
+        if (expError != null) expError.setText("");
+        if (matriculeError != null) matriculeError.setText("");
+        if (positionError != null) positionError.setText("");
+        if (dateError != null) dateError.setText("");
     }
 
     private boolean validateForm() {
-        boolean isValid = true;
+        clearErrors();
+        boolean valid = true;
+        String role = Session.getSelectedRole();
 
-        // Nom : lettres seulement
-        if (nomField.getText() == null || !nomField.getText().matches("[a-zA-ZÀ-ÿ\\s'-]+")) {
-            showError(nomField, "Le nom doit contenir uniquement des lettres");
-            isValid = false;
+        if (!isValidName(nomField.getText())) { nomError.setText("Nom invalide"); valid = false; }
+        if (!isValidName(prenomField.getText())) { prenomError.setText("Prénom invalide"); valid = false; }
+        if (!isValidEmail(emailField.getText())) { emailError.setText("Email invalide"); valid = false; }
+        if (passField.getText() == null || passField.getText().length() < 6) { passError.setText("Min 6 caractères"); valid = false; }
+        if (!isValidPhone(telField.getText())) { telError.setText("Format: +XXX XXXXXXXX"); valid = false; }
+        if (!isValidAdresse(adresseField.getText())) { adresseError.setText("Min 4 caractères"); valid = false; }
+
+        if ("CANDIDAT".equalsIgnoreCase(role)) {
+            if (!isValidNiveau(niveauField.getText())) { niveauError.setText("Licence ou Master"); valid = false; }
+            if (!isValidExperience(expField.getText())) { expError.setText("Nombre uniquement"); valid = false; }
         }
 
-        // Prénom : lettres seulement
-        if (prenomField.getText() == null || !prenomField.getText().matches("[a-zA-ZÀ-ÿ\\s'-]+")) {
-            showError(prenomField, "Le prénom doit contenir uniquement des lettres");
-            isValid = false;
+        if ("EMPLOYE".equalsIgnoreCase(role)) {
+            if (!isValidMatricule(matriculeField.getText())) { matriculeError.setText("Exactement 4 chiffres"); valid = false; }
+            if (!positionField.getText().matches("[a-zA-Z\\s]+")) { positionError.setText("Position invalide"); valid = false; }
+            if (dateEmbauchePicker.getValue() == null) { dateError.setText("Date obligatoire"); valid = false; }
         }
 
-        // Email : format standard
-        if (emailField.getText() == null || !emailField.getText().matches("^[\\w-.]+@[\\w-]+\\.[a-z]{2,}$")) {
-            showError(emailField, "Email invalide");
-            isValid = false;
-        }
+        return valid;
+    }
 
-        // Mot de passe : minimum 6 caractères
-        if (passField.getText() == null || passField.getText().length() < 6) {
-            showError(passField, "Mot de passe trop court");
-            isValid = false;
-        }
+    // ===================== SIGNUP =====================
+    @FXML
+    public void onSignup() throws Exception {
+        if (!validateForm()) return;
 
-        // Téléphone : exactement 8 chiffres
-        if (telField.getText() == null || !telField.getText().matches("\\d{8}")) {
-            showError(telField, "Numéro de téléphone invalide (8 chiffres)");
-            isValid = false;
-        }
+        try {
+            String role = Session.getSelectedRole();
+            User u = new User(
+                    nomField.getText().trim(),
+                    prenomField.getText().trim(),
+                    emailField.getText().trim(),
+                    passField.getText().trim(),
+                    telField.getText().trim(),
+                    adresseField.getText().trim(),
+                    role.toUpperCase()
+            );
 
-        // Adresse : minimum 4 caractères
-        if (adresseField.getText() == null || adresseField.getText().trim().length() < 4) {
-            showError(adresseField, "Adresse trop courte");
-            isValid = false;
-        }
-
-        // --- Validation CANDIDAT ---
-        if (candidatBox.isVisible()) {
-            // CV : minimum 10 caractères
-            if (cvField.getText() == null || cvField.getText().trim().length() < 10) {
-                showError(cvField, "CV trop court (min 10 caractères)");
-                isValid = false;
+            if (userService.findByEmail(u.getEmail()) != null) {
+                msgLabel.setText("Cet email existe déjà.");
+                return;
             }
 
-            // Niveau : uniquement "Licence" ou "Master"
-            if (niveauField.getText() == null ||
-                    !(niveauField.getText().equalsIgnoreCase("Licence") || niveauField.getText().equalsIgnoreCase("Master"))) {
-                showError(niveauField, "Niveau doit être 'Licence' ou 'Master'");
-                isValid = false;
+            int userId = userService.addUserAndReturnId(u);
+
+            if ("CANDIDAT".equalsIgnoreCase(role)) {
+                int exp = Integer.parseInt(expField.getText().trim());
+                candidatService.insertCandidat(userId, niveauField.getText().trim(), exp);
+            } else if ("EMPLOYE".equalsIgnoreCase(role)) {
+                employeService.insertEmploye(userId, matriculeField.getText().trim(), positionField.getText().trim(), dateEmbauchePicker.getValue());
+            } else if ("RH".equalsIgnoreCase(role)) {
+                rhService.insertRH(userId);
             }
 
-            // Expérience : uniquement nombres >= 0
-            if (expField.getText() == null || !expField.getText().matches("\\d+")) {
-                showError(expField, "Expérience invalide (nombre uniquement)");
-                isValid = false;
-            }
+            msgLabel.setStyle("-fx-text-fill: #16a34a;");
+            msgLabel.setText("✅ Compte créé avec succès !");
+        } catch (Exception e) {
+            e.printStackTrace();
+            msgLabel.setStyle("-fx-text-fill: #b91c1c;");
+            msgLabel.setText("Erreur: " + e.getMessage());
         }
+    }
 
-// --- Validation EMPLOYE ---
-        if (employeBox.isVisible()) {
-            // Matricule : exactement 4 chiffres et unique
-            String matricule = matriculeField.getText();
-            if (matricule == null || !matricule.matches("\\d{4}")) {
-                showError(matriculeField, "Matricule invalide (exactement 4 chiffres)");
-                isValid = false;
-            } else {
-                // Vérifier unicité dans la base
+    @FXML
+    public void back() { Router.go("/auth/Welcome.fxml", "RHPro", 520, 360); }
+
+    // ===================== DETECTION PAYS ET VILLES =====================
+    private void detectUserCountry() {
+        Task<Void> task = new Task<>() {
+            @Override
+            protected Void call() {
                 try {
-                    if (userService.isMatriculeExist(matricule)) {
-                        showError(matriculeField, "Matricule déjà utilisé");
-                        isValid = false;
+                    // 1️⃣ Détection IP
+                    URL url = new URL("http://ip-api.com/json");
+                    HttpURLConnection con = (HttpURLConnection) url.openConnection();
+                    con.setConnectTimeout(5000);
+                    con.setReadTimeout(5000);
+
+                    BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream(), StandardCharsets.UTF_8));
+                    StringBuilder response = new StringBuilder();
+                    String line;
+                    while ((line = in.readLine()) != null) response.append(line);
+                    in.close();
+                    con.disconnect();
+
+                    JSONObject ipJson = new JSONObject(response.toString());
+                    String country = ipJson.getString("country");
+                    String countryCode = ipJson.getString("countryCode").toLowerCase();
+                    detectedCountryCode = countryCode;
+
+                    // 2️⃣ REST Countries pour indicatif + drapeau
+                    URL url2 = new URL("https://restcountries.com/v3.1/alpha/" + countryCode);
+                    HttpURLConnection con2 = (HttpURLConnection) url2.openConnection();
+                    con2.setConnectTimeout(5000);
+                    con2.setReadTimeout(5000);
+
+                    BufferedReader in2 = new BufferedReader(new InputStreamReader(con2.getInputStream(), StandardCharsets.UTF_8));
+                    StringBuilder response2 = new StringBuilder();
+                    while ((line = in2.readLine()) != null) response2.append(line);
+                    in2.close();
+                    con2.disconnect();
+
+                    JSONArray countryArray = new JSONArray(response2.toString());
+                    JSONObject countryObj = countryArray.getJSONObject(0);
+                    String prefix = "";
+                    JSONObject idd = countryObj.optJSONObject("idd");
+
+
+                    if (idd != null) {
+
+                        String root = idd.optString("root", "");
+
+                        JSONArray suffixes = idd.optJSONArray("suffixes");
+
+                        if (suffixes != null && suffixes.length() > 0) {
+                            prefix = root + suffixes.getString(0);
+                        } else {
+                            prefix = root;
+                        }
                     }
-                } catch (SQLException e) {
+
+
+// 🔥 récupération image drapeau
+                    String flagUrl = countryObj.getJSONObject("flags").getString("png");
+                    final String finalPrefix = prefix;
+                    Platform.runLater(() -> {
+                        telField.setText(finalPrefix + " ");
+
+                        ImageView flagImage = new ImageView(new Image(flagUrl));
+                        flagImage.setFitHeight(24);
+                        flagImage.setPreserveRatio(true);
+
+                        flagLabel.setGraphic(flagImage);
+                    });
+
+
+                    // Charger villes
+                    loadCities(country);
+
+                } catch (Exception e) {
                     e.printStackTrace();
-                    showError(matriculeField, "Erreur vérification matricule");
-                    isValid = false;
+                    Platform.runLater(() -> {
+                        telField.setText("+216 ");
+                        flagLabel.setText("🇹🇳");
+                        detectedCountryCode = "tn";
+                        loadCities("Tunisia");
+                    });
                 }
+                return null;
             }
-
-            // Poste : doit être parmi les postes valides
-            String[] postesValides = {"Designer", "Développeur", "Chef Département", "Comptable",
-                    "Manager", "RH", "Analyste", "Technicien"}; // tu peux compléter la liste
-            String position = positionField.getText();
-            if (position == null || !Arrays.stream(postesValides)
-                    .anyMatch(p -> p.equalsIgnoreCase(position.trim()))) {
-                showError(positionField, "Position invalide (ex: Développeur, Designer...)");
-                isValid = false;
-            }
-
-            // Date embauche obligatoire
-            if (dateEmbauchePicker.getValue() == null) {
-                showError(dateEmbauchePicker, "Date embauche obligatoire");
-                isValid = false;
-            }
-        }
-
-
-        return isValid;
+        };
+        new Thread(task).start();
     }
 
-    @FXML
-    private void onSignup() {
-        if (!validateForm()) {
-            msgLabel.setText("⚠️ Veuillez corriger les erreurs");
-            return;
-        }
+    private void loadCities(String country) {
+        Task<Void> task = new Task<>() {
+            @Override
+            protected Void call() throws Exception {
+                String query = URLEncoder.encode(country, StandardCharsets.UTF_8);
+                URL url = new URL("https://nominatim.openstreetmap.org/search?country=" + query + "&featureClass=P&format=json&limit=100");
+                HttpURLConnection con = (HttpURLConnection) url.openConnection();
+                con.setRequestProperty("User-Agent", "JavaFX App");
 
-        // Ici tu peux appeler ta méthode addUser(User user)
-        msgLabel.setText("✅ Formulaire valide !");
+                BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream(), StandardCharsets.UTF_8));
+                StringBuilder response = new StringBuilder();
+                String line;
+                while ((line = in.readLine()) != null) response.append(line);
+                in.close();
+                con.disconnect();
+
+                List<String> cities = extractCitiesFromJson(response.toString());
+                Platform.runLater(() -> {
+                    allCities.clear();
+                    allCities.addAll(cities);
+                });
+                return null;
+            }
+        };
+        new Thread(task).start();
     }
 
-    @FXML
-    public void back() {
-        Router.go("/auth/Welcome.fxml", "RHPro", 520, 360);
+    private List<String> extractCitiesFromJson(String json) {
+        List<String> cities = new ArrayList<>();
+        try {
+            JSONArray array = new JSONArray(json);
+            for (int i = 0; i < array.length(); i++) {
+                JSONObject obj = array.getJSONObject(i);
+                String display = obj.getString("display_name");
+                String city = display.split(",")[0].trim();
+                if (!cities.contains(city)) cities.add(city);
+            }
+        } catch (Exception e) { e.printStackTrace(); }
+        return cities;
     }
 
+    private void setupDynamicAutoComplete() {
+        adresseField.textProperty().addListener((obs, oldText, newText) -> {
+            if (detectedCountryCode == null || newText.length() < 2) {
+                suggestionsMenu.hide();
+                return;
+            }
+            searchPlaces(newText);
+        });
+    }
+
+    private void searchPlaces(String query) {
+        Task<List<String>> task = new Task<>() {
+            @Override
+            protected List<String> call() throws Exception {
+                String encoded = URLEncoder.encode(query, StandardCharsets.UTF_8);
+                String urlString = "https://nominatim.openstreetmap.org/search?q=" + encoded +
+                        "&countrycodes=" + detectedCountryCode + "&format=json&limit=8";
+                URL url = new URL(urlString);
+
+                HttpURLConnection con = (HttpURLConnection) url.openConnection();
+                con.setRequestProperty("User-Agent", "JavaFX App");
+
+                BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream(), StandardCharsets.UTF_8));
+                StringBuilder response = new StringBuilder();
+                String line;
+                while ((line = in.readLine()) != null) response.append(line);
+                in.close();
+                con.disconnect();
+
+                return extractCitiesFromJson(response.toString());
+            }
+        };
+
+        task.setOnSucceeded(e -> {
+            List<String> results = task.getValue();
+            Platform.runLater(() -> {
+                if (results == null || results.isEmpty()) {
+                    suggestionsMenu.hide();
+                    return;
+                }
+                suggestionsMenu.getItems().clear();
+                for (String place : results) {
+                    MenuItem item = new MenuItem(place);
+                    item.setOnAction(ev -> {
+                        adresseField.setText(place);
+                        suggestionsMenu.hide();
+                    });
+                    suggestionsMenu.getItems().add(item);
+                }
+                suggestionsMenu.show(adresseField, Side.BOTTOM, 0, 0);
+            });
+        });
+
+        new Thread(task).start();
+    }
 }

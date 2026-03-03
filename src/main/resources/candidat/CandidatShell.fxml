@@ -15,8 +15,16 @@
     <!-- Left Sidebar -->
     <left>
         <VBox spacing="12" style="-fx-padding:22; -fx-background-color: linear-gradient(to bottom, #5b2b82, #3b1b57); -fx-pref-width:290;">
-            <Button layoutX="560" layoutY="10" onAction="#goProfil" prefHeight="30" prefWidth="30" style="-fx-background-color:transparent;                -fx-font-size:18px;                -fx-cursor:hand;" text="Profile" textFill="#0082ff" wrapText="true" />
-
+            <Button layoutX="560" layoutY="10" onAction="#goProfil"
+                    prefHeight="40" prefWidth="40"
+                    style="-fx-background-color:white;
+               -fx-background-radius:50;
+               -fx-border-color:#e9d8fd;
+               -fx-border-radius:50;
+               -fx-border-width:2;
+               -fx-cursor:hand;
+               -fx-effect:dropshadow(gaussian,rgba(91,43,130,0.2),6,0,0,2);"
+                    text="👤"/>
 
             <ImageView fitHeight="250" fitWidth="250" preserveRatio="true">
                 <image>
@@ -27,9 +35,9 @@
 
             <Separator style="-fx-opacity:0.35;" />
 
-            <Button alignment="CENTER" contentDisplay="CENTER" onAction="#goOffres" prefHeight="46.0" prefWidth="238.0" style="-fx-background-color: rgba(255,255,255,0.18); -fx-text-fill: white; -fx-background-radius: 14; -fx-padding: 14 14; -fx-font-weight: 900; -fx-font-size: 13;" text="📌 Offres d'emploi" textAlignment="CENTER" />
+            <Button alignment="CENTER" contentDisplay="CENTER"  prefHeight="46.0" prefWidth="238.0" style="-fx-background-color: rgba(255,255,255,0.18); -fx-text-fill: white; -fx-background-radius: 14; -fx-padding: 14 14; -fx-font-weight: 900; -fx-font-size: 13;" text="📌 Offres d'emploi" textAlignment="CENTER" />
 
-            <Button onAction="#goMesCandidatures" prefHeight="46.0" prefWidth="238.0" style="-fx-background-color: rgba(255,255,255,0.10); -fx-text-fill:white; -fx-background-radius:14; -fx-padding:14 14; -fx-font-weight:900; -fx-font-size:13;" text="🧾 Mes candidatures" />
+            <Button prefHeight="46.0" prefWidth="238.0" style="-fx-background-color: rgba(255,255,255,0.10); -fx-text-fill:white; -fx-background-radius:14; -fx-padding:14 14; -fx-font-weight:900; -fx-font-size:13;" text="🧾 Mes candidatures" />
 
             <Region VBox.vgrow="ALWAYS" />
 

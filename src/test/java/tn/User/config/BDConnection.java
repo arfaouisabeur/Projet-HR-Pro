@@ -1,4 +1,4 @@
-package tn.User.config;
+/*package tn.User.config;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -14,3 +14,5 @@ public class BDConnection {
         return DriverManager.getConnection(URL, USER, PASSWORD);
     }
 }
+
+ */

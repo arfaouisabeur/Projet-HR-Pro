@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.chart.*?>
+
+<ScrollPane xmlns="http://javafx.com/javafx/20"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="edu.RhPro.controllers.rh.StatsController"
+            fitToWidth="true"
+            style="-fx-background-color:#f3f0f7; -fx-background:#f3f0f7;"
+            prefHeight="700.0" prefWidth="900.0">
+
+    <content>
+        <VBox spacing="24" alignment="TOP_CENTER"
+              style="-fx-background-color:#f3f0f7; -fx-padding:32;"
+              prefWidth="900.0">
+
+            <!-- ── Header ── -->
+            <VBox alignment="CENTER" spacing="4"
+                  style="-fx-background-color:#5b2b82; -fx-background-radius:16;
+                         -fx-padding:24;
+                         -fx-effect:dropshadow(gaussian,rgba(91,43,130,0.3),12,0,0,4);">
+                <Label text="Statistiques RH"
+                       style="-fx-font-size:22px; -fx-font-weight:900; -fx-text-fill:white;"/>
+                <Label text="Vue d'ensemble des utilisateurs par role"
+                       style="-fx-font-size:12px; -fx-text-fill:rgba(255,255,255,0.75);"/>
+            </VBox>
+
+            <!-- ── Cards stats ── -->
+            <HBox spacing="16" alignment="CENTER">
+
+                <!-- Total -->
+                <VBox alignment="CENTER" spacing="6" prefWidth="180"
+                      style="-fx-background-color:white; -fx-background-radius:16;
+                             -fx-padding:24;
+                             -fx-effect:dropshadow(gaussian,rgba(0,0,0,0.08),10,0,0,3);">
+                    <Label text="Total"
+                           style="-fx-font-size:13px; -fx-text-fill:#6b7280; -fx-font-weight:bold;"/>
+                    <Label fx:id="totalLabel" text="0"
+                           style="-fx-font-size:42px; -fx-font-weight:900; -fx-text-fill:#111827;"/>
+                    <Label text="utilisateurs"
+                           style="-fx-font-size:11px; -fx-text-fill:#9ca3af;"/>
+                </VBox>
+
+                <!-- RH -->
+                <VBox alignment="CENTER" spacing="6" prefWidth="180"
+                      style="-fx-background-color:white; -fx-background-radius:16;
+                             -fx-padding:24; -fx-border-color:#e9d8fd;
+                             -fx-border-width:2; -fx-border-radius:16;
+                             -fx-effect:dropshadow(gaussian,rgba(91,43,130,0.15),10,0,0,3);">
+                    <Label text="RH"
+                           style="-fx-font-size:13px; -fx-text-fill:#5b2b82; -fx-font-weight:bold;"/>
+                    <Label fx:id="rhLabel" text="0"
+                           style="-fx-font-size:42px; -fx-font-weight:900; -fx-text-fill:#5b2b82;"/>
+                    <Label text="responsables RH"
+                           style="-fx-font-size:11px; -fx-text-fill:#9ca3af;"/>
+                </VBox>
+
+                <!-- Employes -->
+                <VBox alignment="CENTER" spacing="6" prefWidth="180"
+                      style="-fx-background-color:white; -fx-background-radius:16;
+                             -fx-padding:24; -fx-border-color:#bfdbfe;
+                             -fx-border-width:2; -fx-border-radius:16;
+                             -fx-effect:dropshadow(gaussian,rgba(44,123,229,0.15),10,0,0,3);">
+                    <Label text="Employes"
+                           style="-fx-font-size:13px; -fx-text-fill:#2c7be5; -fx-font-weight:bold;"/>
+                    <Label fx:id="employeLabel" text="0"
+                           style="-fx-font-size:42px; -fx-font-weight:900; -fx-text-fill:#2c7be5;"/>
+                    <Label text="employes actifs"
+                           style="-fx-font-size:11px; -fx-text-fill:#9ca3af;"/>
+                </VBox>
+
+                <!-- Candidats -->
+                <VBox alignment="CENTER" spacing="6" prefWidth="180"
+                      style="-fx-background-color:white; -fx-background-radius:16;
+                             -fx-padding:24; -fx-border-color:#fde68a;
+                             -fx-border-width:2; -fx-border-radius:16;
+                             -fx-effect:dropshadow(gaussian,rgba(245,158,11,0.15),10,0,0,3);">
+                    <Label text="Candidats"
+                           style="-fx-font-size:13px; -fx-text-fill:#d97706; -fx-font-weight:bold;"/>
+                    <Label fx:id="candidatLabel" text="0"
+                           style="-fx-font-size:42px; -fx-font-weight:900; -fx-text-fill:#d97706;"/>
+                    <Label text="candidats inscrits"
+                           style="-fx-font-size:11px; -fx-text-fill:#9ca3af;"/>
+                </VBox>
+
+            </HBox>
+
+            <!-- ── BarChart ── -->
+            <VBox spacing="12"
+                  style="-fx-background-color:white; -fx-background-radius:16;
+                         -fx-effect:dropshadow(gaussian,rgba(0,0,0,0.08),10,0,0,3);
+                         -fx-padding:24;">
+
+                <Label text="Repartition par role"
+                       style="-fx-font-size:15px; -fx-font-weight:800; -fx-text-fill:#5b2b82;"/>
+
+                <BarChart fx:id="barChart" prefHeight="350" animated="true"
+                          style="-fx-background-color:transparent;">
+                    <xAxis>
+                        <CategoryAxis fx:id="xAxis" label="Role"/>
+                    </xAxis>
+                    <yAxis>
+                        <NumberAxis fx:id="yAxis" label="Nombre" minorTickCount="1"/>
+                    </yAxis>
+                </BarChart>
+            </VBox>
+
+        </VBox>
+    </content>
+</ScrollPane>

@@ -1,0 +1,285 @@
+#
+# There is insufficient memory for the Java Runtime Environment to continue.
+# Native memory allocation (mmap) failed to map 4063232 bytes. Error detail: G1 virtual space
+# Possible reasons:
+#   The system is out of physical RAM or swap space
+#   This process is running with CompressedOops enabled, and the Java Heap may be blocking the growth of the native heap
+# Possible solutions:
+#   Reduce memory load on the system
+#   Increase physical memory or swap space
+#   Check if swap backing store is full
+#   Decrease Java heap size (-Xmx/-Xms)
+#   Decrease number of Java threads
+#   Decrease Java thread stack sizes (-Xss)
+#   Set larger code cache with -XX:ReservedCodeCacheSize=
+#   JVM is running with Zero Based Compressed Oops mode in which the Java heap is
+#     placed in the first 32GB address space. The Java Heap base address is the
+#     maximum limit for the native heap growth. Please use -XX:HeapBaseMinAddress
+#     to set the Java Heap base and to place the Java Heap above 32GB virtual address.
+# This output file may be truncated or incomplete.
+#
+#  Out of Memory Error (os_windows.cpp:3830), pid=3020, tid=19732
+#
+# JRE version:  (17.0.14+1) (build )
+# Java VM: OpenJDK 64-Bit Server VM (17.0.14+1-b1367.22, mixed mode, sharing, tiered, compressed oops, compressed class ptrs, g1 gc, windows-amd64)
+# No core dump will be written. Minidumps are not enabled by default on client versions of Windows
+#
+
+---------------  S U M M A R Y ------------
+
+Command Line: --module-path=C:\Users\Boudour\.m2\repository\org\openjfx\javafx-base\20.0.2\javafx-base-20.0.2-win.jar;C:\Users\Boudour\.m2\repository\org\openjfx\javafx-base\20.0.2\javafx-base-20.0.2.jar;C:\Users\Boudour\.m2\repository\org\openjfx\javafx-controls\20.0.2\javafx-controls-20.0.2-win.jar;C:\Users\Boudour\.m2\repository\org\openjfx\javafx-controls\20.0.2\javafx-controls-20.0.2.jar;C:\Users\Boudour\.m2\repository\org\openjfx\javafx-fxml\20.0.2\javafx-fxml-20.0.2-win.jar;C:\Users\Boudour\.m2\repository\org\openjfx\javafx-fxml\20.0.2\javafx-fxml-20.0.2.jar;C:\Users\Boudour\.m2\repository\org\openjfx\javafx-graphics\20.0.2\javafx-graphics-20.0.2-win.jar;C:\Users\Boudour\.m2\repository\org\openjfx\javafx-graphics\20.0.2\javafx-graphics-20.0.2.jar;C:\Users\Boudour\.m2\repository\org\openjfx\javafx-swing\21\javafx-swing-21-win.jar;C:\Users\Boudour\.m2\repository\org\openjfx\javafx-swing\21\javafx-swing-21.jar --add-modules=javafx.base,javafx.controls,javafx.fxml,javafx.graphics,javafx.swing edu.RhPro.controllers.Home
+
+Host: AMD Ryzen 7 5800H with Radeon Graphics         , 16 cores, 15G,  Windows 11 , 64 bit Build 26100 (10.0.26100.7705)
+Time: Mon Mar  2 23:36:10 2026 Pacific Standard Time elapsed time: 0.048708 seconds (0d 0h 0m 0s)
+
+---------------  T H R E A D  ---------------
+
+Current thread (0x0000015e4d27d7f0):  JavaThread "Unknown thread" [_thread_in_vm, id=19732, stack(0x0000002638c00000,0x0000002638d00000)]
+
+Stack: [0x0000002638c00000,0x0000002638d00000]
+Native frames: (J=compiled Java code, j=interpreted, Vv=VM code, C=native code)
+V  [jvm.dll+0x68b969]  os::platform_print_native_stack+0xd9  (os_windows_x86.cpp:235)
+V  [jvm.dll+0x84572a]  VMError::report+0xc6a  (vmError.cpp:868)
+V  [jvm.dll+0x8473ae]  VMError::report_and_die+0x78e  (vmError.cpp:1766)
+V  [jvm.dll+0x847a13]  VMError::report_and_die+0x43  (vmError.cpp:1552)
+V  [jvm.dll+0x24a83f]  report_vm_out_of_memory+0x8f  (debug.cpp:321)
+V  [jvm.dll+0x688629]  os::pd_commit_memory_or_exit+0xc9  (os_windows.cpp:3838)
+V  [jvm.dll+0x67cf3a]  os::commit_memory_or_exit+0x2a  (os.cpp:1768)
+V  [jvm.dll+0x30b83b]  G1PageBasedVirtualSpace::commit+0x19b  (g1PageBasedVirtualSpace.cpp:204)
+V  [jvm.dll+0x312d26]  G1RegionsLargerThanCommitSizeMapper::commit_regions+0x96  (g1RegionToSpaceMapper.cpp:100)
+V  [jvm.dll+0x363128]  HeapRegionManager::expand_any+0x118  (heapRegionManager.cpp:363)
+V  [jvm.dll+0x36333f]  HeapRegionManager::expand_by+0x7f  (heapRegionManager.cpp:380)
+V  [jvm.dll+0x2e18cc]  G1CollectedHeap::expand+0xbc  (g1CollectedHeap.cpp:1292)
+V  [jvm.dll+0x2e2824]  G1CollectedHeap::initialize+0x664  (g1CollectedHeap.cpp:1713)
+V  [jvm.dll+0x815ffb]  universe_init+0xbb  (universe.cpp:737)
+V  [jvm.dll+0x370e88]  init_globals+0x48  (init.cpp:131)
+V  [jvm.dll+0x7f4875]  Threads::create_vm+0x5e5  (thread.cpp:2909)
+V  [jvm.dll+0x3f54ef]  JNI_CreateJavaVM_inner+0x8f  (jni.cpp:3654)
+V  [jvm.dll+0x3f70c1]  JNI_CreateJavaVM+0x11  (jni.cpp:3746)
+C  [jli.dll+0x52ab]  JavaMain+0x113  (java.c:413)
+C  [ucrtbase.dll+0x37b0]
+C  [KERNEL32.DLL+0x2e8d7]
+C  [ntdll.dll+0x8c40c]
+
+
+---------------  P R O C E S S  ---------------
+
+Threads class SMR info:
+_java_thread_list=0x00007ffd40919018, length=0, elements={
+}
+
+Java Threads: ( => current thread )
+
+Other Threads:
+  0x0000015e4d2ec8d0 GCTaskThread "GC Thread#0" [stack: 0x0000002638d00000,0x0000002638e00000] [id=23228]
+  0x0000015e4d2fcf00 ConcurrentGCThread "G1 Main Marker" [stack: 0x0000002638e00000,0x0000002638f00000] [id=30284]
+  0x0000015e4d2fe390 ConcurrentGCThread "G1 Conc#0" [stack: 0x0000002638f00000,0x0000002639000000] [id=34504]
+
+[error occurred during error reporting (printing all threads), id 0xc0000005, EXCEPTION_ACCESS_VIOLATION (0xc0000005) at pc=0x00007ffd400c2197]
+
+VM state: not at safepoint (not fully initialized)
+
+VM Mutex/Monitor currently owned by a thread:  ([mutex/lock_event])
+[0x0000015e4d279990] Heap_lock - owner thread: 0x0000015e4d27d7f0
+
+Heap address: 0x0000000709800000, size: 3944 MB, Compressed Oops mode: Zero based, Oop shift amount: 3
+
+CDS archive(s) mapped at: [0x0000000000000000-0x0000000000000000-0x0000000000000000), size 0, SharedBaseAddress: 0x0000000800000000, ArchiveRelocationMode: 1.
+Narrow klass base: 0x0000000000000000, Narrow klass shift: 0, Narrow klass range: 0x0
+
+GC Precious Log:
+<Empty>
+
+Heap:
+ garbage-first heap   total 0K, used 0K [0x0000000709800000, 0x0000000800000000)
+  region size 2048K, 0 young (0K), 0 survivors (0K)
+ Metaspace       used 0K, committed 0K, reserved 0K
+  class space    used 0K, committed 0K, reserved 0K
+
+Heap Regions: E=young(eden), S=young(survivor), O=old, HS=humongous(starts), HC=humongous(continues), CS=collection set, F=free, OA=open archive, CA=closed archive, TAMS=top-at-mark-start (previous, next)
+
+Card table byte_map: [0x0000015e627d0000,0x0000015e62f90000] _byte_map_base: 0x0000015e5ef84000
+
+Marking Bits (Prev, Next): (CMBitMap*) 0x0000015e4d2ecdf0, (CMBitMap*) 0x0000015e4d2ece30
+ Prev Bits: [0x0000015e63750000, 0x0000015e674f0000)
+ Next Bits: [0x0000015e674f0000, 0x0000015e6b290000)
+
+GC Heap History (0 events):
+No events
+
+Dll operation events (1 events):
+Event: 0.013 Loaded shared library C:\Users\Boudour\.jdks\jbr-17.0.14\bin\java.dll
+
+Deoptimization events (0 events):
+No events
+
+Classes loaded (0 events):
+No events
+
+Classes unloaded (0 events):
+No events
+
+Classes redefined (0 events):
+No events
+
+Internal exceptions (0 events):
+No events
+
+VM Operations (0 events):
+No events
+
+Memory protections (0 events):
+No events
+
+Nmethod flushes (0 events):
+No events
+
+Events (0 events):
+No events
+
+
+Dynamic libraries:
+0x00007ff6ca690000 - 0x00007ff6ca69a000 	C:\Users\Boudour\.jdks\jbr-17.0.14\bin\java.exe
+0x00007ffde9d20000 - 0x00007ffde9f88000 	C:\WINDOWS\SYSTEM32\ntdll.dll
+0x00007ffde8de0000 - 0x00007ffde8ea9000 	C:\WINDOWS\System32\KERNEL32.DLL
+0x00007ffde7630000 - 0x00007ffde7a21000 	C:\WINDOWS\System32\KERNELBASE.dll
+0x00007ffde7430000 - 0x00007ffde757b000 	C:\WINDOWS\System32\ucrtbase.dll
+0x00007ffdd8b40000 - 0x00007ffdd8b57000 	C:\Users\Boudour\.jdks\jbr-17.0.14\bin\jli.dll
+0x00007ffdd8ac0000 - 0x00007ffdd8adb000 	C:\Users\Boudour\.jdks\jbr-17.0.14\bin\VCRUNTIME140.dll
+0x00007ffde9790000 - 0x00007ffde9956000 	C:\WINDOWS\System32\USER32.dll
+0x00007ffde6a20000 - 0x00007ffde6a47000 	C:\WINDOWS\System32\win32u.dll
+0x00007ffdd4c00000 - 0x00007ffdd4e93000 	C:\WINDOWS\WinSxS\amd64_microsoft.windows.common-controls_6595b64144ccf1df_6.0.26100.7824_none_3e0870b2e3345462\COMCTL32.dll
+0x00007ffde8db0000 - 0x00007ffde8ddb000 	C:\WINDOWS\System32\GDI32.dll
+0x00007ffde95a0000 - 0x00007ffde9649000 	C:\WINDOWS\System32\msvcrt.dll
+0x00007ffde6770000 - 0x00007ffde689b000 	C:\WINDOWS\System32\gdi32full.dll
+0x00007ffde6600000 - 0x00007ffde66a3000 	C:\WINDOWS\System32\msvcp_win.dll
+0x00007ffde8eb0000 - 0x00007ffde8ee1000 	C:\WINDOWS\System32\IMM32.DLL
+0x00007ffde4700000 - 0x00007ffde470c000 	C:\Users\Boudour\.jdks\jbr-17.0.14\bin\vcruntime140_1.dll
+0x00007ffdca980000 - 0x00007ffdcaa0d000 	C:\Users\Boudour\.jdks\jbr-17.0.14\bin\msvcp140.dll
+0x00007ffd3fdd0000 - 0x00007ffd40a5e000 	C:\Users\Boudour\.jdks\jbr-17.0.14\bin\server\jvm.dll
+0x00007ffde9c20000 - 0x00007ffde9cd4000 	C:\WINDOWS\System32\ADVAPI32.dll
+0x00007ffde9960000 - 0x00007ffde9a06000 	C:\WINDOWS\System32\sechost.dll
+0x00007ffde9670000 - 0x00007ffde9788000 	C:\WINDOWS\System32\RPCRT4.dll
+0x00007ffde92d0000 - 0x00007ffde9344000 	C:\WINDOWS\System32\WS2_32.dll
+0x00007ffde6460000 - 0x00007ffde64be000 	C:\WINDOWS\SYSTEM32\POWRPROF.dll
+0x00007ffddc0f0000 - 0x00007ffddc0fb000 	C:\WINDOWS\SYSTEM32\VERSION.dll
+0x00007ffddbb10000 - 0x00007ffddbb45000 	C:\WINDOWS\SYSTEM32\WINMM.dll
+0x00007ffde6440000 - 0x00007ffde6454000 	C:\WINDOWS\SYSTEM32\UMPDC.dll
+0x00007ffde53a0000 - 0x00007ffde53bb000 	C:\WINDOWS\SYSTEM32\kernel.appcore.dll
+0x00007ffddf880000 - 0x00007ffddf88a000 	C:\Users\Boudour\.jdks\jbr-17.0.14\bin\jimage.dll
+0x00007ffde4730000 - 0x00007ffde4972000 	C:\WINDOWS\SYSTEM32\DBGHELP.DLL
+0x00007ffde8270000 - 0x00007ffde85f6000 	C:\WINDOWS\System32\combase.dll
+0x00007ffde94c0000 - 0x00007ffde9597000 	C:\WINDOWS\System32\OLEAUT32.dll
+0x00007ffdca3d0000 - 0x00007ffdca40b000 	C:\WINDOWS\SYSTEM32\dbgcore.DLL
+0x00007ffde7580000 - 0x00007ffde7625000 	C:\WINDOWS\System32\bcryptPrimitives.dll
+0x00007ffdd4470000 - 0x00007ffdd4495000 	C:\Users\Boudour\.jdks\jbr-17.0.14\bin\java.dll
+
+dbghelp: loaded successfully - version: 4.0.5 - missing functions: none
+symbol engine: initialized successfully - sym options: 0x614 - pdb path: .;C:\Users\Boudour\.jdks\jbr-17.0.14\bin;C:\WINDOWS\SYSTEM32;C:\WINDOWS\WinSxS\amd64_microsoft.windows.common-controls_6595b64144ccf1df_6.0.26100.7824_none_3e0870b2e3345462;C:\Users\Boudour\.jdks\jbr-17.0.14\bin\server
+
+VM Arguments:
+jvm_args: --module-path=C:\Users\Boudour\.m2\repository\org\openjfx\javafx-base\20.0.2\javafx-base-20.0.2-win.jar;C:\Users\Boudour\.m2\repository\org\openjfx\javafx-base\20.0.2\javafx-base-20.0.2.jar;C:\Users\Boudour\.m2\repository\org\openjfx\javafx-controls\20.0.2\javafx-controls-20.0.2-win.jar;C:\Users\Boudour\.m2\repository\org\openjfx\javafx-controls\20.0.2\javafx-controls-20.0.2.jar;C:\Users\Boudour\.m2\repository\org\openjfx\javafx-fxml\20.0.2\javafx-fxml-20.0.2-win.jar;C:\Users\Boudour\.m2\repository\org\openjfx\javafx-fxml\20.0.2\javafx-fxml-20.0.2.jar;C:\Users\Boudour\.m2\repository\org\openjfx\javafx-graphics\20.0.2\javafx-graphics-20.0.2-win.jar;C:\Users\Boudour\.m2\repository\org\openjfx\javafx-graphics\20.0.2\javafx-graphics-20.0.2.jar;C:\Users\Boudour\.m2\repository\org\openjfx\javafx-swing\21\javafx-swing-21-win.jar;C:\Users\Boudour\.m2\repository\org\openjfx\javafx-swing\21\javafx-swing-21.jar --add-modules=javafx.base,javafx.controls,javafx.fxml,javafx.graphics,javafx.swing 
+java_command: edu.RhPro.controllers.Home
+java_class_path (initial): C:\Users\Boudour\Desktop\USER\target\classes;C:\Users\Boudour\.m2\repository\ai\djl\api\0.24.0\api-0.24.0.jar;C:\Users\Boudour\.m2\repository\ai\djl\pytorch\pytorch-engine\0.24.0\pytorch-engine-0.24.0.jar;C:\Users\Boudour\.m2\repository\ai\djl\pytorch\pytorch-model-zoo\0.24.0\pytorch-model-zoo-0.24.0.jar;C:\Users\Boudour\.m2\repository\com\beust\jcommander\1.82\jcommander-1.82.jar;C:\Users\Boudour\.m2\repository\com\github\jai-imageio\jai-imageio-core\1.4.0\jai-imageio-core-1.4.0.jar;C:\Users\Boudour\.m2\repository\com\google\code\gson\gson\2.10.1\gson-2.10.1.jar;C:\Users\Boudour\.m2\repository\com\google\protobuf\protobuf-java\3.11.4\protobuf-java-3.11.4.jar;C:\Users\Boudour\.m2\repository\com\google\zxing\core\3.5.1\core-3.5.1.jar;C:\Users\Boudour\.m2\repository\com\google\zxing\javase\3.5.1\javase-3.5.1.jar;C:\Users\Boudour\.m2\repository\com\h2database\h2\2.2.224\h2-2.2.224.jar;C:\Users\Boudour\.m2\repository\com\itextpdf\itextpdf\5.5.13.3\itextpdf-5.5.13.3.jar;C:\Users\Boudour\.m2\repository\com\squareup\okhttp3\okhttp\4.11.0\okhttp-4.11.0.jar;C:\Users\Boudour\.m2\repository\com\squareup\okio\okio\3.2.0\okio-3.2.0.jar;C:\Users\Boudour\.m2\repository\com\squareup\okio\okio-jvm\3.2.0\okio-jvm-3.2.0.jar;C:\Users\Boudour\.m2\repository\com\sun\activation\jakarta.activation\2.0.1\jakarta.activation-2.0.1.jar;C:\Users\Boudour\.m2\repository\com\sun\mail\jakarta.mail\2.0.1\jakarta.mail-2.0.1.jar;C:\Users\Boudour\.m2\repository\mysql\mysql-connector-java\8.0.26\mysql-connector-java-8.0.26.jar;C:\Users\Boudour\.m2\repository\net\java\dev\jna\jna\5.13.0\jna-5.13.0.jar;C:\Users\Boudour\.m2\repository\org\apache\commons\commons-compress\1.23.0\commons-compress-1.23.0.jar;C:\Users\Boudour\.m2\repository\org\controlsfx\controlsfx\11.2.1\controlsfx-11.2.1.jar;C:\Users\Boudour\.m2\repository\org\jetbrains\annotations\13.0\annotations-13.0.jar;C:\Users\Boudour\.m2\repository\org\jetbrains\kotlin\kotlin-stdlib\1.6.20\kotlin-stdlib-1.6.20.jar;C:\Users
+Launcher Type: SUN_STANDARD
+
+[Global flags]
+     intx CICompilerCount                          = 12                                        {product} {ergonomic}
+     uint ConcGCThreads                            = 3                                         {product} {ergonomic}
+     uint G1ConcRefinementThreads                  = 13                                        {product} {ergonomic}
+   size_t G1HeapRegionSize                         = 2097152                                   {product} {ergonomic}
+    uintx GCDrainStackTargetSize                   = 64                                        {product} {ergonomic}
+   size_t InitialHeapSize                          = 260046848                                 {product} {ergonomic}
+   size_t MarkStackSize                            = 4194304                                   {product} {ergonomic}
+   size_t MaxHeapSize                              = 4135583744                                {product} {ergonomic}
+   size_t MinHeapDeltaBytes                        = 2097152                                   {product} {ergonomic}
+   size_t MinHeapSize                              = 8388608                                   {product} {ergonomic}
+    uintx NonNMethodCodeHeapSize                   = 7602480                                {pd product} {ergonomic}
+    uintx NonProfiledCodeHeapSize                  = 122027880                              {pd product} {ergonomic}
+    uintx ProfiledCodeHeapSize                     = 122027880                              {pd product} {ergonomic}
+    uintx ReservedCodeCacheSize                    = 251658240                              {pd product} {ergonomic}
+     bool SegmentedCodeCache                       = true                                      {product} {ergonomic}
+   size_t SoftMaxHeapSize                          = 4135583744                             {manageable} {ergonomic}
+     bool UseCompressedClassPointers               = true                           {product lp64_product} {ergonomic}
+     bool UseCompressedOops                        = true                           {product lp64_product} {ergonomic}
+     bool UseG1GC                                  = true                                      {product} {ergonomic}
+     bool UseLargePagesIndividualAllocation        = false                                  {pd product} {ergonomic}
+
+Logging:
+Log output configuration:
+ #0: stdout all=warning uptime,level,tags
+ #1: stderr all=off uptime,level,tags
+
+Environment Variables:
+JAVA_HOME=C:\Users\Boudour\.jdks\jbr-17.0.14
+PATH=C:\Program Files (x86)\VMware\VMware Workstation\bin\;C:\Program Files\Java\jdk-17\bin;C:\Program Files\Common Files\Oracle\Java\javapath;C:\oraclexe\app\oracle\product\11.2.0\server\bin;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C;C:\instantClient;C:\oraclexe\app\oracle\admin\XE;C:\oraclexe;C:\Program Files\Git\cmd;C:\xampp\php;C:\composer;C:\Users\Boudour\scoop\shims;C:\Users\Boudour\AppData\Local\Microsoft\WindowsApps;C:\Users\Boudour\AppData\Local\Programs\Microsoft VS Code\bin;C:\Users\Boudour\Desktop\cursor\resources\app\bin;C:\Users\Boudour\AppData\Roaming\Composer\vendor\bin;C:\Users\Boudour\AppData\Local\ComposerSetup\bin
+USERNAME=Boudour
+OS=Windows_NT
+PROCESSOR_IDENTIFIER=AMD64 Family 25 Model 80 Stepping 0, AuthenticAMD
+TMP=C:\Users\Boudour\AppData\Local\Temp
+TEMP=C:\Users\Boudour\AppData\Local\Temp
+
+
+
+Periodic native trim disabled
+
+JNI global refs:
+JNI global refs: 0, weak refs: 0
+
+JNI global refs memory usage: 0, weak refs: 0
+
+Process memory usage:
+Resident Set Size: 52056K (0% of 16153336K total physical memory with 1561044K free physical memory)
+
+OOME stack traces (most recent first):
+Classloader memory used:
+
+
+---------------  S Y S T E M  ---------------
+
+OS:
+ Windows 11 , 64 bit Build 26100 (10.0.26100.7705)
+OS uptime: 6 days 1:44 hours
+
+CPU: total 16 (initial active 16) (16 cores per cpu, 2 threads per core) family 25 model 80 stepping 0 microcode 0xa50000c, cx8, cmov, fxsr, ht, mmx, 3dnowpref, sse, sse2, sse3, ssse3, sse4a, sse4.1, sse4.2, popcnt, lzcnt, tsc, tscinvbit, avx, avx2, aes, erms, clmul, bmi1, bmi2, adx, sha, fma, vzeroupper, clflush, clflushopt
+Processor Information for processor 0
+  Max Mhz: 3201, Current Mhz: 1802, Mhz Limit: 3201
+Processor Information for processor 1
+  Max Mhz: 3201, Current Mhz: 1802, Mhz Limit: 3201
+Processor Information for processor 2
+  Max Mhz: 3201, Current Mhz: 1882, Mhz Limit: 3201
+Processor Information for processor 3
+  Max Mhz: 3201, Current Mhz: 1802, Mhz Limit: 3201
+Processor Information for processor 4
+  Max Mhz: 3201, Current Mhz: 1802, Mhz Limit: 3201
+Processor Information for processor 5
+  Max Mhz: 3201, Current Mhz: 1882, Mhz Limit: 3201
+Processor Information for processor 6
+  Max Mhz: 3201, Current Mhz: 1802, Mhz Limit: 3201
+Processor Information for processor 7
+  Max Mhz: 3201, Current Mhz: 1802, Mhz Limit: 3201
+Processor Information for processor 8
+  Max Mhz: 3201, Current Mhz: 1802, Mhz Limit: 3201
+Processor Information for processor 9
+  Max Mhz: 3201, Current Mhz: 1882, Mhz Limit: 3201
+Processor Information for processor 10
+  Max Mhz: 3201, Current Mhz: 1802, Mhz Limit: 3201
+Processor Information for processor 11
+  Max Mhz: 3201, Current Mhz: 1802, Mhz Limit: 3201
+Processor Information for processor 12
+  Max Mhz: 3201, Current Mhz: 1802, Mhz Limit: 3201
+Processor Information for processor 13
+  Max Mhz: 3201, Current Mhz: 1882, Mhz Limit: 3201
+Processor Information for processor 14
+  Max Mhz: 3201, Current Mhz: 1802, Mhz Limit: 3201
+Processor Information for processor 15
+  Max Mhz: 3201, Current Mhz: 1802, Mhz Limit: 3201
+
+Memory: 4k page, system-wide physical 15774M (1524M free)
+TotalPageFile size 28539M (AvailPageFile size 561M)
+current process WorkingSet (physical memory assigned to process): 50M, peak: 50M
+current process commit charge ("private bytes"): 361M, peak: 361M
+
+vm_info: OpenJDK 64-Bit Server VM (17.0.14+1-b1367.22) for windows-amd64 JRE (17.0.14+1-b1367.22), built on 2025-01-30 by "builduser" with MS VC++ 16.10 / 16.11 (VS2019)
+
+END.

@@ -3,7 +3,7 @@ package edu.RhPro.entities;
 import java.time.LocalDate;
 
 public class Employe extends User {
-
+    private int userId;
     private String matricule;
     private String position;
     private LocalDate dateEmbauche;
@@ -20,6 +20,10 @@ public class Employe extends User {
         this.position = position;
         this.dateEmbauche = dateEmbauche;
     }
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
+
 
     public String getMatricule() { return matricule; }
     public void setMatricule(String matricule) { this.matricule = matricule; }

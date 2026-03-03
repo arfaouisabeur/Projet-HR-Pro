@@ -1,4 +1,6 @@
 package edu.RhPro.controllers.candidat;
+import edu.RhPro.controllers.candidat.ProfilCondidatController;
+
 
 import edu.RhPro.entities.User;
 import edu.RhPro.utils.Router;
@@ -29,7 +31,9 @@ public class CandidatShellController {
         userLabel.setText(u.getPrenom() + " " + u.getNom());
 
 
-        loadPage("/candidat/OffresView.fxml");
+        loadPage("/candidat/ProfilCandidat.fxml");
+
+
     }
 
     private void loadPage(String fxml) {
@@ -40,7 +44,7 @@ public class CandidatShellController {
             e.printStackTrace();
         }
     }
-
+/*
     @FXML public void goOffres() { loadPage("/candidat/OffresView.fxml"); }
     @FXML public void goMesCandidatures() { loadPage("/candidat/MesCandidaturesView.fxml"); }
 
@@ -49,6 +53,8 @@ public class CandidatShellController {
         // For now: reload offers. Later we’ll wire actual filtering.
         loadPage("/candidat/OffresView.fxml");
     }
+    */
+
 
     @FXML
     public void logout() {
@@ -60,15 +66,16 @@ public class CandidatShellController {
     @FXML
     private void goProfil() {
         try {
-
             FXMLLoader loader = new FXMLLoader(
                     getClass().getResource("/candidat/ProfilCandidat.fxml")
             );
-
             Parent root = loader.load();
 
-            contentPane.getChildren().setAll(root);
+            // Récupère le contrôleur si besoin
+            ProfilCondidatController ctrl = loader.getController();
+            // ctrl.setUploadedFile(file); // si tu veux passer le fichier uploadé
 
+            contentPane.getChildren().setAll(root);
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -2,55 +2,127 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.image.ImageView?>
 
-<VBox xmlns="http://javafx.com/javafx/20"
-      xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="edu.RhPro.controllers.employe.ProfilEmployeController"
-      spacing="20"
-      alignment="TOP_CENTER"
-      style="-fx-background-color:white; -fx-padding:30;"
-      prefWidth="600"
-      prefHeight="500">
+<ScrollPane xmlns="http://javafx.com/javafx/20"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="edu.RhPro.controllers.employe.ProfilEmployeController"
+            fitToWidth="true"
+            style="-fx-background-color:#f3f0f7; -fx-background:#f3f0f7;"
+            prefHeight="650.0" prefWidth="650.0">
 
-    <!-- Affichage -->
-    <VBox spacing="10"
-          style="-fx-background-color:#f4f4f4; -fx-padding:20; -fx-background-radius:10;">
+    <content>
+        <VBox spacing="24" alignment="TOP_CENTER"
+              style="-fx-background-color:#f3f0f7; -fx-padding:32;"
+              prefWidth="650.0">
 
-        <Label text="👤 Informations Employé"
-               style="-fx-font-size:18px; -fx-font-weight:bold;" />
+            <!-- ── Header ── -->
+            <VBox alignment="CENTER" spacing="4"
+                  style="-fx-background-color:#5b2b82; -fx-background-radius:16;
+                         -fx-padding:24; -fx-effect:dropshadow(gaussian,rgba(91,43,130,0.3),12,0,0,4);">
+                <Label text="Mon Profil Employe"
+                       style="-fx-font-size:22px; -fx-font-weight:900; -fx-text-fill:white;"/>
+                <Label text="Gerer vos informations et votre QR Code"
+                       style="-fx-font-size:12px; -fx-text-fill:rgba(255,255,255,0.75);"/>
+            </VBox>
 
-        <GridPane hgap="10" vgap="10">
+            <!-- ── Informations actuelles ── -->
+            <VBox spacing="12"
+                  style="-fx-background-color:white; -fx-background-radius:16;
+                         -fx-effect:dropshadow(gaussian,rgba(0,0,0,0.08),10,0,0,3);
+                         -fx-padding:24;">
 
-            <Label text="Nom :" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
-            <Label fx:id="nomLabel" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+                <Label text="Informations actuelles"
+                       style="-fx-font-size:15px; -fx-font-weight:800; -fx-text-fill:#5b2b82;"/>
 
-            <Label text="Prénom :" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
-            <Label fx:id="prenomLabel" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+                <GridPane hgap="16" vgap="12">
+                    <Label text="Nom"    style="-fx-font-weight:700; -fx-text-fill:#374151; -fx-font-size:13px;"
+                           GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+                    <Label text="Prenom" style="-fx-font-weight:700; -fx-text-fill:#374151; -fx-font-size:13px;"
+                           GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+                    <Label text="Email"  style="-fx-font-weight:700; -fx-text-fill:#374151; -fx-font-size:13px;"
+                           GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+                    <Label text="Tel"    style="-fx-font-weight:700; -fx-text-fill:#374151; -fx-font-size:13px;"
+                           GridPane.rowIndex="3" GridPane.columnIndex="0"/>
 
-            <Label text="Email :" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
-            <Label fx:id="emailLabel" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+                    <Label fx:id="nomLabel"    style="-fx-text-fill:#6b7280; -fx-font-size:13px;"
+                           GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+                    <Label fx:id="prenomLabel" style="-fx-text-fill:#6b7280; -fx-font-size:13px;"
+                           GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+                    <Label fx:id="emailLabel"  style="-fx-text-fill:#6b7280; -fx-font-size:13px;"
+                           GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+                    <Label fx:id="telLabel"    style="-fx-text-fill:#6b7280; -fx-font-size:13px;"
+                           GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+                </GridPane>
+            </VBox>
 
-            <Label text="Téléphone :" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
-            <Label fx:id="telLabel" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+            <!-- ── Modifier informations ── -->
+            <VBox spacing="12"
+                  style="-fx-background-color:white; -fx-background-radius:16;
+                         -fx-effect:dropshadow(gaussian,rgba(0,0,0,0.08),10,0,0,3);
+                         -fx-padding:24;">
 
-        </GridPane>
-    </VBox>
+                <Label text="Modifier vos informations"
+                       style="-fx-font-size:15px; -fx-font-weight:800; -fx-text-fill:#5b2b82;"/>
 
-    <!-- Modification -->
-    <VBox spacing="10">
+                <TextField fx:id="nomField" promptText="Nom"
+                           style="-fx-background-radius:10; -fx-border-radius:10;
+                                  -fx-border-color:#e9d8fd; -fx-padding:10 14;
+                                  -fx-font-size:13px; -fx-border-width:1.5;"/>
+                <TextField fx:id="prenomField" promptText="Prenom"
+                           style="-fx-background-radius:10; -fx-border-radius:10;
+                                  -fx-border-color:#e9d8fd; -fx-padding:10 14;
+                                  -fx-font-size:13px; -fx-border-width:1.5;"/>
+                <TextField fx:id="emailField" promptText="Email"
+                           style="-fx-background-radius:10; -fx-border-radius:10;
+                                  -fx-border-color:#e9d8fd; -fx-padding:10 14;
+                                  -fx-font-size:13px; -fx-border-width:1.5;"/>
+                <TextField fx:id="telField" promptText="Telephone"
+                           style="-fx-background-radius:10; -fx-border-radius:10;
+                                  -fx-border-color:#e9d8fd; -fx-padding:10 14;
+                                  -fx-font-size:13px; -fx-border-width:1.5;"/>
 
-        <Label text="✏ Modifier vos informations"
-               style="-fx-font-size:16px; -fx-font-weight:bold;" />
+                <Button text="Enregistrer les modifications" onAction="#updateProfil"
+                        style="-fx-background-color:#5b2b82; -fx-text-fill:white;
+                               -fx-font-weight:bold; -fx-background-radius:10;
+                               -fx-padding:10 24; -fx-font-size:13px; -fx-cursor:hand;
+                               -fx-effect:dropshadow(gaussian,rgba(91,43,130,0.3),6,0,0,2);"/>
+            </VBox>
 
-        <TextField fx:id="nomField" promptText="Nom"/>
-        <TextField fx:id="prenomField" promptText="Prénom"/>
-        <TextField fx:id="emailField" promptText="Email"/>
-        <TextField fx:id="telField" promptText="Téléphone"/>
+            <!-- ── QR Code ── -->
+            <VBox spacing="16" alignment="CENTER"
+                  style="-fx-background-color:white; -fx-background-radius:16;
+                         -fx-effect:dropshadow(gaussian,rgba(0,0,0,0.08),10,0,0,3);
+                         -fx-padding:24;">
 
-        <Button text="💾 Enregistrer"
-                onAction="#updateProfil"
-                style="-fx-background-color:#2c7be5; -fx-text-fill:white; -fx-font-weight:bold;" />
+                <Label text="QR Code Employe"
+                       style="-fx-font-size:15px; -fx-font-weight:800; -fx-text-fill:#5b2b82;"/>
 
-    </VBox>
+                <Button text="Generer QR Code" onAction="#generateQR"
+                        style="-fx-background-color:linear-gradient(to right,#5b2b82,#7c3aed);
+                               -fx-text-fill:white; -fx-font-weight:bold;
+                               -fx-background-radius:24; -fx-padding:10 32;
+                               -fx-font-size:13px; -fx-cursor:hand;
+                               -fx-effect:dropshadow(gaussian,rgba(91,43,130,0.35),8,0,0,3);"/>
 
-</VBox>
+                <VBox alignment="CENTER"
+                      style="-fx-background-color:#f8f5ff; -fx-background-radius:12;
+                             -fx-border-color:#e9d8fd; -fx-border-radius:12;
+                             -fx-border-width:2; -fx-padding:16;">
+                    <ImageView fx:id="qrImageView" fitWidth="200" fitHeight="200" preserveRatio="true"/>
+                </VBox>
+
+                <Label fx:id="exportMsg" text=""
+                       style="-fx-font-size:12px; -fx-font-style:italic;"/>
+
+                <Button fx:id="btnExportPdf" text="Exporter QR en PDF"
+                        onAction="#exportQRtoPDF" disable="true"
+                        style="-fx-background-color:#e53e3e; -fx-text-fill:white;
+                               -fx-font-weight:bold; -fx-background-radius:10;
+                               -fx-padding:10 24; -fx-font-size:13px; -fx-cursor:hand;
+                               -fx-effect:dropshadow(gaussian,rgba(229,62,62,0.3),6,0,0,2);"/>
+            </VBox>
+
+        </VBox>
+    </content>
+</ScrollPane>

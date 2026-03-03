@@ -2,48 +2,179 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.image.ImageView?>
 
-<VBox xmlns="http://javafx.com/javafx/20"
-      xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="edu.RhPro.controllers.candidat.ProfilCondidatController"
-      spacing="20" alignment="TOP_CENTER"
-      style="-fx-background-color:white; -fx-padding:30; -fx-background-radius:20;"
-      prefHeight="500.0" prefWidth="600.0">
+<ScrollPane xmlns="http://javafx.com/javafx/20"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="edu.RhPro.controllers.candidat.ProfilCondidatController"
+            fitToWidth="true"
+            style="-fx-background-color:#f3f0f7; -fx-background: #f3f0f7;"
+            prefHeight="650.0" prefWidth="650.0">
 
-    <!-- Section Affichage -->
-    <VBox spacing="10" style="-fx-background-color:#f2f2f2; -fx-padding:20; -fx-background-radius:10; -fx-border-radius:10; -fx-border-color:#ddd;">
-        <Label text="👤 Vos informations actuelles" style="-fx-font-size:18px; -fx-font-weight:bold;" />
+    <content>
+        <VBox spacing="24" alignment="TOP_CENTER"
+              style="-fx-background-color:#f3f0f7; -fx-padding:32;"
+              prefWidth="650.0">
 
-        <GridPane hgap="10" vgap="10">
-            <Label text="Nom:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
-            <Label fx:id="nomLabel" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+            <!-- ── Header ── -->
+            <VBox alignment="CENTER" spacing="4"
+                  style="-fx-background-color:#5b2b82; -fx-background-radius:16;
+                         -fx-padding:24; -fx-effect:dropshadow(gaussian,rgba(91,43,130,0.3),12,0,0,4);">
+                <Label text="Mon Profil Candidat"
+                       style="-fx-font-size:22px; -fx-font-weight:900; -fx-text-fill:white;"/>
+                <Label text="Gerer votre avatar et vos informations"
+                       style="-fx-font-size:12px; -fx-text-fill:rgba(255,255,255,0.75);"/>
+            </VBox>
 
-            <Label text="Prénom:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
-            <Label fx:id="prenomLabel" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+            <!-- ── Zone Avatar ── -->
+            <VBox spacing="0"
+                  style="-fx-background-color:white; -fx-background-radius:16;
+                         -fx-effect:dropshadow(gaussian,rgba(0,0,0,0.08),10,0,0,3);
+                         -fx-padding:24;">
 
-            <Label text="Email:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
-            <Label fx:id="emailLabel" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+                <Label text="Avatar Anime"
+                       style="-fx-font-size:15px; -fx-font-weight:800;
+                              -fx-text-fill:#5b2b82; -fx-padding:0 0 16 0;"/>
 
-            <Label text="Téléphone:" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
-            <Label fx:id="telLabel" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+                <!-- Photos cote a cote -->
+                <HBox spacing="24" alignment="CENTER">
 
-            <Label text="Adresse:" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
-            <Label fx:id="adresseLabel" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
-        </GridPane>
-    </VBox>
+                    <!-- Photo originale -->
+                    <VBox spacing="8" alignment="CENTER"
+                          style="-fx-background-color:#f8f5ff; -fx-background-radius:12;
+                                 -fx-padding:16; -fx-border-color:#e9d8fd;
+                                 -fx-border-radius:12; -fx-border-width:1;">
+                        <Label text="Photo originale"
+                               style="-fx-font-size:11px; -fx-text-fill:#888; -fx-font-weight:bold;"/>
+                        <ImageView fx:id="imageViewOriginal"
+                                   fitWidth="180" fitHeight="180" preserveRatio="true"
+                                   style="-fx-effect:dropshadow(gaussian,rgba(0,0,0,0.1),6,0,0,2);"/>
+                        <Button text="Choisir une photo" onAction="#uploadImage"
+                                style="-fx-background-color:#5b2b82; -fx-text-fill:white;
+                                       -fx-background-radius:20; -fx-font-weight:bold;
+                                       -fx-padding:7 18; -fx-font-size:12px;
+                                       -fx-cursor:hand;"/>
+                    </VBox>
 
-    <!-- Section Modification -->
-    <VBox spacing="10" style="-fx-padding:20;">
-        <Label text="✏️ Modifier vos informations" style="-fx-font-size:18px; -fx-font-weight:bold;" />
+                    <!-- Fleche -->
+                    <Label text="→"
+                           style="-fx-font-size:28px; -fx-text-fill:#c4b5fd;"/>
 
-        <TextField fx:id="nomField" promptText="Nom"/>
-        <TextField fx:id="prenomField" promptText="Prénom"/>
-        <TextField fx:id="emailField" promptText="Email"/>
-        <TextField fx:id="telField" promptText="Téléphone"/>
-        <TextField fx:id="adresseField" promptText="Adresse"/>
+                    <!-- Avatar genere -->
+                    <VBox spacing="8" alignment="CENTER"
+                          style="-fx-background-color:#f0fdf4; -fx-background-radius:12;
+                                 -fx-padding:16; -fx-border-color:#86efac;
+                                 -fx-border-radius:12; -fx-border-width:1;">
+                        <Label text="Avatar Anime"
+                               style="-fx-font-size:11px; -fx-text-fill:#888; -fx-font-weight:bold;"/>
+                        <ImageView fx:id="imageViewAvatar"
+                                   fitWidth="180" fitHeight="180" preserveRatio="true"
+                                   style="-fx-effect:dropshadow(gaussian,rgba(0,0,0,0.1),6,0,0,2);"/>
+                        <Button fx:id="btnSaveAvatar" text="Sauvegarder"
+                                onAction="#saveAvatar" disable="true"
+                                style="-fx-background-color:#15803d; -fx-text-fill:white;
+                                       -fx-background-radius:20; -fx-font-weight:bold;
+                                       -fx-padding:7 18; -fx-font-size:12px;
+                                       -fx-cursor:hand;"/>
+                    </VBox>
+                </HBox>
 
-        <Button text="💾 Enregistrer" onAction="#updateProfil"
-                style="-fx-background-color:#5b2b82; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:10;" />
-    </VBox>
+                <!-- Bouton generer centré -->
+                <VBox alignment="CENTER" style="-fx-padding:16 0 4 0;">
+                    <Button text="Generer Avatar Anime" onAction="#generateAvatar"
+                            style="-fx-background-color:linear-gradient(to right, #5b2b82, #7c3aed);
+                                   -fx-text-fill:white; -fx-background-radius:24;
+                                   -fx-font-weight:bold; -fx-padding:10 32;
+                                   -fx-font-size:13px; -fx-cursor:hand;
+                                   -fx-effect:dropshadow(gaussian,rgba(91,43,130,0.35),8,0,0,3);"/>
+                </VBox>
 
-</VBox>
+                <!-- Status label -->
+                <Label fx:id="txtResult"
+                       style="-fx-font-size:12px; -fx-text-fill:#6b7280;
+                              -fx-font-style:italic; -fx-padding:4 0 0 0;"
+                       alignment="CENTER"/>
+            </VBox>
+
+            <!-- ── Informations actuelles ── -->
+            <VBox spacing="12"
+                  style="-fx-background-color:white; -fx-background-radius:16;
+                         -fx-effect:dropshadow(gaussian,rgba(0,0,0,0.08),10,0,0,3);
+                         -fx-padding:24;">
+
+                <Label text="Informations actuelles"
+                       style="-fx-font-size:15px; -fx-font-weight:800; -fx-text-fill:#5b2b82;"/>
+
+                <GridPane hgap="16" vgap="12">
+                    <!-- Labels clé -->
+                    <Label text="Nom"      style="-fx-font-weight:700; -fx-text-fill:#374151; -fx-font-size:13px;"
+                           GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+                    <Label text="Prenom"   style="-fx-font-weight:700; -fx-text-fill:#374151; -fx-font-size:13px;"
+                           GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+                    <Label text="Email"    style="-fx-font-weight:700; -fx-text-fill:#374151; -fx-font-size:13px;"
+                           GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+                    <Label text="Tel"      style="-fx-font-weight:700; -fx-text-fill:#374151; -fx-font-size:13px;"
+                           GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+                    <Label text="Adresse"  style="-fx-font-weight:700; -fx-text-fill:#374151; -fx-font-size:13px;"
+                           GridPane.rowIndex="4" GridPane.columnIndex="0"/>
+
+                    <!-- Labels valeurs -->
+                    <Label fx:id="nomLabel"
+                           style="-fx-text-fill:#6b7280; -fx-font-size:13px;"
+                           GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+                    <Label fx:id="prenomLabel"
+                           style="-fx-text-fill:#6b7280; -fx-font-size:13px;"
+                           GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+                    <Label fx:id="emailLabel"
+                           style="-fx-text-fill:#6b7280; -fx-font-size:13px;"
+                           GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+                    <Label fx:id="telLabel"
+                           style="-fx-text-fill:#6b7280; -fx-font-size:13px;"
+                           GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+                    <Label fx:id="adresseLabel"
+                           style="-fx-text-fill:#6b7280; -fx-font-size:13px;"
+                           GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+                </GridPane>
+            </VBox>
+
+            <!-- ── Modifier informations ── -->
+            <VBox spacing="12"
+                  style="-fx-background-color:white; -fx-background-radius:16;
+                         -fx-effect:dropshadow(gaussian,rgba(0,0,0,0.08),10,0,0,3);
+                         -fx-padding:24;">
+
+                <Label text="Modifier vos informations"
+                       style="-fx-font-size:15px; -fx-font-weight:800; -fx-text-fill:#5b2b82;"/>
+
+                <TextField fx:id="nomField"     promptText="Nom"
+                           style="-fx-background-radius:10; -fx-border-radius:10;
+                                  -fx-border-color:#e9d8fd; -fx-padding:10 14;
+                                  -fx-font-size:13px; -fx-border-width:1.5;"/>
+                <TextField fx:id="prenomField"  promptText="Prenom"
+                           style="-fx-background-radius:10; -fx-border-radius:10;
+                                  -fx-border-color:#e9d8fd; -fx-padding:10 14;
+                                  -fx-font-size:13px; -fx-border-width:1.5;"/>
+                <TextField fx:id="emailField"   promptText="Email"
+                           style="-fx-background-radius:10; -fx-border-radius:10;
+                                  -fx-border-color:#e9d8fd; -fx-padding:10 14;
+                                  -fx-font-size:13px; -fx-border-width:1.5;"/>
+                <TextField fx:id="telField"     promptText="Telephone"
+                           style="-fx-background-radius:10; -fx-border-radius:10;
+                                  -fx-border-color:#e9d8fd; -fx-padding:10 14;
+                                  -fx-font-size:13px; -fx-border-width:1.5;"/>
+                <TextField fx:id="adresseField" promptText="Adresse"
+                           style="-fx-background-radius:10; -fx-border-radius:10;
+                                  -fx-border-color:#e9d8fd; -fx-padding:10 14;
+                                  -fx-font-size:13px; -fx-border-width:1.5;"/>
+
+                <Button text="Enregistrer les modifications" onAction="#updateProfil"
+                        style="-fx-background-color:#5b2b82; -fx-text-fill:white;
+                               -fx-font-weight:bold; -fx-background-radius:10;
+                               -fx-padding:10 24; -fx-font-size:13px;
+                               -fx-cursor:hand;
+                               -fx-effect:dropshadow(gaussian,rgba(91,43,130,0.3),6,0,0,2);"/>
+            </VBox>
+
+        </VBox>
+    </content>
+</ScrollPane>

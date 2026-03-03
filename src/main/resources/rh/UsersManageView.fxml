@@ -2,77 +2,294 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.chart.*?>
 
-<VBox xmlns="http://javafx.com/javafx/20" xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="edu.RhPro.controllers.rh.UsersManageController"
-      spacing="14">
+<ScrollPane xmlns="http://javafx.com/javafx/20"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="edu.RhPro.controllers.rh.UsersManageController"
+            fitToWidth="true"
+            style="-fx-background-color:#f3f0f7; -fx-background:#f3f0f7;"
+            prefHeight="700.0" prefWidth="900.0">
 
-    <Label text="Gestion des utilisateurs (acteurs)"
-           style="-fx-font-size:20px; -fx-font-weight:900; -fx-text-fill:#111827;"/>
+    <content>
+        <VBox spacing="20" alignment="TOP_CENTER"
+              style="-fx-background-color:#f3f0f7; -fx-padding:32;"
+              prefWidth="900.0">
 
-    <TableView fx:id="table" prefHeight="420"
-               style="-fx-background-color:white; -fx-background-radius:18; -fx-border-radius:18; -fx-border-color:#ececf5; -fx-padding:8;">
-        <columns>
-            <TableColumn fx:id="colId" text="ID" prefWidth="70"/>
-            <TableColumn fx:id="colNom" text="Nom" prefWidth="160"/>
-            <TableColumn fx:id="colPrenom" text="Prénom" prefWidth="160"/>
-            <TableColumn fx:id="colEmail" text="Email" prefWidth="240"/>
-            <TableColumn fx:id="colTel" text="Téléphone" prefWidth="140"/>
-            <TableColumn fx:id="colRole" text="Rôle" prefWidth="120"/>
-        </columns>
-    </TableView>
+            <!-- ── Header ── -->
+            <VBox alignment="CENTER" spacing="4"
+                  style="-fx-background-color:#5b2b82; -fx-background-radius:16;
+                         -fx-padding:24;
+                         -fx-effect:dropshadow(gaussian,rgba(91,43,130,0.3),12,0,0,4);">
+                <Label text="Gestion des Utilisateurs"
+                       style="-fx-font-size:22px; -fx-font-weight:900; -fx-text-fill:white;"/>
+                <Label text="Ajouter, modifier, supprimer et rechercher des utilisateurs"
+                       style="-fx-font-size:12px; -fx-text-fill:rgba(255,255,255,0.75);"/>
+            </VBox>
 
-    <HBox spacing="10">
-        <Button text="🔄 Rafraîchir" onAction="#refresh"
-                style="-fx-background-color:white; -fx-border-color:#ececf5; -fx-background-radius:14; -fx-border-radius:14; -fx-padding:12 14; -fx-font-weight:900;"/>
-        <Button text="🧹 Clear" onAction="#clearForm"
-                style="-fx-background-color:white; -fx-border-color:#ececf5; -fx-background-radius:14; -fx-border-radius:14; -fx-padding:12 14; -fx-font-weight:900;"/>
-        <Region HBox.hgrow="ALWAYS"/>
-        <Label fx:id="msgLabel" text="" style="-fx-text-fill:#6b7280;"/>
-    </HBox>
+            <!-- ── Barre recherche + tri ── -->
+            <VBox spacing="12"
+                  style="-fx-background-color:white; -fx-background-radius:16;
+                         -fx-effect:dropshadow(gaussian,rgba(0,0,0,0.08),10,0,0,3);
+                         -fx-padding:20;">
 
-    <Separator style="-fx-opacity:0.35;"/>
+                <Label text="Recherche et tri"
+                       style="-fx-font-size:14px; -fx-font-weight:800; -fx-text-fill:#5b2b82;"/>
 
-    <Label text="Ajouter / Modifier"
-           style="-fx-font-size:14px; -fx-font-weight:900; -fx-text-fill:#111827;"/>
+                <HBox spacing="12" alignment="CENTER_LEFT">
+                    <TextField fx:id="searchField"
+                               promptText="Rechercher par nom, email, role, ID..."
+                               prefWidth="340"
+                               style="-fx-background-radius:10; -fx-border-radius:10;
+                                      -fx-border-color:#e9d8fd; -fx-padding:10 14;
+                                      -fx-font-size:13px; -fx-border-width:1.5;"/>
 
-    <GridPane hgap="12" vgap="10">
-        <columnConstraints>
-            <ColumnConstraints prefWidth="160"/>
-            <ColumnConstraints hgrow="ALWAYS"/>
-            <ColumnConstraints prefWidth="160"/>
-            <ColumnConstraints hgrow="ALWAYS"/>
-        </columnConstraints>
+                    <Label text="Trier par :"
+                           style="-fx-font-weight:bold; -fx-text-fill:#374151; -fx-font-size:13px;"/>
 
-        <Label text="Nom"/>
-        <TextField fx:id="nomField" GridPane.columnIndex="1"/>
+                    <ComboBox fx:id="sortCombo" prefWidth="160"
+                              style="-fx-background-radius:10; -fx-border-radius:10;
+                                     -fx-border-color:#e9d8fd; -fx-font-size:13px;"/>
 
-        <Label text="Prénom" GridPane.columnIndex="2"/>
-        <TextField fx:id="prenomField" GridPane.columnIndex="3"/>
+                    <Region HBox.hgrow="ALWAYS"/>
 
-        <Label text="Email" GridPane.rowIndex="1"/>
-        <TextField fx:id="emailField" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+                    <Button text="Rafraichir" onAction="#refresh"
+                            style="-fx-background-color:#5b2b82; -fx-text-fill:white;
+                                   -fx-background-radius:10; -fx-padding:9 18;
+                                   -fx-font-weight:bold; -fx-cursor:hand;"/>
 
-        <Label text="Mot de passe" GridPane.rowIndex="1" GridPane.columnIndex="2"/>
-        <PasswordField fx:id="passwordField" GridPane.rowIndex="1" GridPane.columnIndex="3" promptText="laisser vide pour ne pas changer"/>
+                    <Button text="Exporter Excel" onAction="#exportExcel"
+                            style="-fx-background-color:#15803d; -fx-text-fill:white;
+                                   -fx-background-radius:10; -fx-padding:9 18;
+                                   -fx-font-weight:bold; -fx-cursor:hand;
+                                   -fx-effect:dropshadow(gaussian,rgba(21,128,61,0.3),6,0,0,2);"/>
+                </HBox>
 
-        <Label text="Téléphone" GridPane.rowIndex="2"/>
-        <TextField fx:id="telField" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+                <Label fx:id="msgLabel" text=""
+                       style="-fx-text-fill:#6b7280; -fx-font-size:12px; -fx-font-style:italic;"/>
+            </VBox>
 
-        <Label text="Adresse" GridPane.rowIndex="2" GridPane.columnIndex="2"/>
-        <TextField fx:id="adresseField" GridPane.rowIndex="2" GridPane.columnIndex="3"/>
+            <!-- ── Table ── -->
+            <VBox spacing="0"
+                  style="-fx-background-color:white; -fx-background-radius:16;
+                         -fx-effect:dropshadow(gaussian,rgba(0,0,0,0.08),10,0,0,3);
+                         -fx-padding:20;">
 
-        <Label text="Rôle" GridPane.rowIndex="3"/>
-        <ComboBox fx:id="roleCombo" GridPane.rowIndex="3" GridPane.columnIndex="1" promptText="RH / EMPLOYE / CANDIDAT"/>
-    </GridPane>
+                <Label text="Liste des utilisateurs"
+                       style="-fx-font-size:14px; -fx-font-weight:800;
+                              -fx-text-fill:#5b2b82; -fx-padding:0 0 12 0;"/>
 
-    <HBox spacing="10">
-        <Button text="➕ Ajouter" onAction="#add"
-                style="-fx-background-color:#111827; -fx-text-fill:white; -fx-background-radius:14; -fx-padding:12 14; -fx-font-weight:900;"/>
-        <Button text="✏️ Mettre à jour" onAction="#update"
-                style="-fx-background-color:white; -fx-border-color:#ececf5; -fx-background-radius:14; -fx-border-radius:14; -fx-padding:12 14; -fx-font-weight:900;"/>
-        <Button text="🗑️ Supprimer" onAction="#delete"
-                style="-fx-background-color:#b91c1c; -fx-text-fill:white; -fx-background-radius:14; -fx-padding:12 14; -fx-font-weight:900;"/>
-    </HBox>
+                <TableView fx:id="table" prefHeight="320"
+                           style="-fx-background-color:#faf8ff;
+                                  -fx-background-radius:12;
+                                  -fx-border-radius:12;
+                                  -fx-border-color:#e9d8fd;
+                                  -fx-border-width:1.5;">
+                    <columns>
+                        <TableColumn fx:id="colId"     text="ID"        prefWidth="60"/>
+                        <TableColumn fx:id="colNom"    text="Nom"       prefWidth="140"/>
+                        <TableColumn fx:id="colPrenom" text="Prenom"    prefWidth="140"/>
+                        <TableColumn fx:id="colEmail"  text="Email"     prefWidth="220"/>
+                        <TableColumn fx:id="colTel"    text="Telephone" prefWidth="130"/>
+                        <TableColumn fx:id="colRole"   text="Role"      prefWidth="110"/>
+                    </columns>
+                </TableView>
+            </VBox>
 
-</VBox>
+            <!-- ── Stats cards + BarChart ── -->
+            <VBox spacing="16"
+                  style="-fx-background-color:white; -fx-background-radius:16;
+                         -fx-effect:dropshadow(gaussian,rgba(0,0,0,0.08),10,0,0,3);
+                         -fx-padding:24;">
+
+                <Label text="Statistiques par role"
+                       style="-fx-font-size:14px; -fx-font-weight:800; -fx-text-fill:#5b2b82;"/>
+
+                <!-- Cards -->
+                <HBox spacing="16" alignment="CENTER">
+
+                    <!-- Total -->
+                    <VBox alignment="CENTER" spacing="4" prefWidth="160"
+                          style="-fx-background-color:#f3f0f7; -fx-background-radius:12;
+                                 -fx-padding:20;
+                                 -fx-effect:dropshadow(gaussian,rgba(0,0,0,0.05),6,0,0,2);">
+                        <Label text="TOTAL"
+                               style="-fx-font-size:11px; -fx-text-fill:#6b7280;
+                                      -fx-font-weight:bold;"/>
+                        <Label fx:id="totalLabel" text="0"
+                               style="-fx-font-size:38px; -fx-font-weight:900;
+                                      -fx-text-fill:#111827;"/>
+                        <Label text="utilisateurs"
+                               style="-fx-font-size:11px; -fx-text-fill:#9ca3af;"/>
+                    </VBox>
+
+                    <!-- RH -->
+                    <VBox alignment="CENTER" spacing="4" prefWidth="160"
+                          style="-fx-background-color:#f5f0ff; -fx-background-radius:12;
+                                 -fx-border-color:#e9d8fd; -fx-border-width:2;
+                                 -fx-border-radius:12; -fx-padding:20;
+                                 -fx-effect:dropshadow(gaussian,rgba(91,43,130,0.1),6,0,0,2);">
+                        <Label text="RH"
+                               style="-fx-font-size:11px; -fx-text-fill:#5b2b82;
+                                      -fx-font-weight:bold;"/>
+                        <Label fx:id="rhLabel" text="0"
+                               style="-fx-font-size:38px; -fx-font-weight:900;
+                                      -fx-text-fill:#5b2b82;"/>
+                        <Label text="responsables"
+                               style="-fx-font-size:11px; -fx-text-fill:#9ca3af;"/>
+                    </VBox>
+
+                    <!-- Employes -->
+                    <VBox alignment="CENTER" spacing="4" prefWidth="160"
+                          style="-fx-background-color:#eff6ff; -fx-background-radius:12;
+                                 -fx-border-color:#bfdbfe; -fx-border-width:2;
+                                 -fx-border-radius:12; -fx-padding:20;
+                                 -fx-effect:dropshadow(gaussian,rgba(44,123,229,0.1),6,0,0,2);">
+                        <Label text="EMPLOYES"
+                               style="-fx-font-size:11px; -fx-text-fill:#2c7be5;
+                                      -fx-font-weight:bold;"/>
+                        <Label fx:id="employeLabel" text="0"
+                               style="-fx-font-size:38px; -fx-font-weight:900;
+                                      -fx-text-fill:#2c7be5;"/>
+                        <Label text="employes actifs"
+                               style="-fx-font-size:11px; -fx-text-fill:#9ca3af;"/>
+                    </VBox>
+
+                    <!-- Candidats -->
+                    <VBox alignment="CENTER" spacing="4" prefWidth="160"
+                          style="-fx-background-color:#fffbeb; -fx-background-radius:12;
+                                 -fx-border-color:#fde68a; -fx-border-width:2;
+                                 -fx-border-radius:12; -fx-padding:20;
+                                 -fx-effect:dropshadow(gaussian,rgba(245,158,11,0.1),6,0,0,2);">
+                        <Label text="CANDIDATS"
+                               style="-fx-font-size:11px; -fx-text-fill:#d97706;
+                                      -fx-font-weight:bold;"/>
+                        <Label fx:id="candidatLabel" text="0"
+                               style="-fx-font-size:38px; -fx-font-weight:900;
+                                      -fx-text-fill:#d97706;"/>
+                        <Label text="candidats inscrits"
+                               style="-fx-font-size:11px; -fx-text-fill:#9ca3af;"/>
+                    </VBox>
+
+                </HBox>
+
+                <!-- BarChart -->
+                <BarChart fx:id="barChart" prefHeight="300" animated="true"
+                          style="-fx-background-color:transparent; -fx-padding:0;"
+                          legendVisible="false">
+                    <xAxis>
+                        <CategoryAxis fx:id="xAxis"
+                                      style="-fx-tick-label-font-size:13px;
+                                             -fx-font-weight:bold;"/>
+                    </xAxis>
+                    <yAxis>
+                        <NumberAxis fx:id="yAxis" minorTickCount="1"
+                                    label="Nombre d'utilisateurs"/>
+                    </yAxis>
+                </BarChart>
+
+            </VBox>
+
+            <!-- ── Formulaire ── -->
+            <VBox spacing="14"
+                  style="-fx-background-color:white; -fx-background-radius:16;
+                         -fx-effect:dropshadow(gaussian,rgba(0,0,0,0.08),10,0,0,3);
+                         -fx-padding:24;">
+
+                <Label text="Ajouter / Modifier un utilisateur"
+                       style="-fx-font-size:14px; -fx-font-weight:800; -fx-text-fill:#5b2b82;"/>
+
+                <GridPane hgap="14" vgap="12">
+                    <columnConstraints>
+                        <ColumnConstraints prefWidth="120"/>
+                        <ColumnConstraints hgrow="ALWAYS"/>
+                        <ColumnConstraints prefWidth="120"/>
+                        <ColumnConstraints hgrow="ALWAYS"/>
+                    </columnConstraints>
+
+                    <Label text="Nom" style="-fx-font-weight:700; -fx-text-fill:#374151;"
+                           GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+                    <TextField fx:id="nomField"
+                               style="-fx-background-radius:10; -fx-border-radius:10;
+                                      -fx-border-color:#e9d8fd; -fx-padding:9 12;
+                                      -fx-font-size:13px; -fx-border-width:1.5;"
+                               GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+
+                    <Label text="Prenom" style="-fx-font-weight:700; -fx-text-fill:#374151;"
+                           GridPane.rowIndex="0" GridPane.columnIndex="2"/>
+                    <TextField fx:id="prenomField"
+                               style="-fx-background-radius:10; -fx-border-radius:10;
+                                      -fx-border-color:#e9d8fd; -fx-padding:9 12;
+                                      -fx-font-size:13px; -fx-border-width:1.5;"
+                               GridPane.rowIndex="0" GridPane.columnIndex="3"/>
+
+                    <Label text="Email" style="-fx-font-weight:700; -fx-text-fill:#374151;"
+                           GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+                    <TextField fx:id="emailField"
+                               style="-fx-background-radius:10; -fx-border-radius:10;
+                                      -fx-border-color:#e9d8fd; -fx-padding:9 12;
+                                      -fx-font-size:13px; -fx-border-width:1.5;"
+                               GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+                    <Label text="Mot de passe" style="-fx-font-weight:700; -fx-text-fill:#374151;"
+                           GridPane.rowIndex="1" GridPane.columnIndex="2"/>
+                    <PasswordField fx:id="passwordField"
+                                   promptText="laisser vide pour ne pas changer"
+                                   style="-fx-background-radius:10; -fx-border-radius:10;
+                                          -fx-border-color:#e9d8fd; -fx-padding:9 12;
+                                          -fx-font-size:13px; -fx-border-width:1.5;"
+                                   GridPane.rowIndex="1" GridPane.columnIndex="3"/>
+
+                    <Label text="Telephone" style="-fx-font-weight:700; -fx-text-fill:#374151;"
+                           GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+                    <TextField fx:id="telField"
+                               style="-fx-background-radius:10; -fx-border-radius:10;
+                                      -fx-border-color:#e9d8fd; -fx-padding:9 12;
+                                      -fx-font-size:13px; -fx-border-width:1.5;"
+                               GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+
+                    <Label text="Adresse" style="-fx-font-weight:700; -fx-text-fill:#374151;"
+                           GridPane.rowIndex="2" GridPane.columnIndex="2"/>
+                    <TextField fx:id="adresseField"
+                               style="-fx-background-radius:10; -fx-border-radius:10;
+                                      -fx-border-color:#e9d8fd; -fx-padding:9 12;
+                                      -fx-font-size:13px; -fx-border-width:1.5;"
+                               GridPane.rowIndex="2" GridPane.columnIndex="3"/>
+
+                    <Label text="Role" style="-fx-font-weight:700; -fx-text-fill:#374151;"
+                           GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+                    <ComboBox fx:id="roleCombo"
+                              promptText="RH / EMPLOYE / CANDIDAT"
+                              prefWidth="200"
+                              style="-fx-background-radius:10; -fx-border-radius:10;
+                                     -fx-border-color:#e9d8fd; -fx-font-size:13px;"
+                              GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+                </GridPane>
+
+                <HBox spacing="12" style="-fx-padding:8 0 0 0;">
+                    <Button text="Ajouter" onAction="#add"
+                            style="-fx-background-color:#5b2b82; -fx-text-fill:white;
+                                   -fx-background-radius:10; -fx-padding:10 24;
+                                   -fx-font-weight:bold; -fx-font-size:13px; -fx-cursor:hand;
+                                   -fx-effect:dropshadow(gaussian,rgba(91,43,130,0.3),6,0,0,2);"/>
+                    <Button text="Mettre a jour" onAction="#update"
+                            style="-fx-background-color:white; -fx-text-fill:#5b2b82;
+                                   -fx-border-color:#e9d8fd; -fx-border-width:2;
+                                   -fx-background-radius:10; -fx-border-radius:10;
+                                   -fx-padding:10 24; -fx-font-weight:bold;
+                                   -fx-font-size:13px; -fx-cursor:hand;"/>
+                    <Button text="Supprimer" onAction="#delete"
+                            style="-fx-background-color:#b91c1c; -fx-text-fill:white;
+                                   -fx-background-radius:10; -fx-padding:10 24;
+                                   -fx-font-weight:bold; -fx-font-size:13px; -fx-cursor:hand;
+                                   -fx-effect:dropshadow(gaussian,rgba(185,28,28,0.3),6,0,0,2);"/>
+                    <Button text="Vider" onAction="#clearForm"
+                            style="-fx-background-color:#e5e7eb; -fx-text-fill:#374151;
+                                   -fx-background-radius:10; -fx-padding:10 24;
+                                   -fx-font-weight:bold; -fx-font-size:13px; -fx-cursor:hand;"/>
+                </HBox>
+            </VBox>
+
+        </VBox>
+    </content>
+</ScrollPane>
