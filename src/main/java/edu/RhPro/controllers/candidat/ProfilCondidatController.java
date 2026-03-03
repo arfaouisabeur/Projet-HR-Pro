@@ -151,9 +151,6 @@ public class ProfilCondidatController implements Initializable  {
 
 
 
-    private static final String HF_TOKEN = "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"; // ← colle ton token ici
-    private static final String API_URL = "https://api-inference.huggingface.co/models/bryandlee/animegan2-pytorch";// Mets ta clé ici
-
         @FXML
         private void uploadImage() {
             FileChooser fileChooser = new FileChooser();
