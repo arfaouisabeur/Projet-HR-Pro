@@ -23,7 +23,8 @@ import javafx.scene.chart.XYChart;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
-
+import javafx.stage.FileChooser;
+import java.io.File;
 public class OffresController {
 
     @FXML private TableView<offreEmploi> offreTable;
@@ -98,28 +99,48 @@ public class OffresController {
                 showAlert(Alert.AlertType.WARNING, "Offre", "Choisissez une offre.");
                 return;
             }
-
             long candidatId = Session.getCurrentUser().getId();
 
+            if (candidatureService.hasAlreadyApplied(candidatId, selected.getId())) {
+                showAlert(Alert.AlertType.WARNING, "Attention", "Vous avez déjà postulé à cette offre.");
+                return;
+            }
+
+            // 1) Choisir le CV (PDF)
+            FileChooser fc = new FileChooser();
+            fc.setTitle("Choisir votre CV (PDF)");
+            fc.getExtensionFilters().add(new FileChooser.ExtensionFilter("PDF (*.pdf)", "*.pdf"));
+
+            File pdf = fc.showOpenDialog(offreTable.getScene().getWindow());
+            if (pdf == null) {
+                // utilisateur a annulé
+                msgLabel.setStyle("-fx-text-fill:#b91c1c;");
+                msgLabel.setText("Aucun fichier sélectionné.");
+                return;
+            }
+
+            // 2) Créer candidature
+
+            // ✅ Nouveau constructeur (sans cv)
             Candidature c = new Candidature(
                     LocalDate.now(),
                     "ENVOYEE",
-                    null,
                     candidatId,
                     selected.getId()
             );
 
-            candidatureService.add(c);
+            // add() retourne l'id
+            long candidatureId = candidatureService.add(c);
 
-            // ✅ Popup de confirmation
-            showAlert(Alert.AlertType.INFORMATION, "Succès", "Candidature envoyée ✅");
+            // 3) Upload du CV (max 5MB)
+            candidatureService.saveCvPath(candidatureId, pdf, 5L * 1024 * 1024);
 
-            // (optionnel) petit message en bas aussi
+            // ✅ Succès
+            showAlert(Alert.AlertType.INFORMATION, "Succès", "Candidature envoyée + CV uploadé ✅");
             msgLabel.setStyle("-fx-text-fill:#16a34a;");
-            msgLabel.setText("✅ Candidature envoyée !");
+            msgLabel.setText("✅ Candidature envoyée + CV uploadé !");
 
         } catch (IllegalArgumentException e) {
-            // Exemple: "Vous avez déjà postulé..."
             showAlert(Alert.AlertType.WARNING, "Attention", e.getMessage());
             msgLabel.setStyle("-fx-text-fill:#b91c1c;");
             msgLabel.setText(e.getMessage());

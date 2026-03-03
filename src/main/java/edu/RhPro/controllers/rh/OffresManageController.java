@@ -4,18 +4,35 @@ import edu.RhPro.entities.offreEmploi;
 import edu.RhPro.services.OffreEmploiService;
 import edu.RhPro.utils.Session;
 import javafx.animation.PauseTransition;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
+import javafx.geometry.Side;
 import javafx.scene.Scene;
+import javafx.scene.chart.BarChart;
+import javafx.scene.chart.CategoryAxis;
+import javafx.scene.chart.NumberAxis;
+import javafx.scene.chart.XYChart;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 public class OffresManageController {
@@ -55,6 +72,10 @@ public class OffresManageController {
     private final String errorFieldStyle =
             "-fx-border-color: red; -fx-border-width: 2; -fx-border-radius: 14; -fx-background-radius: 14;";
 
+    // Autocomplete localisation
+    private final ContextMenu locSuggestionsMenu = new ContextMenu();
+    private final PauseTransition locDebounce = new PauseTransition(Duration.millis(350));
+
     @FXML
     public void initialize() {
         colId.setCellValueFactory(new PropertyValueFactory<>("id"));
@@ -74,9 +95,173 @@ public class OffresManageController {
             if (selected != null) fillForm(selected);
         });
 
+        setupLocationAutocomplete(locField);
+
         clearAllErrors();
         addValidationListeners();
         refresh();
+    }
+
+    private void setupLocationAutocomplete(TextField field) {
+        // Debounce: attend 350ms après la dernière frappe avant d'appeler l'API
+        locDebounce.setOnFinished(e -> {
+            String text = field.getText();
+            if (text == null || text.trim().length() < 3) {
+                Platform.runLater(locSuggestionsMenu::hide);
+                return;
+            }
+            fetchLocations(text.trim());
+        });
+
+        field.textProperty().addListener((obs, oldValue, newValue) -> {
+            if (newValue == null || newValue.trim().isEmpty()) {
+                locDebounce.stop();
+                locSuggestionsMenu.hide();
+                return;
+            }
+            locDebounce.stop();
+            locDebounce.playFromStart();
+        });
+
+        // Fermer le menu quand le TextField perd le focus
+        field.focusedProperty().addListener((obs, oldFocused, focused) -> {
+            if (!focused) {
+                locSuggestionsMenu.hide();
+            }
+        });
+    }
+
+    private void fetchLocations(String query) {
+        Task<List<String>> task = new Task<>() {
+            @Override
+            protected List<String> call() throws Exception {
+                String urlStr = "https://nominatim.openstreetmap.org/search?q="
+                        + URLEncoder.encode(query, StandardCharsets.UTF_8)
+                        + "&format=json&addressdetails=1&limit=8"
+                        + "&countrycodes=tn"
+                        + "&accept-language=fr"
+                        + "&dedupe=1";
+
+                URL url = new URL(urlStr);
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.setRequestMethod("GET");
+                // User-Agent obligatoire pour Nominatim
+                conn.setRequestProperty("User-Agent", "RHPro-JavaFX/1.0 (mohamed-idriss)");
+                conn.setConnectTimeout(5000);
+                conn.setReadTimeout(5000);
+
+                try (InputStream is = conn.getInputStream();
+                     BufferedReader br = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8))) {
+                    StringBuilder sb = new StringBuilder();
+                    String line;
+                    while ((line = br.readLine()) != null) {
+                        sb.append(line);
+                    }
+
+                    JSONArray arr = new JSONArray(sb.toString());
+                    List<String> results = new ArrayList<>();
+
+                    for (int i = 0; i < arr.length(); i++) {
+                        JSONObject obj = arr.getJSONObject(i);
+
+                        // 1) Filtrer types pour garder lieux utiles
+                        String type = obj.optString("type", "");
+                        if (!(type.equals("city") || type.equals("town") || type.equals("village")
+                                || type.equals("administrative") || type.equals("suburb")
+                                || type.equals("neighbourhood") || type.equals("residential"))) {
+                            continue;
+                        }
+
+                        org.json.JSONObject address = obj.optJSONObject("address");
+
+                        // 2) Construire un label court et précis : quartier + ville + gouvernorat
+                        String suburb = (address != null)
+                                ? address.optString("suburb", address.optString("neighbourhood", ""))
+                                : "";
+
+                        String city = (address != null)
+                                ? address.optString("city",
+                                address.optString("town",
+                                        address.optString("village",
+                                                address.optString("municipality", ""))))
+                                : "";
+
+                        // fallback si city vide
+                        if ((city == null || city.isBlank()) && address != null) {
+                            city = address.optString("county", "");
+                        }
+
+                        String state = (address != null) ? address.optString("state", "") : "";
+
+                        // 3) Si rien trouvé, fallback display_name
+                        String label;
+                        if (!suburb.isBlank() && !city.isBlank()) {
+                            label = suburb + ", " + city;
+                        } else if (!city.isBlank()) {
+                            label = city;
+                        } else {
+                            label = obj.optString("display_name", "");
+                        }
+
+                        // 4) Ajouter gouvernorat (state) si disponible
+                        if (!state.isBlank() && !label.contains(state)) {
+                            label = label + " (" + state + ")";
+                        }
+
+                        // 5) Nettoyage + éviter doublons
+                        label = label.trim();
+                        if (!label.isBlank() && !results.contains(label)) {
+                            results.add(label);
+                        }
+                    }
+
+                    return results;
+                } finally {
+                    conn.disconnect();
+                }
+            }
+        };
+
+        task.setOnSucceeded(ev -> {
+            List<String> suggestions = task.getValue();
+            Platform.runLater(() -> showLocationSuggestions(locField, suggestions));
+        });
+
+        task.setOnFailed(ev -> Platform.runLater(locSuggestionsMenu::hide));
+
+        Thread t = new Thread(task);
+        t.setDaemon(true);
+        t.start();
+    }
+
+    private void showLocationSuggestions(TextField field, List<String> suggestions) {
+        if (suggestions == null || suggestions.isEmpty() || !field.isFocused()) {
+            locSuggestionsMenu.hide();
+            return;
+        }
+
+        List<CustomMenuItem> menuItems = new ArrayList<>();
+        for (String suggestion : suggestions) {
+            Label lbl = new Label(suggestion);
+            lbl.setWrapText(true);
+            lbl.setMaxWidth(400);
+
+            CustomMenuItem item = new CustomMenuItem(lbl, true);
+            item.setOnAction(e -> {
+                field.setText(suggestion);
+                field.positionCaret(field.getText().length());
+                locSuggestionsMenu.hide();
+            });
+            menuItems.add(item);
+        }
+
+        locSuggestionsMenu.getItems().setAll(menuItems);
+
+// ✅ forcer refresh
+        if (locSuggestionsMenu.isShowing()) {
+            locSuggestionsMenu.hide();
+        }
+        locSuggestionsMenu.show(field, Side.BOTTOM, 0, 0);
     }
 
     @FXML
@@ -100,10 +285,7 @@ public class OffresManageController {
 
         try {
             offreEmploi o = buildFromForm(null);
-
-            // ✅ rh_id obligatoire
-            o.setRhId(getCurrentRhId());
-
+            o.setRhId(getCurrentRhId()); // rh_id obligatoire
             service.add(o);
 
             clearForm(true);
@@ -131,8 +313,7 @@ public class OffresManageController {
         try {
             offreEmploi o = buildFromForm(selected.getId());
 
-            // ✅ garder rh_id existant si valide, sinon prendre celui du user connecté
-            long rhId = selected.getRhId(); // <-- ici rhId est long, donc pas de null
+            long rhId = selected.getRhId();
             if (rhId <= 0) rhId = getCurrentRhId();
             o.setRhId(rhId);
 
@@ -178,35 +359,61 @@ public class OffresManageController {
         setInfo("");
     }
 
+    // ✅ STATS EN BAR CHART (comme ton image)
     @FXML
     public void onShowStats() {
-        // ✅ on s’assure d’avoir les données à jour
         try { refresh(); } catch (Exception ignored) {}
 
-        long ouvertes = data.stream().filter(o -> "OUVERTE".equalsIgnoreCase(o.getStatut())).count();
-        long fermees  = data.stream().filter(o -> "FERMEE".equalsIgnoreCase(o.getStatut())).count();
+        long ouvertes = data.stream()
+                .filter(o -> normalizeStatut(o.getStatut()).equals("OUVERTE"))
+                .count();
 
-        Label title = new Label("Statistiques des offres");
-        title.setStyle("-fx-font-size:16; -fx-font-weight:900;");
+        long fermees = data.stream()
+                .filter(o -> {
+                    String s = normalizeStatut(o.getStatut());
+                    return s.equals("FERMEE") || s.equals("FERMÉE");
+                })
+                .count();
 
-        Label l1 = new Label("OUVERTES : " + ouvertes);
-        Label l2 = new Label("FERMÉES  : " + fermees);
-        Label l3 = new Label("TOTAL    : " + data.size());
-        l3.setStyle("-fx-font-weight:bold;");
+        long total  = data.size();
+        long autres = total - ouvertes - fermees;
+
+        CategoryAxis xAxis = new CategoryAxis();
+        xAxis.setLabel("Statut");
+
+        NumberAxis yAxis = new NumberAxis();
+        yAxis.setLabel("Nombre d'offres");
+
+        BarChart<String, Number> barChart = new BarChart<>(xAxis, yAxis);
+        barChart.setTitle("Statistiques des offres");
+        barChart.setLegendVisible(false);
+        barChart.setCategoryGap(25); // ✅ OK
+
+        XYChart.Series<String, Number> series = new XYChart.Series<>();
+        series.getData().add(new XYChart.Data<>("OUVERTE", ouvertes));
+        series.getData().add(new XYChart.Data<>("FERMEE", fermees));
+        series.getData().add(new XYChart.Data<>("AUTRES", autres));
+        barChart.getData().add(series);
 
         Button close = new Button("Fermer");
-        close.setDefaultButton(true);
+        close.setStyle("-fx-background-color:#111827; -fx-text-fill:white; -fx-background-radius:10; -fx-padding:8 16;");
 
-        VBox box = new VBox(12, title, l1, l2, l3, close);
-        box.setStyle("-fx-padding:18; -fx-background-color:white;");
+        VBox root = new VBox(12, barChart, close);
+        root.setStyle("-fx-padding:14; -fx-background-color:white;");
 
         Stage st = new Stage();
         st.setTitle("Stats Offres");
         st.initModality(Modality.APPLICATION_MODAL);
-        st.setScene(new Scene(box, 300, 210));
+        st.setResizable(false);
+        st.setScene(new Scene(root, 520, 380));
 
         close.setOnAction(e -> st.close());
         st.showAndWait();
+    }
+
+    // ✅ UNE SEULE méthode (pas 2) !
+    private String normalizeStatut(String s) {
+        return (s == null) ? "" : s.trim().toUpperCase();
     }
 
     private offreEmploi buildFromForm(Integer id) {
@@ -249,11 +456,9 @@ public class OffresManageController {
         descArea.clear();
         offreTable.getSelectionModel().clearSelection();
 
-        if (resetStatut) {
-            statutBox.getSelectionModel().select("OUVERTE");
-        } else {
-            statutBox.setValue(null);
-        }
+        if (resetStatut) statutBox.getSelectionModel().select("OUVERTE");
+        else statutBox.setValue(null);
+
         clearAllErrors();
     }
 
@@ -373,14 +578,13 @@ public class OffresManageController {
         pause.play();
     }
 
-    // ✅ retourne toujours un long valide
     private long getCurrentRhId() {
         try {
             if (Session.getCurrentUser() != null) {
-                long id = Session.getCurrentUser().getId(); // <-- idéalement getId() retourne long
+                long id = Session.getCurrentUser().getId();
                 if (id > 0) return id;
             }
         } catch (Exception ignored) {}
-        return 1L; // fallback
+        return 1L;
     }
 }
