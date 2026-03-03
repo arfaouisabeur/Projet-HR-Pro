@@ -177,7 +177,7 @@ public class ProfilCondidatController implements Initializable  {
 
         new Thread(() -> {
             try {
-                String apiKey = "sk-OoRAlOly1v37DPNWvlIuENgd7pBQpFuZEMrmM9b2Yyq5uKBo"; // ← ta clé ici
+                String apiKey = ""; // ← ta clé ici
 
                 String boundary = "----JavaBoundary" + Long.toHexString(System.currentTimeMillis());
 
