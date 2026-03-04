@@ -29,17 +29,14 @@ public class PrimesManageController {
     @FXML private TextArea taDescription;
     @FXML private Label msgLabel;
 
-    // Summary
     @FXML private Label lblPrimeTotalCount;
     @FXML private Label lblPrimeThisMonthCount;
     @FXML private Label lblPrimeThisMonthAmount;
 
-    // Filters
     @FXML private TextField tfFilterEmploye;
     @FXML private DatePicker dpFilterFrom;
     @FXML private DatePicker dpFilterTo;
 
-    // Table
     @FXML private TableView<Prime> table;
     @FXML private TableColumn<Prime, Long> colId;
     @FXML private TableColumn<Prime, Long> colEmploye;
