@@ -18,12 +18,12 @@
             <TableColumn fx:id="colDate" text="Date inscription" prefWidth="200"/>
             <TableColumn fx:id="colStatut" text="Statut" prefWidth="180"/>
 
-            
+
         </columns>
     </TableView>
 
     <HBox spacing="10">
-        <Button text="🔄 Rafraîchir" onAction="#refresh"
+        <Button text=" Rafraîchir" onAction="#refresh"
                 style="-fx-background-color:white; -fx-border-color:#ececf5; -fx-background-radius:14; -fx-border-radius:14; -fx-padding:12 14; -fx-font-weight:900;"/>
         <Region HBox.hgrow="ALWAYS"/>
         <Label fx:id="msgLabel" text="" style="-fx-text-fill:#6b7280;"/>
