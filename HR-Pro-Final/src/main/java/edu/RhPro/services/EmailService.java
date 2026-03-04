@@ -48,7 +48,6 @@ public class EmailService {
         }
         message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(to));
         message.setSubject(subject, "UTF-8");
-
         MimeMultipart multipart = new MimeMultipart("alternative");
         MimeBodyPart textPart = new MimeBodyPart();
         textPart.setText(htmlContent.replaceAll("<[^>]+>", ""), "UTF-8");
