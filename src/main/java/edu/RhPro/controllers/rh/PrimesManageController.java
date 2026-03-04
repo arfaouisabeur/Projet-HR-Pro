@@ -8,6 +8,8 @@ import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
+
+
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
@@ -86,7 +88,6 @@ public class PrimesManageController {
             return row;
         });
 
-        // Filtering
         filteredData = new FilteredList<>(masterData, p -> true);
         SortedList<Prime> sorted = new SortedList<>(filteredData);
         sorted.comparatorProperty().bind(table.comparatorProperty());
