@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="edu.RhPro.controllers.candidat.OffresController"
+      spacing="14"
+      style="-fx-background-color:transparent;">
+
+    <Label text="Offres actives"
+           style="-fx-font-size:20px; -fx-font-weight:900; -fx-text-fill:#111827;"/>
+
+    <HBox spacing="16">
+
+        <!-- Table -->
+        <TableView fx:id="offreTable" prefHeight="560"
+                   style="-fx-background-color:white; -fx-background-radius:18; -fx-border-radius:18; -fx-border-color:#ececf5; -fx-padding:8;">
+            <columns>
+                <TableColumn fx:id="colId" text="ID" prefWidth="60"/>
+                <TableColumn fx:id="colTitre" text="Titre" prefWidth="270"/>
+                <TableColumn fx:id="colLoc" text="Localisation" prefWidth="170"/>
+                <TableColumn fx:id="colType" text="Contrat" prefWidth="150"/>
+                <TableColumn fx:id="colPub" text="Publication" prefWidth="130"/>
+                <TableColumn fx:id="colExp" text="Expiration" prefWidth="130"/>
+                <TableColumn fx:id="colStatut" text="Statut" prefWidth="100"/>
+            </columns>
+        </TableView>
+
+        <!-- Details card -->
+        <VBox spacing="12" prefWidth="380"
+              style="-fx-padding:16; -fx-background-color:white; -fx-background-radius:18; -fx-border-radius:18; -fx-border-color:#ececf5;">
+
+            <Label text="Détails"
+                   style="-fx-font-weight:900; -fx-font-size:14px; -fx-text-fill:#111827;"/>
+
+            <Label fx:id="detailTitre" text="—"
+                   style="-fx-font-size:16px; -fx-font-weight:900; -fx-text-fill:#111827;"/>
+
+            <Label fx:id="detailInfo" text="—"
+                   style="-fx-text-fill:#6b7280; -fx-font-size:13px;"/>
+
+            <TextArea fx:id="detailDesc" editable="false" wrapText="true" prefHeight="300"
+                      style="-fx-background-radius:14; -fx-border-radius:14; -fx-border-color:#ececf5; -fx-padding:10;"/>
+
+            <Button text="✅ Postuler" onAction="#onApply"
+                    style="-fx-background-color:#6d2a74; -fx-text-fill:white; -fx-background-radius:14; -fx-padding:12 14; -fx-font-weight:900;"/>
+
+            <Label fx:id="msgLabel" text="" style="-fx-text-fill:#b91c1c; -fx-font-size:13px;"/>
+        </VBox>
+    </HBox>
+
+</VBox>

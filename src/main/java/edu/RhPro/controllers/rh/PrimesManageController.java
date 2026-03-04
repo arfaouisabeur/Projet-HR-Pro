@@ -1,83 +1,104 @@
 package edu.RhPro.controllers.rh;
 
 import edu.RhPro.entities.Prime;
+import edu.RhPro.entities.Tache;
+import edu.RhPro.entities.User;
 import edu.RhPro.services.PrimeService;
+import edu.RhPro.services.TacheService;
+import edu.RhPro.utils.CurrencyContext;
 import edu.RhPro.utils.Session;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
-
-
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 
 import java.math.BigDecimal;
 import java.sql.SQLException;
-import java.text.NumberFormat;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Optional;
 
 public class PrimesManageController {
 
     // Form
     @FXML private TextField tfEmployeId;
-    @FXML private TextField tfMontant;
-    @FXML private DatePicker dpAttribution;
+    @FXML private TextField tfMontant;       // ✅ user enters DISPLAY currency amount
     @FXML private TextArea taDescription;
     @FXML private Label msgLabel;
 
+    // Header badges
+    @FXML private Label lblCurrencyBadge;
+    @FXML private Label lblAmountPreview;
+
+    // Summary
     @FXML private Label lblPrimeTotalCount;
     @FXML private Label lblPrimeThisMonthCount;
     @FXML private Label lblPrimeThisMonthAmount;
 
+    // Filters
     @FXML private TextField tfFilterEmploye;
     @FXML private DatePicker dpFilterFrom;
     @FXML private DatePicker dpFilterTo;
 
+    // Table
     @FXML private TableView<Prime> table;
     @FXML private TableColumn<Prime, Long> colId;
     @FXML private TableColumn<Prime, Long> colEmploye;
-    @FXML private TableColumn<Prime, BigDecimal> colMontant;
+    @FXML private TableColumn<Prime, BigDecimal> colMontant; // stored TND in DB
     @FXML private TableColumn<Prime, LocalDate> colDate;
     @FXML private TableColumn<Prime, String> colDesc;
 
     private final PrimeService primeService = new PrimeService();
+    private final TacheService tacheService = new TacheService();
 
     private final ObservableList<Prime> masterData = FXCollections.observableArrayList();
     private FilteredList<Prime> filteredData;
 
-    private static final NumberFormat MONEY_FMT;
-    static {
-        MONEY_FMT = NumberFormat.getNumberInstance(Locale.FRANCE);
-        MONEY_FMT.setMinimumFractionDigits(2);
-        MONEY_FMT.setMaximumFractionDigits(2);
-    }
+    // picked tasks
+    private List<Tache> pendingPickedTaches = new ArrayList<>();
 
     @FXML
     public void initialize() {
+
+        // Load currency once
+        CurrencyContext.ensureLoaded();
+        lblCurrencyBadge.setText("Devise: " + CurrencyContext.getDisplayCurrency());
+
+        // amount preview under input
+        lblAmountPreview.setText("Affichage: —");
+
+        // live preview when user types amount
+        tfMontant.textProperty().addListener((obs, oldV, newV) -> updateAmountPreview());
+
         colId.setCellValueFactory(new PropertyValueFactory<>("id"));
         colEmploye.setCellValueFactory(new PropertyValueFactory<>("employeId"));
-        colMontant.setCellValueFactory(new PropertyValueFactory<>("montant"));
+        colMontant.setCellValueFactory(new PropertyValueFactory<>("montant")); // TND stored
         colDate.setCellValueFactory(new PropertyValueFactory<>("dateAttribution"));
         colDesc.setCellValueFactory(new PropertyValueFactory<>("description"));
 
-        // Pretty amount display
+        // ✅ show ONLY display currency in table (no TND / no base text)
         colMontant.setCellFactory(c -> new TableCell<Prime, BigDecimal>() {
             @Override protected void updateItem(BigDecimal item, boolean empty) {
                 super.updateItem(item, empty);
-                setText(empty || item == null ? null : MONEY_FMT.format(item) + " $");
+                if (empty || item == null) setText(null);
+                else setText(CurrencyContext.formatDisplayOnly(item)); // convert from TND -> display
             }
         });
 
         table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         table.setPlaceholder(new Label("Aucune prime."));
 
-        // Double click => edit
+        // double click => edit
         table.setRowFactory(tv -> {
             TableRow<Prime> row = new TableRow<>();
             row.setOnMouseClicked(e -> {
@@ -88,6 +109,7 @@ public class PrimesManageController {
             return row;
         });
 
+        // filtering
         filteredData = new FilteredList<>(masterData, p -> true);
         SortedList<Prime> sorted = new SortedList<>(filteredData);
         sorted.comparatorProperty().bind(table.comparatorProperty());
@@ -100,10 +122,29 @@ public class PrimesManageController {
         loadData();
     }
 
-    @FXML
-    public void refresh() {
-        loadData();
+    private void updateAmountPreview() {
+        String v = tfMontant.getText() == null ? "" : tfMontant.getText().trim().replace(",", ".");
+        if (v.isEmpty()) {
+            lblAmountPreview.setText("Affichage: —");
+            return;
+        }
+        try {
+            BigDecimal displayAmount = new BigDecimal(v);
+            if (displayAmount.signum() <= 0) {
+                lblAmountPreview.setText("Affichage: —");
+                return;
+            }
+            BigDecimal tnd = CurrencyContext.convertDisplayToTnd(displayAmount);
+            // ✅ only here show base info
+            lblAmountPreview.setText("Affichage: " + CurrencyContext.getDisplayCurrency()
+                    + " → Base (TND): " + tnd.toPlainString());
+        } catch (Exception e) {
+            lblAmountPreview.setText("Affichage: —");
+        }
     }
+
+    @FXML
+    public void refresh() { loadData(); }
 
     @FXML
     public void clearFilters() {
@@ -124,29 +165,54 @@ public class PrimesManageController {
         }
 
         Long employeId = parseLong(tfEmployeId.getText(), "Employé ID");
-        BigDecimal montant = parseBigDecimal(tfMontant.getText(), "Montant");
-        LocalDate date = dpAttribution.getValue();
+
+        // ✅ user typed display amount (CAD/EUR/...)
+        BigDecimal amountDisplay = parseBigDecimal(tfMontant.getText(), "Montant");
+        if (employeId == null || amountDisplay == null) return;
+        if (amountDisplay.signum() <= 0) { setMsgError("Le montant doit être positif."); return; }
+
+        // ✅ convert silently to TND for DB
+        BigDecimal montantTnd = CurrencyContext.convertDisplayToTnd(amountDisplay);
+
         String desc = taDescription.getText() == null ? "" : taDescription.getText().trim();
+        LocalDate date = LocalDate.now();
 
-        if (employeId == null || montant == null) return;
-        if (montant.signum() <= 0) { setMsgError("Le montant doit être positif."); return; }
-        if (date == null) { setMsgError("Choisis la date d’attribution."); return; }
+        String details =
+                "Employé: " + employeId +
+                        "\nMontant: " + amountDisplay.toPlainString() + " " + CurrencyContext.getDisplayCurrency() +
+                        "\nDate: " + date +
+                        ((pendingPickedTaches != null && !pendingPickedTaches.isEmpty())
+                                ? "\nTâches sélectionnées: " + pendingPickedTaches.size()
+                                : "");
 
-        if (!confirmAction("Confirmation", "Ajouter une prime ?",
-                "Employé: " + employeId + "\nMontant: " + montant + "\nDate: " + date)) return;
+        if (!confirmAction("Confirmation", "Ajouter une prime ?", details)) return;
 
         try {
             long rhId = Session.getCurrentUser().getId();
-            Prime p = new Prime(montant, date, desc, rhId, employeId);
-            primeService.addEntity(p);
+
+            // store TND
+            Prime p = new Prime(montantTnd, date, desc, rhId, employeId);
+
+            long primeId = primeService.addEntityAndReturnId(p);
+
+            // link tasks -> prime_id
+            if (pendingPickedTaches != null && !pendingPickedTaches.isEmpty()) {
+                List<Integer> ids = new ArrayList<>();
+                for (Tache t : pendingPickedTaches) {
+                    if (t != null) ids.add(t.getId());
+                }
+                tacheService.assignPrimeToTaches((int) primeId, ids);
+            }
 
             tfEmployeId.clear();
             tfMontant.clear();
-            dpAttribution.setValue(null);
             taDescription.clear();
+            pendingPickedTaches.clear();
+            lblAmountPreview.setText("Affichage: —");
 
             setMsgSuccess("Prime ajoutée ✅");
             loadData();
+
         } catch (SQLException e) {
             e.printStackTrace();
             setMsgError("Erreur DB: " + e.getMessage());
@@ -160,8 +226,8 @@ public class PrimesManageController {
         if (selected == null) { setMsgError("Sélectionne une prime."); return; }
 
         if (!confirmAction("Confirmation", "Supprimer cette prime ?",
-                "ID: " + selected.getId() + "\nEmployé: " + selected.getEmployeId()
-                        + "\nMontant: " + selected.getMontant() + "\nDate: " + selected.getDateAttribution())) return;
+                "ID: " + selected.getId() +
+                        "\nEmployé: " + selected.getEmployeId())) return;
 
         try {
             primeService.deleteEntity(selected);
@@ -185,8 +251,11 @@ public class PrimesManageController {
         dialog.getDialogPane().getButtonTypes().addAll(cancel, save);
 
         TextField tfEmp = new TextField(String.valueOf(prime.getEmployeId()));
-        TextField tfMont = new TextField(prime.getMontant() == null ? "" : prime.getMontant().toString());
-        DatePicker dp = new DatePicker(prime.getDateAttribution());
+
+        // ✅ show DISPLAY amount to user (convert from TND)
+        BigDecimal displayAmount = CurrencyContext.convertFromTnd(prime.getMontant());
+        TextField tfMont = new TextField(displayAmount == null ? "" : displayAmount.toPlainString());
+
         TextArea ta = new TextArea(prime.getDescription() == null ? "" : prime.getDescription());
         ta.setWrapText(true);
         ta.setPrefRowCount(4);
@@ -194,33 +263,32 @@ public class PrimesManageController {
         GridPane gp = new GridPane();
         gp.setHgap(10); gp.setVgap(10);
         gp.addRow(0, new Label("Employé ID"), tfEmp);
-        gp.addRow(1, new Label("Montant"), tfMont);
-        gp.addRow(2, new Label("Date"), dp);
-        gp.addRow(3, new Label("Description"), ta);
+        gp.addRow(1, new Label("Montant (" + CurrencyContext.getDisplayCurrency() + ")"), tfMont);
+        gp.addRow(2, new Label("Description"), ta);
         dialog.getDialogPane().setContent(gp);
 
         Optional<ButtonType> res = dialog.showAndWait();
         if (res.isEmpty() || res.get() != save) return;
 
         Long newEmp = parseLong(tfEmp.getText(), "Employé ID");
-        BigDecimal newMont = parseBigDecimal(tfMont.getText(), "Montant");
-        LocalDate newDate = dp.getValue();
+        BigDecimal newDisplay = parseBigDecimal(tfMont.getText(), "Montant");
+        if (newEmp == null || newDisplay == null) return;
+        if (newDisplay.signum() <= 0) { setMsgError("Le montant doit être positif."); return; }
+
+        // convert silently to TND
+        BigDecimal newMontTnd = CurrencyContext.convertDisplayToTnd(newDisplay);
+
         String newDesc = ta.getText() == null ? "" : ta.getText().trim();
 
-        if (newEmp == null || newMont == null) return;
-        if (newMont.signum() <= 0) { setMsgError("Le montant doit être positif."); return; }
-        if (newDate == null) { setMsgError("Choisis la date."); return; }
-
         if (!confirmAction("Confirmation", "Enregistrer les modifications ?",
-                "Employé: " + newEmp + "\nMontant: " + newMont + "\nDate: " + newDate)) return;
+                "Employé: " + newEmp +
+                        "\nMontant: " + newDisplay.toPlainString() + " " + CurrencyContext.getDisplayCurrency())) return;
 
         try {
             prime.setEmployeId(newEmp);
-            prime.setMontant(newMont);
-            prime.setDateAttribution(newDate);
+            prime.setMontant(newMontTnd); // store TND
             prime.setDescription(newDesc);
 
-            // must exist in your service
             primeService.updateEntity(prime);
 
             setMsgSuccess("Prime modifiée ✅");
@@ -246,7 +314,6 @@ public class PrimesManageController {
         filteredData.setPredicate(p -> {
             if (p == null) return false;
 
-            // employe filter
             String empText = tfFilterEmploye.getText() == null ? "" : tfFilterEmploye.getText().trim();
             if (!empText.isEmpty()) {
                 try {
@@ -257,7 +324,6 @@ public class PrimesManageController {
                 }
             }
 
-            // date range
             LocalDate from = dpFilterFrom.getValue();
             LocalDate to = dpFilterTo.getValue();
             LocalDate d = p.getDateAttribution();
@@ -279,21 +345,104 @@ public class PrimesManageController {
         int y = now.getYear();
 
         int thisMonthCount = 0;
-        BigDecimal thisMonthAmount = BigDecimal.ZERO;
+        BigDecimal thisMonthAmountTnd = BigDecimal.ZERO;
 
         for (Prime p : filteredData) {
             if (p == null || p.getDateAttribution() == null) continue;
             if (p.getDateAttribution().getMonthValue() == m && p.getDateAttribution().getYear() == y) {
                 thisMonthCount++;
-                if (p.getMontant() != null) thisMonthAmount = thisMonthAmount.add(p.getMontant());
+                if (p.getMontant() != null) thisMonthAmountTnd = thisMonthAmountTnd.add(p.getMontant());
             }
         }
 
         lblPrimeThisMonthCount.setText(String.valueOf(thisMonthCount));
-        lblPrimeThisMonthAmount.setText(MONEY_FMT.format(thisMonthAmount) + " $");
+        lblPrimeThisMonthAmount.setText(CurrencyContext.formatDisplayOnly(thisMonthAmountTnd));
     }
 
-    // ------- helpers -------
+    // EMPLOYEE SEARCH POPUP
+    @FXML
+    public void onSearchEmploye() {
+        clearMsg();
+        try {
+            var url = getClass().getResource("/rh/EmployeSearch.fxml");
+            if (url == null) { setMsgError("EmployeSearch.fxml introuvable."); return; }
+
+            FXMLLoader loader = new FXMLLoader(url);
+            Parent root = loader.load();
+
+            EmployeSearchController ctrl = loader.getController();
+
+            Stage stage = new Stage();
+            stage.setTitle("Recherche employé");
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setResizable(false);
+            stage.setScene(new Scene(root));
+
+            ctrl.setOnUserSelected((User u) -> {
+                if (u != null) {
+                    tfEmployeId.setText(String.valueOf(u.getId()));
+                    setMsgInfo("Employé sélectionné: " + safe(u.getPrenom()) + " " + safe(u.getNom()) + " (ID " + u.getId() + ")");
+                }
+                stage.close();
+            });
+
+            stage.showAndWait();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            setMsgError("Impossible d'ouvrir la recherche employé.");
+        }
+    }
+
+    // TASK PICKER POPUP
+    @FXML
+    public void onPickTaches() {
+        clearMsg();
+
+        Long emp = parseLong(tfEmployeId.getText(), "Employé ID");
+        if (emp == null) return;
+
+        try {
+            var url = getClass().getResource("/rh/TachePrimePicker.fxml");
+            if (url == null) { setMsgError("TachePrimePicker.fxml introuvable."); return; }
+
+            FXMLLoader loader = new FXMLLoader(url);
+            Parent root = loader.load();
+
+            TachePrimePickerController ctrl = loader.getController();
+
+            Stage st = new Stage();
+            st.setTitle("Choisir tâches (prime)");
+            st.initModality(Modality.APPLICATION_MODAL);
+            st.setResizable(false);
+            st.setScene(new Scene(root));
+
+            ctrl.setStage(st);
+            ctrl.initForEmploye(emp.intValue()); // DONE + prime_id null
+
+            ctrl.setOnPicked((totalFromPicker, description, selectedTaches) -> {
+                // ✅ IMPORTANT: totalFromPicker is already the amount you want to put in tfMontant
+                // Do NOT convertFromTnd here.
+                if (totalFromPicker != null) tfMontant.setText(totalFromPicker.toPlainString());
+                else tfMontant.setText("");
+
+                taDescription.setText(description == null ? "" : description);
+
+                pendingPickedTaches = (selectedTaches == null) ? new ArrayList<>() : selectedTaches;
+                setMsgInfo("Tâches sélectionnées: " + pendingPickedTaches.size());
+
+                updateAmountPreview();
+            });
+
+            st.showAndWait();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            setMsgError("Impossible d'ouvrir le picker de tâches.");
+        }
+    }
+
+    // helpers
     private void clearMsg() {
         msgLabel.setStyle("-fx-text-fill:#6b7280; -fx-font-weight:900;");
         msgLabel.setText("");
@@ -348,4 +497,6 @@ public class PrimesManageController {
             return null;
         }
     }
+
+    private String safe(String s) { return s == null ? "" : s; }
 }

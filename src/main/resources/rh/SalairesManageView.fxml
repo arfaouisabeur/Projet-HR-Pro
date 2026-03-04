@@ -18,6 +18,12 @@
                    style="-fx-font-size: 12px; -fx-text-fill: #6b7280;"/>
         </VBox>
         <Region HBox.hgrow="ALWAYS"/>
+
+        <!-- ✅ currency badge -->
+        <Label fx:id="lblCurrencyBadge" text="Devise: ..."
+               style="-fx-text-fill:#111827; -fx-font-weight: 900; -fx-background-color:#f3f4f6;
+                      -fx-background-radius: 999; -fx-padding: 6 10;"/>
+
         <Label fx:id="msgLabel" text=""
                style="-fx-text-fill:#6b7280; -fx-font-weight: 900; -fx-background-color:#f3f4f6;
                       -fx-background-radius: 999; -fx-padding: 6 10;"/>
@@ -47,6 +53,11 @@
                 <Label text="Employé ID" style="-fx-text-fill:#374151; -fx-font-weight:700;"/>
                 <TextField fx:id="tfEmployeId" promptText="ex: 12"
                            style="-fx-background-radius: 10; -fx-border-radius: 10; -fx-border-color:#e5e7eb; -fx-padding: 8 10;"/>
+
+                <Button text="🔎 Rechercher employé" onAction="#onSearchEmploye"
+                        style="-fx-background-color: transparent; -fx-border-color:#d1d5db;
+                   -fx-background-radius:12; -fx-border-radius:12;
+                   -fx-padding:10 14; -fx-font-weight:900; -fx-text-fill:#111827;"/>
             </VBox>
 
             <HBox spacing="10">
@@ -67,6 +78,10 @@
                 <Label text="Montant" style="-fx-text-fill:#374151; -fx-font-weight:700;"/>
                 <TextField fx:id="tfMontant" promptText="ex: 2500.00"
                            style="-fx-background-radius: 10; -fx-border-radius: 10; -fx-border-color:#e5e7eb; -fx-padding: 8 10;"/>
+
+                <!-- ✅ only here show base TND -->
+                <Label fx:id="lblAmountPreview" text="Affichage: —"
+                       style="-fx-text-fill:#6b7280; -fx-font-size: 11px;"/>
             </VBox>
 
             <VBox spacing="6">
@@ -85,7 +100,6 @@
                 <Button text="➕ Ajouter" onAction="#onAdd"
                         style="-fx-background-color:#6d28d9; -fx-text-fill:white; -fx-background-radius:12;
                                -fx-padding:10 14; -fx-font-weight:900;"/>
-
             </HBox>
         </VBox>
 
@@ -127,7 +141,7 @@
                 </VBox>
                 <VBox style="-fx-background-color:#f9fafb; -fx-background-radius:14; -fx-padding:10;" HBox.hgrow="ALWAYS">
                     <Label text="Payé ce mois" style="-fx-text-fill:#6b7280; -fx-font-size:11px;"/>
-                    <Label fx:id="lblSalPaidThisMonthAmount" text="0.00 $" style="-fx-font-weight:900; -fx-font-size:18px;"/>
+                    <Label fx:id="lblSalPaidThisMonthAmount" text="0.00" style="-fx-font-weight:900; -fx-font-size:18px;"/>
                 </VBox>
             </HBox>
 
@@ -172,7 +186,7 @@
                     <TableColumn fx:id="colEmploye" text="Employé ID" prefWidth="120"/>
                     <TableColumn fx:id="colMois" text="Mois" prefWidth="90"/>
                     <TableColumn fx:id="colAnnee" text="Année" prefWidth="90"/>
-                    <TableColumn fx:id="colMontant" text="Montant" prefWidth="140"/>
+                    <TableColumn fx:id="colMontant" text="Montant" prefWidth="160"/>
                     <TableColumn fx:id="colDate" text="Paiement" prefWidth="130"/>
                     <TableColumn fx:id="colStatut" text="Statut" prefWidth="130"/>
                 </columns>

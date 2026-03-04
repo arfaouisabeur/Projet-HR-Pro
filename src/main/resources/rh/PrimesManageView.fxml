@@ -12,13 +12,14 @@
 
     <!-- Header -->
     <HBox alignment="CENTER_LEFT" spacing="10" style="-fx-padding: 4 2 0 2;">
-        <VBox spacing="2">
-            <Label text="Gestion des primes"
-                   style="-fx-font-size: 22px; -fx-font-weight: 900; -fx-text-fill: #111827;"/>
-            <Label text="Ajouter, filtrer, modifier et supprimer les primes"
-                   style="-fx-font-size: 12px; -fx-text-fill: #6b7280;"/>
-        </VBox>
+
+
         <Region HBox.hgrow="ALWAYS"/>
+
+        <Label fx:id="lblCurrencyBadge" text="Devise: ..."
+               style="-fx-text-fill:#111827; -fx-font-weight: 900; -fx-background-color:#f3f4f6;
+                      -fx-background-radius: 999; -fx-padding: 6 10;"/>
+
         <Label fx:id="msgLabel" text=""
                style="-fx-text-fill:#6b7280; -fx-font-weight: 900; -fx-background-color:#f3f4f6;
                       -fx-background-radius: 999; -fx-padding: 6 10;"/>
@@ -48,21 +49,26 @@
                 <Label text="Employé ID" style="-fx-text-fill:#374151; -fx-font-weight:700;"/>
                 <TextField fx:id="tfEmployeId" promptText="ex: 12"
                            style="-fx-background-radius: 10; -fx-border-radius: 10; -fx-border-color:#e5e7eb; -fx-padding: 8 10;"/>
+
+                <Button text="🔎 Rechercher employé" onAction="#onSearchEmploye"
+                        style="-fx-background-color: transparent; -fx-border-color:#d1d5db;
+                               -fx-background-radius:12; -fx-border-radius:12;
+                               -fx-padding:10 14; -fx-font-weight:900; -fx-text-fill:#111827;"/>
+
+                <Button text="📋 Choisir tâches (prime)" onAction="#onPickTaches"
+                        style="-fx-background-color: transparent; -fx-border-color:#d1d5db;
+                               -fx-background-radius:12; -fx-border-radius:12;
+                               -fx-padding:10 14; -fx-font-weight:900; -fx-text-fill:#111827;"/>
             </VBox>
 
-            <HBox spacing="10">
-                <VBox spacing="6" HBox.hgrow="ALWAYS">
-                    <Label text="Montant" style="-fx-text-fill:#374151; -fx-font-weight:700;"/>
-                    <TextField fx:id="tfMontant" promptText="ex: 150.00"
-                               style="-fx-background-radius: 10; -fx-border-radius: 10; -fx-border-color:#e5e7eb; -fx-padding: 8 10;"/>
-                </VBox>
+            <VBox spacing="6">
+                <Label text="Montant" style="-fx-text-fill:#374151; -fx-font-weight:700;"/>
+                <TextField fx:id="tfMontant" promptText="ex: 150.00"
+                           style="-fx-background-radius: 10; -fx-border-radius: 10; -fx-border-color:#e5e7eb; -fx-padding: 8 10;"/>
 
-                <VBox spacing="6" HBox.hgrow="ALWAYS">
-                    <Label text="Date attribution" style="-fx-text-fill:#374151; -fx-font-weight:700;"/>
-                    <DatePicker fx:id="dpAttribution"
-                                style="-fx-background-radius: 10; -fx-border-radius: 10; -fx-border-color:#e5e7eb; -fx-padding: 4 6;"/>
-                </VBox>
-            </HBox>
+                <Label fx:id="lblAmountPreview" text="Affichage: —"
+                       style="-fx-text-fill:#6b7280; -fx-font-size: 11px;"/>
+            </VBox>
 
             <VBox spacing="6" VBox.vgrow="ALWAYS">
                 <Label text="Description" style="-fx-text-fill:#374151; -fx-font-weight:700;"/>
@@ -75,8 +81,6 @@
                 <Button text="➕ Ajouter" onAction="#onAdd"
                         style="-fx-background-color:#6d28d9; -fx-text-fill:white; -fx-background-radius:12;
                                -fx-padding:10 14; -fx-font-weight:900;"/>
-                <Label text="Double-clic sur une ligne pour modifier"
-                       style="-fx-text-fill:#9ca3af; -fx-font-size: 11px;"/>
             </HBox>
         </VBox>
 
@@ -118,7 +122,7 @@
                 </VBox>
                 <VBox style="-fx-background-color:#f9fafb; -fx-background-radius:14; -fx-padding:10;" HBox.hgrow="ALWAYS">
                     <Label text="Total ce mois" style="-fx-text-fill:#6b7280; -fx-font-size:11px;"/>
-                    <Label fx:id="lblPrimeThisMonthAmount" text="0.00 $" style="-fx-font-weight:900; -fx-font-size:18px;"/>
+                    <Label fx:id="lblPrimeThisMonthAmount" text="0.00" style="-fx-font-weight:900; -fx-font-size:18px;"/>
                 </VBox>
             </HBox>
 
@@ -142,7 +146,7 @@
                 <columns>
                     <TableColumn fx:id="colId" text="ID" prefWidth="70"/>
                     <TableColumn fx:id="colEmploye" text="Employé ID" prefWidth="120"/>
-                    <TableColumn fx:id="colMontant" text="Montant" prefWidth="140"/>
+                    <TableColumn fx:id="colMontant" text="Montant" prefWidth="170"/>
                     <TableColumn fx:id="colDate" text="Date" prefWidth="140"/>
                     <TableColumn fx:id="colDesc" text="Description" prefWidth="520"/>
                 </columns>
@@ -158,5 +162,4 @@
         </VBox>
 
     </HBox>
-
 </VBox>

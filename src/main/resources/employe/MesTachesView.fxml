@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="edu.RhPro.controllers.employe.MesTachesController"
+      spacing="14">
+
+    <Label text="Mes tâches (assignées à moi)"
+           style="-fx-font-size:20px; -fx-font-weight:900; -fx-text-fill:#111827;"/>
+
+    <TableView fx:id="table" prefHeight="560"
+               style="-fx-background-color:white; -fx-background-radius:18; -fx-border-radius:18; -fx-border-color:#ececf5; -fx-padding:8;">
+        <columns>
+            <TableColumn fx:id="colId" text="ID" prefWidth="80"/>
+            <TableColumn fx:id="colTitre" text="Titre" prefWidth="260"/>
+            <TableColumn fx:id="colStatut" text="Statut" prefWidth="140"/>
+            <TableColumn fx:id="colProjet" text="Projet ID" prefWidth="130"/>
+            <TableColumn fx:id="colDesc" text="Description" prefWidth="600"/>
+        </columns>
+    </TableView>
+
+    <HBox spacing="10">
+        <Button text="🔄 Rafraîchir" onAction="#refresh"
+                style="-fx-background-color:white; -fx-border-color:#ececf5; -fx-background-radius:14; -fx-border-radius:14; -fx-padding:12 14; -fx-font-weight:900;"/>
+
+        <Button text="➡️ TODO" onAction="#setTodo"
+                style="-fx-background-color:#111827; -fx-text-fill:white; -fx-background-radius:14; -fx-padding:12 14; -fx-font-weight:900;"/>
+        <Button text="➡️ DOING" onAction="#setDoing"
+                style="-fx-background-color:#065f46; -fx-text-fill:white; -fx-background-radius:14; -fx-padding:12 14; -fx-font-weight:900;"/>
+        <Button text="➡️ DONE" onAction="#setDone"
+                style="-fx-background-color:#6d2a74; -fx-text-fill:white; -fx-background-radius:14; -fx-padding:12 14; -fx-font-weight:900;"/>
+
+        <Label fx:id="msgLabel" text="" style="-fx-text-fill:#6b7280;"/>
+    </HBox>
+</VBox>
