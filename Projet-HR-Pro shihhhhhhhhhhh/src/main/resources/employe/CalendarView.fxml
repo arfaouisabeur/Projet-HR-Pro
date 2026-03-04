@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx/20" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="edu.RhPro.controllers.employe.CalendarController"
+      spacing="15" style="-fx-background-color: #f8fafc;">
+
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20"/>
+    </padding>
+
+    <!-- Header with month navigation -->
+    <HBox alignment="CENTER" spacing="10">
+        <Button fx:id="prevMonthBtn" text="◀" onAction="#previousMonth"
+                style="-fx-background-color: white; -fx-border-color: #e2e8f0; -fx-background-radius: 20; -fx-border-radius: 20; -fx-padding: 5 10;"/>
+        <Label fx:id="monthYearLabel" text="Mars 2026"
+               style="-fx-font-size: 20px; -fx-font-weight: 700; -fx-text-fill: #0f172a;"/>
+        <Button fx:id="nextMonthBtn" text="▶" onAction="#nextMonth"
+                style="-fx-background-color: white; -fx-border-color: #e2e8f0; -fx-background-radius: 20; -fx-border-radius: 20; -fx-padding: 5 10;"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Button fx:id="todayBtn" text="Aujourd'hui" onAction="#goToToday"
+                style="-fx-background-color: #3b82f6; -fx-text-fill: white; -fx-background-radius: 20; -fx-padding: 5 15; -fx-font-weight: 600; -fx-cursor: hand;"/>
+    </HBox>
+
+    <!-- Day-of-week headers -->
+    <GridPane fx:id="dayHeaderGrid" hgap="5" vgap="5" alignment="CENTER">
+        <columnConstraints>
+            <ColumnConstraints percentWidth="14.28"/>
+            <ColumnConstraints percentWidth="14.28"/>
+            <ColumnConstraints percentWidth="14.28"/>
+            <ColumnConstraints percentWidth="14.28"/>
+            <ColumnConstraints percentWidth="14.28"/>
+            <ColumnConstraints percentWidth="14.28"/>
+            <ColumnConstraints percentWidth="14.28"/>
+        </columnConstraints>
+        <!-- Labels will be added programmatically -->
+    </GridPane>
+
+    <!-- Days grid -->
+    <GridPane fx:id="daysGrid" hgap="5" vgap="5" VBox.vgrow="ALWAYS">
+        <columnConstraints>
+            <ColumnConstraints percentWidth="14.28"/>
+            <ColumnConstraints percentWidth="14.28"/>
+            <ColumnConstraints percentWidth="14.28"/>
+            <ColumnConstraints percentWidth="14.28"/>
+            <ColumnConstraints percentWidth="14.28"/>
+            <ColumnConstraints percentWidth="14.28"/>
+            <ColumnConstraints percentWidth="14.28"/>
+        </columnConstraints>
+        <!-- 6 rows (we'll add programmatically) -->
+    </GridPane>
+
+    <!-- Status message -->
+    <Label fx:id="statusLabel" text="" style="-fx-text-fill: #64748b; -fx-font-size: 13px;"/>
+</VBox>

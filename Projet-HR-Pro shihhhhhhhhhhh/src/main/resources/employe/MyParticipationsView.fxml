@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox xmlns="http://javafx.com/javafx/20" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="edu.RhPro.controllers.employe.MyParticipationsController"
+      spacing="20" style="-fx-background-color: #f8fafc;">
+
+    <padding>
+        <Insets top="25" right="25" bottom="25" left="25"/>
+    </padding>
+
+    <!-- Header with stats -->
+    <HBox alignment="CENTER_LEFT" spacing="15">
+        <Label text="📋" style="-fx-font-size: 32px;"/>
+        <VBox spacing="5">
+            <Label text="Mes participations"
+                   style="-fx-font-size: 24px; -fx-font-weight: 800; -fx-text-fill: linear-gradient(to right, #1e293b, #0f172a);"/>
+            <Label text="Suivez l'état de vos inscriptions aux événements"
+                   style="-fx-font-size: 14px; -fx-text-fill: #64748b;"/>
+        </VBox>
+        <Region HBox.hgrow="ALWAYS"/>
+
+        <!-- Status pills -->
+        <HBox spacing="10">
+            <HBox style="-fx-background-color: #fef3c7; -fx-background-radius: 20; -fx-padding: 8 16;" spacing="8">
+                <Label text="⏳" style="-fx-font-size: 14px;"/>
+                <Label fx:id="pendingCountLabel" text="0" style="-fx-font-size: 14px; -fx-font-weight: 700; -fx-text-fill: #92400e;"/>
+                <Label text="en attente" style="-fx-font-size: 13px; -fx-text-fill: #92400e;"/>
+            </HBox>
+
+            <HBox style="-fx-background-color: #d1fae5; -fx-background-radius: 20; -fx-padding: 8 16;" spacing="8">
+                <Label text="✅" style="-fx-font-size: 14px;"/>
+                <Label fx:id="acceptedCountLabel" text="0" style="-fx-font-size: 14px; -fx-font-weight: 700; -fx-text-fill: #065f46;"/>
+                <Label text="acceptées" style="-fx-font-size: 13px; -fx-text-fill: #065f46;"/>
+            </HBox>
+
+            <HBox style="-fx-background-color: #fee2e2; -fx-background-radius: 20; -fx-padding: 8 16;" spacing="8">
+                <Label text="❌" style="-fx-font-size: 14px;"/>
+                <Label fx:id="rejectedCountLabel" text="0" style="-fx-font-size: 14px; -fx-font-weight: 700; -fx-text-fill: #991b1b;"/>
+                <Label text="refusées" style="-fx-font-size: 13px; -fx-text-fill: #991b1b;"/>
+            </HBox>
+        </HBox>
+    </HBox>
+
+    <!-- Filter tabs -->
+    <TabPane style="-fx-background-color: transparent;" tabClosingPolicy="UNAVAILABLE">
+        <Tab text="Toutes">
+            <VBox spacing="15" style="-fx-padding: 20 0 0 0;">
+                <!-- Filters -->
+                <HBox spacing="15" alignment="CENTER_LEFT">
+                    <TextField fx:id="searchField" promptText="Rechercher par ID événement..."
+                               style="-fx-background-color: white; -fx-background-radius: 25; -fx-border-radius: 25; -fx-border-color: #e2e8f0; -fx-border-width: 1; -fx-padding: 12 20; -fx-pref-width: 300; -fx-font-size: 13px;"/>
+
+                    <ComboBox fx:id="statusFilter" promptText="Filtrer par statut"
+                              style="-fx-background-color: white; -fx-background-radius: 25; -fx-border-radius: 25; -fx-border-color: #e2e8f0; -fx-border-width: 1; -fx-pref-width: 180; -fx-font-size: 13px;"/>
+
+                    <Button text="🔄 Rafraîchir" onAction="#refresh"
+                            style="-fx-background-color: white; -fx-border-color: #e2e8f0; -fx-border-width: 1; -fx-background-radius: 25; -fx-border-radius: 25; -fx-padding: 12 25; -fx-font-weight: 600; -fx-font-size: 13px; -fx-cursor: hand;"/>
+
+                    <Region HBox.hgrow="ALWAYS"/>
+
+                    <Label text="Trier par:" style="-fx-font-size: 13px; -fx-text-fill: #64748b;"/>
+                    <ComboBox fx:id="sortCombo" promptText="Date (récente)"
+                              style="-fx-background-color: white; -fx-background-radius: 25; -fx-border-radius: 25; -fx-border-color: #e2e8f0; -fx-border-width: 1; -fx-pref-width: 150; -fx-font-size: 13px;"/>
+                </HBox>
+
+                <!-- List View -->
+                <ScrollPane fitToWidth="true" style="-fx-background-color: transparent; -fx-background: transparent; -fx-border-color: transparent;"
+                            vbarPolicy="AS_NEEDED" hbarPolicy="NEVER" VBox.vgrow="ALWAYS">
+                    <VBox fx:id="listContainer" spacing="10" style="-fx-padding: 5 0 20 0;"/>
+                </ScrollPane>
+            </VBox>
+        </Tab>
+    </TabPane>
+
+    <!-- Message Label -->
+    <Label fx:id="msgLabel" text="" style="-fx-text-fill: #64748b; -fx-font-size: 13px; -fx-padding: 5 0 0 0;"/>
+
+</VBox>

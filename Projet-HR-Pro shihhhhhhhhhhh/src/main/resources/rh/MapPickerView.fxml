@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.image.ImageView?>
+
+<VBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="edu.RhPro.controllers.rh.MapPickerController"
+      spacing="10" style="-fx-background-color: white;" prefWidth="650" prefHeight="650">
+
+    <padding>
+        <Insets top="15" right="15" bottom="15" left="15"/>
+    </padding>
+
+    <Label text="Sélectionner un lieu"
+           style="-fx-font-size: 18px; -fx-font-weight: 700; -fx-text-fill: #1e293b;"/>
+
+    <!-- Search Bar -->
+    <VBox spacing="5">
+        <Label text="Rechercher:" style="-fx-font-weight: 600; -fx-text-fill: #475569;"/>
+        <HBox spacing="10">
+            <TextField fx:id="searchField" promptText="Entrez une adresse ou un lieu..."
+                       HBox.hgrow="ALWAYS"
+                       style="-fx-background-radius: 6; -fx-border-radius: 6; -fx-border-color: #e2e8f0; -fx-border-width: 1; -fx-padding: 8; -fx-font-size: 14px;"/>
+            <Button fx:id="searchButton" text="Rechercher"
+                    style="-fx-background-color: #2563eb; -fx-text-fill: white; -fx-background-radius: 6; -fx-padding: 8 20; -fx-cursor: hand; -fx-font-weight: 600;"/>
+        </HBox>
+    </VBox>
+
+    <!-- Suggestions -->
+    <VBox fx:id="suggestionsContainer" spacing="5" managed="false" visible="false">
+        <Label text="Suggestions:" style="-fx-font-weight: 600; -fx-text-fill: #475569; -fx-font-size: 12px;"/>
+        <ListView fx:id="suggestionsList" prefHeight="100"
+                  style="-fx-background-radius: 6; -fx-border-radius: 6; -fx-border-color: #e2e8f0;"/>
+    </VBox>
+
+    <!-- Map Image -->
+    <StackPane VBox.vgrow="ALWAYS" style="-fx-background-color: #f1f5f9; -fx-background-radius: 8; -fx-border-radius: 8; -fx-border-color: #e2e8f0; -fx-border-width: 1;" prefHeight="300">
+        <ImageView fx:id="mapImageView" fitWidth="600" fitHeight="300" preserveRatio="true"
+                   style="-fx-background-radius: 8;"/>
+        <ProgressIndicator fx:id="progressIndicator" visible="false" managed="false" prefWidth="50" prefHeight="50"/>
+        <Label fx:id="statusLabel" text="Recherchez un lieu pour voir la carte"
+               style="-fx-text-fill: #64748b; -fx-font-size: 14px;" visible="true" managed="true"/>
+    </StackPane>
+
+    <!-- Browser Link -->
+    <Hyperlink fx:id="openInBrowserLink" text="🌍 Voir la carte interactive dans le navigateur"
+               visible="false" managed="false"
+               style="-fx-text-fill: #2563eb; -fx-underline: true; -fx-cursor: hand; -fx-font-size: 12px;"/>
+
+    <!-- Location Info -->
+    <GridPane hgap="10" vgap="5" style="-fx-background-color: #f8fafc; -fx-padding: 12; -fx-background-radius: 6;">
+        <Label text="Coordonnées:" GridPane.rowIndex="0" GridPane.columnIndex="0"
+               style="-fx-font-weight: 600; -fx-text-fill: #475569;"/>
+        <Label fx:id="coordinatesLabel" text="Aucun lieu sélectionné" GridPane.rowIndex="0" GridPane.columnIndex="1"
+               style="-fx-text-fill: #64748b;"/>
+
+        <Label text="Lieu:" GridPane.rowIndex="1" GridPane.columnIndex="0"
+               style="-fx-font-weight: 600; -fx-text-fill: #475569;"/>
+        <Label fx:id="locationNameLabel" text="" GridPane.rowIndex="1" GridPane.columnIndex="1"
+               wrapText="true" style="-fx-text-fill: #0f172a;" maxWidth="400"/>
+    </GridPane>
+
+    <!-- Buttons -->
+    <HBox spacing="10" alignment="CENTER_RIGHT">
+        <Button fx:id="cancelButton" text="Annuler" onAction="#cancel"
+                style="-fx-background-color: #f1f5f9; -fx-text-fill: #475569; -fx-background-radius: 6; -fx-padding: 8 25; -fx-font-weight: 600; -fx-cursor: hand; -fx-border-color: #e2e8f0; -fx-border-width: 1; -fx-border-radius: 6;"/>
+        <Button fx:id="confirmButton" text="Confirmer le lieu" onAction="#confirmLocation"
+                style="-fx-background-color: #059669; -fx-text-fill: white; -fx-background-radius: 6; -fx-padding: 8 25; -fx-font-weight: 600; -fx-cursor: hand;" disable="true"/>
+    </HBox>
+</VBox>

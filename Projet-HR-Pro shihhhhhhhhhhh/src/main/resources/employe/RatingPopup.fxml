@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Text?>
+
+<VBox xmlns="http://javafx.com/javafx/20" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="edu.RhPro.controllers.employe.RatingPopupController"
+      spacing="20" style="-fx-background-color: white; -fx-background-radius: 20; -fx-padding: 25;"
+      prefWidth="450" prefHeight="400">
+
+    <padding>
+        <Insets top="20" right="25" bottom="25" left="25"/>
+    </padding>
+
+    <!-- Header -->
+    <HBox alignment="CENTER_LEFT" spacing="10">
+        <Text text="⭐" style="-fx-font-size: 28px;"/>
+        <Label text="Évaluer l'événement"
+               style="-fx-font-size: 22px; -fx-font-weight: 700; -fx-text-fill: #1e293b;"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Button fx:id="closeButton" text="✕"
+                style="-fx-background-color: transparent; -fx-font-size: 16px; -fx-font-weight: 700; -fx-text-fill: #64748b; -fx-cursor: hand;"
+                onAction="#handleClose"/>
+    </HBox>
+
+    <!-- Event Title -->
+    <Label fx:id="eventTitleLabel"
+           style="-fx-font-size: 14px; -fx-font-weight: 600; -fx-text-fill: #3b82f6; -fx-background-color: #eff6ff; -fx-background-radius: 20; -fx-padding: 8 15;"
+           wrapText="true"/>
+
+    <!-- Live Star Preview -->
+    <VBox spacing="8">
+        <Label text="Aperçu des étoiles (basé sur votre commentaire)"
+               style="-fx-font-size: 12px; -fx-font-weight: 600; -fx-text-fill: #475569;"/>
+        <HBox fx:id="starPreviewBox" alignment="CENTER" spacing="5"
+              style="-fx-background-color: #f8fafc; -fx-background-radius: 30; -fx-padding: 10;">
+            <Label text="⭐" style="-fx-font-size: 24px; -fx-text-fill: #fbbf24;" visible="false"/>
+            <Label text="⭐" style="-fx-font-size: 24px; -fx-text-fill: #fbbf24;" visible="false"/>
+            <Label text="⭐" style="-fx-font-size: 24px; -fx-text-fill: #fbbf24;" visible="false"/>
+            <Label text="⭐" style="-fx-font-size: 24px; -fx-text-fill: #fbbf24;" visible="false"/>
+            <Label text="⭐" style="-fx-font-size: 24px; -fx-text-fill: #fbbf24;" visible="false"/>
+        </HBox>
+        <Label fx:id="starCountLabel" text="3 étoiles (Moyen)"
+               style="-fx-font-size: 14px; -fx-font-weight: 600; -fx-text-fill: #475569; -fx-alignment: center;"/>
+    </VBox>
+
+    <!-- Comment Area -->
+    <VBox spacing="8" VBox.vgrow="ALWAYS">
+        <Label text="Votre commentaire"
+               style="-fx-font-size: 14px; -fx-font-weight: 600; -fx-text-fill: #334155;"/>
+        <TextArea fx:id="commentArea" promptText="Partagez votre expérience... L'évaluation sera automatiquement calculée en fonction de votre commentaire."
+                  wrapText="true" prefRowCount="5"
+                  style="-fx-background-radius: 15; -fx-border-radius: 15; -fx-border-color: #e2e8f0; -fx-border-width: 1; -fx-padding: 10; -fx-font-size: 13px;">
+            <VBox.vgrow>ALWAYS</VBox.vgrow>
+        </TextArea>
+    </VBox>
+
+    <!-- Sentiment Analysis Info -->
+    <HBox spacing="10" alignment="CENTER_LEFT"
+          style="-fx-background-color: #f1f5f9; -fx-background-radius: 10; -fx-padding: 10;">
+        <Label text="ℹ️" style="-fx-font-size: 16px;"/>
+        <Label text="Les étoiles sont attribuées automatiquement selon le contenu de votre commentaire"
+               style="-fx-font-size: 11px; -fx-text-fill: #475569;" wrapText="true"/>
+    </HBox>
+
+    <!-- Submit Button -->
+    <Button fx:id="submitButton" text="Soumettre l'évaluation"
+            style="-fx-background-color: #3b82f6; -fx-text-fill: white; -fx-font-size: 14px; -fx-font-weight: 700; -fx-background-radius: 25; -fx-padding: 12 0; -fx-cursor: hand;"
+            onAction="#handleSubmit"/>
+
+    <!-- Error/Success Label -->
+    <Label fx:id="messageLabel" text="" style="-fx-font-size: 12px; -fx-text-fill: #ef4444;" wrapText="true"/>
+</VBox>
