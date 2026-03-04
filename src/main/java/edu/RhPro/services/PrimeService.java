@@ -18,7 +18,6 @@ public class PrimeService implements IPrimeService {
                 "VALUES (?, ?, ?, ?, ?)";
 
         try (PreparedStatement ps = cnx.prepareStatement(sql)) {
-
             ps.setBigDecimal(1, p.getMontant());
 
             if (p.getDateAttribution() != null) ps.setDate(2, Date.valueOf(p.getDateAttribution()));
@@ -32,6 +31,30 @@ public class PrimeService implements IPrimeService {
         }
     }
 
+    // ✅ NEW: insert and return generated id
+    public long addEntityAndReturnId(Prime p) throws SQLException {
+        String sql = "INSERT INTO prime (montant, date_attribution, description, rh_id, employe_id) " +
+                "VALUES (?, ?, ?, ?, ?)";
+
+        try (PreparedStatement ps = cnx.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            ps.setBigDecimal(1, p.getMontant());
+
+            if (p.getDateAttribution() != null) ps.setDate(2, Date.valueOf(p.getDateAttribution()));
+            else ps.setNull(2, Types.DATE);
+
+            ps.setString(3, p.getDescription());
+            ps.setLong(4, p.getRhId());
+            ps.setLong(5, p.getEmployeId());
+
+            ps.executeUpdate();
+
+            try (ResultSet rs = ps.getGeneratedKeys()) {
+                if (rs.next()) return rs.getLong(1);
+            }
+        }
+        throw new SQLException("Impossible de récupérer l'ID de la prime.");
+    }
+
     @Override
     public void deleteEntity(Prime p) throws SQLException {
         String sql = "DELETE FROM prime WHERE id = ?";
@@ -43,11 +66,9 @@ public class PrimeService implements IPrimeService {
 
     @Override
     public void updateEntity(Prime p) throws SQLException {
-        String sql = "UPDATE prime SET montant=?, date_attribution=?, description=?, rh_id=?, employe_id=? " +
-                "WHERE id=?";
+        String sql = "UPDATE prime SET montant=?, date_attribution=?, description=?, rh_id=?, employe_id=? WHERE id=?";
 
         try (PreparedStatement ps = cnx.prepareStatement(sql)) {
-
             ps.setBigDecimal(1, p.getMontant());
 
             if (p.getDateAttribution() != null) ps.setDate(2, Date.valueOf(p.getDateAttribution()));
@@ -88,6 +109,7 @@ public class PrimeService implements IPrimeService {
 
         return list;
     }
+
     public List<Prime> findByEmployeId(long employeId) throws SQLException {
         String sql = "SELECT id, montant, date_attribution, description, rh_id, employe_id " +
                 "FROM prime WHERE employe_id = ? ORDER BY date_attribution DESC";
@@ -114,5 +136,4 @@ public class PrimeService implements IPrimeService {
         }
         return list;
     }
-
 }

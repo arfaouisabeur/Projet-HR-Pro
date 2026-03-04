@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="edu.RhPro.controllers.rh.EventsManageController"
+      spacing="14">
+
+    <Label text="Gestion des événements"
+           style="-fx-font-size:20px; -fx-font-weight:900; -fx-text-fill:#111827;"/>
+
+    <TableView fx:id="table" prefHeight="420"
+               style="-fx-background-color:white; -fx-background-radius:18; -fx-border-radius:18; -fx-border-color:#ececf5; -fx-padding:8;">
+        <columns>
+            <TableColumn fx:id="colId" text="ID" prefWidth="70"/>
+            <TableColumn fx:id="colTitre" text="Titre" prefWidth="220"/>
+            <TableColumn fx:id="colDebut" text="Début" prefWidth="170"/>
+            <TableColumn fx:id="colFin" text="Fin" prefWidth="170"/>
+            <TableColumn fx:id="colLieu" text="Lieu" prefWidth="180"/>
+            <TableColumn fx:id="colDesc" text="Description" prefWidth="420"/>
+        </columns>
+    </TableView>
+
+    <HBox spacing="10">
+        <Button text="🔄 Rafraîchir" onAction="#refresh"
+                style="-fx-background-color:white; -fx-border-color:#ececf5; -fx-background-radius:14; -fx-border-radius:14; -fx-padding:12 14; -fx-font-weight:900;"/>
+        <Button text="🧩 Gérer activités (événement sélectionné)" onAction="#openActivites"
+                style="-fx-background-color:#111827; -fx-text-fill:white; -fx-background-radius:14; -fx-padding:12 14; -fx-font-weight:900;"/>
+        <Button text="👥 Voir participations (événement sélectionné)" onAction="#openParticipations"
+                style="-fx-background-color:#0b1220; -fx-text-fill:white; -fx-background-radius:14; -fx-padding:12 14; -fx-font-weight:900;"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Label fx:id="msgLabel" text="" style="-fx-text-fill:#6b7280;"/>
+    </HBox>
+
+    <Separator style="-fx-opacity:0.35;"/>
+
+    <Label text="Ajouter / Modifier"
+           style="-fx-font-size:14px; -fx-font-weight:900; -fx-text-fill:#111827;"/>
+
+    <GridPane hgap="12" vgap="10">
+        <columnConstraints>
+            <ColumnConstraints prefWidth="180"/>
+            <ColumnConstraints hgrow="ALWAYS"/>
+            <ColumnConstraints prefWidth="180"/>
+            <ColumnConstraints hgrow="ALWAYS"/>
+        </columnConstraints>
+
+        <Label text="Titre"/>
+        <TextField fx:id="titreField" GridPane.columnIndex="1" promptText="Ex: Formation sécurité"/>
+
+        <Label text="Lieu" GridPane.columnIndex="2"/>
+        <TextField fx:id="lieuField" GridPane.columnIndex="3" promptText="Ex: Salle A"/>
+
+        <Label text="Date début" GridPane.rowIndex="1"/>
+        <DatePicker fx:id="dateDebutPicker" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+        <Label text="Heure début (HH:mm)" GridPane.rowIndex="1" GridPane.columnIndex="2"/>
+        <TextField fx:id="heureDebutField" GridPane.rowIndex="1" GridPane.columnIndex="3" promptText="09:00"/>
+
+        <Label text="Date fin" GridPane.rowIndex="2"/>
+        <DatePicker fx:id="dateFinPicker" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+
+        <Label text="Heure fin (HH:mm)" GridPane.rowIndex="2" GridPane.columnIndex="2"/>
+        <TextField fx:id="heureFinField" GridPane.rowIndex="2" GridPane.columnIndex="3" promptText="12:30"/>
+
+        <Label text="Description" GridPane.rowIndex="3"/>
+        <TextArea fx:id="descArea" GridPane.rowIndex="3" GridPane.columnIndex="1" GridPane.columnSpan="3"
+                  prefRowCount="3" wrapText="true" promptText="Détails..."/>
+    </GridPane>
+
+    <HBox spacing="10">
+        <Button text="➕ Ajouter" onAction="#add"
+                style="-fx-background-color:#111827; -fx-text-fill:white; -fx-background-radius:14; -fx-padding:12 14; -fx-font-weight:900;"/>
+        <Button text="✏️ Mettre à jour (sélection)" onAction="#update"
+                style="-fx-background-color:white; -fx-border-color:#ececf5; -fx-background-radius:14; -fx-border-radius:14; -fx-padding:12 14; -fx-font-weight:900;"/>
+        <Button text="🗑️ Supprimer (sélection)" onAction="#delete"
+                style="-fx-background-color:#b91c1c; -fx-text-fill:white; -fx-background-radius:14; -fx-padding:12 14; -fx-font-weight:900;"/>
+        <Button text="🧹 Clear" onAction="#clearForm"
+                style="-fx-background-color:white; -fx-border-color:#ececf5; -fx-background-radius:14; -fx-border-radius:14; -fx-padding:12 14; -fx-font-weight:900;"/>
+    </HBox>
+
+</VBox>

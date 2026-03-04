@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx/25"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="edu.RhPro.controllers.rh.TachePrimePickerController"
+      spacing="12"
+      style="-fx-background-color: white;">
+
+    <padding>
+        <Insets top="14" right="14" bottom="14" left="14"/>
+    </padding>
+
+    <HBox spacing="10" alignment="CENTER_LEFT">
+        <Label fx:id="lblHeader" text="Tâches employé"
+               style="-fx-font-size:16px; -fx-font-weight:900;"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <TextField fx:id="tfSearch" promptText="Rechercher (titre/desc)..."
+                   prefWidth="260"/>
+    </HBox>
+
+    <TableView fx:id="table" prefHeight="420" editable="true">
+        <columns>
+            <TableColumn fx:id="colSelect" text="✔" prefWidth="55"/>
+            <TableColumn fx:id="colTitre" text="Titre" prefWidth="260"/>
+            <TableColumn fx:id="colDebut" text="Début" prefWidth="110"/>
+            <TableColumn fx:id="colFin" text="Fin" prefWidth="110"/>
+            <TableColumn fx:id="colLevel" text="Level" prefWidth="80"/>
+            <TableColumn fx:id="colAmount" text="Montant" prefWidth="120"/>
+        </columns>
+    </TableView>
+
+    <HBox spacing="10" alignment="CENTER_LEFT">
+        <Label text="Total:" style="-fx-font-weight:900;"/>
+        <Label fx:id="lblTotal" text="0.00 $"
+               style="-fx-font-weight:900; -fx-font-size:14px;"/>
+        <Region HBox.hgrow="ALWAYS"/>
+
+        <Button text="Help AI" onAction="#onHelpAi"
+                style="-fx-background-color:#111827; -fx-text-fill:white; -fx-font-weight:900;"/>
+
+        <Button fx:id="btnAnnuler" text="Annuler" onAction="#onAnnuler"/>
+        <Button fx:id="btnValider" text="Valider" onAction="#onValider"
+                style="-fx-background-color:#2563eb; -fx-text-fill:white; -fx-font-weight:900;"/>
+    </HBox>
+
+    <VBox spacing="6">
+        <Label text="Description générée (prime):" style="-fx-font-weight:700;"/>
+        <TextArea fx:id="taPreviewDesc" prefRowCount="3" wrapText="true"/>
+    </VBox>
+
+</VBox>

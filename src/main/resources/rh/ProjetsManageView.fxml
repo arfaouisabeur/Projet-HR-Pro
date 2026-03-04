@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="edu.RhPro.controllers.rh.ProjetsManageController"
+      spacing="14">
+
+    <Label text="Gestion des projets"
+           style="-fx-font-size:20px; -fx-font-weight:900; -fx-text-fill:#111827;"/>
+
+    <!-- FORM -->
+    <HBox spacing="10" style="-fx-background-color:white; -fx-background-radius:18; -fx-border-radius:18; -fx-border-color:#ececf5; -fx-padding:14;">
+        <TextField fx:id="titreField" promptText="Titre du projet" prefWidth="220"
+                   style="-fx-background-radius:14; -fx-border-radius:14; -fx-border-color:#ececf5; -fx-padding:10 12;"/>
+
+        <TextField fx:id="descField" promptText="Description" prefWidth="260"
+                   style="-fx-background-radius:14; -fx-border-radius:14; -fx-border-color:#ececf5; -fx-padding:10 12;"/>
+
+        <ComboBox fx:id="statutCombo" promptText="Statut" prefWidth="140"
+                  style="-fx-background-radius:14; -fx-border-radius:14; -fx-border-color:#ececf5; -fx-padding:6 10;"/>
+
+        <TextField fx:id="responsableIdField" promptText="Responsable Employe ID" prefWidth="190"
+                   style="-fx-background-radius:14; -fx-border-radius:14; -fx-border-color:#ececf5; -fx-padding:10 12;"/>
+
+        <DatePicker fx:id="dateDebutPicker" promptText="Date début" prefWidth="160"/>
+        <DatePicker fx:id="dateFinPicker" promptText="Date fin" prefWidth="160"/>
+
+        <Button text="➕ Ajouter" onAction="#addProjet"
+                style="-fx-background-color:#111827; -fx-text-fill:white; -fx-background-radius:14; -fx-padding:10 14; -fx-font-weight:900;"/>
+        <Button text="✏️ Modifier" onAction="#updateProjet"
+                style="-fx-background-color:#6d2a74; -fx-text-fill:white; -fx-background-radius:14; -fx-padding:10 14; -fx-font-weight:900;"/>
+        <Button text="🧹 Clear" onAction="#clearForm"
+                style="-fx-background-color:white; -fx-border-color:#ececf5; -fx-background-radius:14; -fx-border-radius:14; -fx-padding:10 14; -fx-font-weight:900;"/>
+    </HBox>
+
+    <!-- TABLE -->
+    <TableView fx:id="table" prefHeight="520"
+               style="-fx-background-color:white; -fx-background-radius:18; -fx-border-radius:18; -fx-border-color:#ececf5; -fx-padding:8;">
+        <columns>
+            <TableColumn fx:id="colId" text="ID" prefWidth="70"/>
+            <TableColumn fx:id="colTitre" text="Titre" prefWidth="240"/>
+            <TableColumn fx:id="colStatut" text="Statut" prefWidth="110"/>
+            <TableColumn fx:id="colResp" text="Responsable (Employe ID)" prefWidth="190"/>
+            <TableColumn fx:id="colDebut" text="Date début" prefWidth="150"/>
+            <TableColumn fx:id="colFin" text="Date fin" prefWidth="150"/>
+            <TableColumn fx:id="colDesc" text="Description" prefWidth="520"/>
+        </columns>
+    </TableView>
+
+    <HBox spacing="10" alignment="CENTER_LEFT">
+        <Button text="🔄 Rafraîchir" onAction="#refresh"
+                style="-fx-background-color:white; -fx-border-color:#ececf5; -fx-background-radius:14; -fx-border-radius:14; -fx-padding:12 14; -fx-font-weight:900;"/>
+
+        <Button text="🗑 Supprimer sélection" onAction="#deleteSelected"
+                style="-fx-background-color:#991b1b; -fx-text-fill:white; -fx-background-radius:14; -fx-padding:12 14; -fx-font-weight:900;"/>
+
+        <Label fx:id="msgLabel" text="" style="-fx-text-fill:#6b7280;"/>
+    </HBox>
+
+</VBox>

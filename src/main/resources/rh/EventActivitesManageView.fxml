@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="edu.RhPro.controllers.rh.EventActivitesManageController"
+      spacing="14">
+
+    <Label fx:id="titleLabel" text="Activités"
+           style="-fx-font-size:20px; -fx-font-weight:900; -fx-text-fill:#111827;"/>
+
+    <TableView fx:id="table" prefHeight="520"
+               style="-fx-background-color:white; -fx-background-radius:18; -fx-border-radius:18; -fx-border-color:#ececf5; -fx-padding:8;">
+        <columns>
+            <TableColumn fx:id="colId" text="ID" prefWidth="80"/>
+            <TableColumn fx:id="colTitre" text="Titre" prefWidth="320"/>
+            <TableColumn fx:id="colDesc" text="Description" prefWidth="760"/>
+        </columns>
+    </TableView>
+
+    <GridPane hgap="12" vgap="10"
+              style="-fx-background-color:white; -fx-background-radius:18; -fx-border-radius:18; -fx-border-color:#ececf5; -fx-padding:16;">
+        <columnConstraints>
+            <ColumnConstraints percentWidth="15"/>
+            <ColumnConstraints percentWidth="85"/>
+        </columnConstraints>
+
+        <Label text="Titre:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+        <TextField fx:id="titreField" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+
+        <Label text="Description:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+        <TextArea fx:id="descArea" prefRowCount="2" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+    </GridPane>
+
+    <HBox spacing="10" alignment="CENTER_LEFT">
+        <Button text="➕ Ajouter" onAction="#add"
+                style="-fx-background-color:#111827; -fx-text-fill:white; -fx-background-radius:14; -fx-padding:12 14; -fx-font-weight:900;"/>
+        <Button text="✏️ Modifier" onAction="#update"
+                style="-fx-background-color:white; -fx-border-color:#ececf5; -fx-background-radius:14; -fx-border-radius:14; -fx-padding:12 14; -fx-font-weight:900;"/>
+        <Button text="🗑 Supprimer" onAction="#delete"
+                style="-fx-background-color:white; -fx-border-color:#ef4444; -fx-text-fill:#ef4444; -fx-background-radius:14; -fx-border-radius:14; -fx-padding:12 14; -fx-font-weight:900;"/>
+
+        <Region HBox.hgrow="ALWAYS"/>
+        <Button text="🔄 Rafraîchir" onAction="#refresh"
+                style="-fx-background-color:white; -fx-border-color:#ececf5; -fx-background-radius:14; -fx-border-radius:14; -fx-padding:12 14; -fx-font-weight:900;"/>
+
+        <Label fx:id="msgLabel" text="" style="-fx-text-fill:#6b7280;"/>
+    </HBox>
+
+</VBox>
