@@ -17,6 +17,8 @@
             <TableColumn fx:id="colEventId" text="Event ID" prefWidth="120"/>
             <TableColumn fx:id="colDate" text="Date inscription" prefWidth="200"/>
             <TableColumn fx:id="colStatut" text="Statut" prefWidth="180"/>
+
+            
         </columns>
     </TableView>
 
