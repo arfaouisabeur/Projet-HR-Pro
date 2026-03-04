@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="edu.RhPro.controllers.employe.ChatbotController"
+      spacing="0"
+      style="-fx-background-color: white; -fx-border-color: #e5e7eb; -fx-border-width: 0 0 0 1;">
+
+    <!-- HEADER -->
+    <VBox style="-fx-background-color: #faf5ff; -fx-padding: 14 16 12 16;
+                 -fx-border-color: #ede9fe; -fx-border-width: 0 0 1 0;">
+
+        <HBox alignment="CENTER_LEFT" spacing="10">
+            <StackPane minWidth="40" minHeight="40" maxWidth="40" maxHeight="40">
+                <Circle radius="20"
+                        style="-fx-fill: radial-gradient(center 30% 30%, radius 70%, #7a3575, #3D1A3B);"/>
+                <Label text="&#x1F916;" style="-fx-font-size: 18px;"/>
+                <Circle radius="6" fill="white" translateX="12" translateY="12"/>
+                <Circle fx:id="onlineDot" radius="5" fill="#22c55e" translateX="12" translateY="12"/>
+            </StackPane>
+
+            <VBox spacing="2">
+                <Label text="Assistant IA"
+                       style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #1e1e2e;"/>
+                <HBox spacing="4" alignment="CENTER_LEFT">
+                    <Circle fx:id="statusCircle" radius="3" fill="#dc2626"/>
+                    <Label fx:id="statusLabel" text="Chargement..."
+                           style="-fx-font-size: 10px; -fx-text-fill: #6b7280; -fx-font-weight: 600;"/>
+                </HBox>
+            </VBox>
+
+            <Region HBox.hgrow="ALWAYS"/>
+
+            <Label text="AI"
+                   style="-fx-background-color: #ede9fe; -fx-text-fill: #7c3aed;
+                          -fx-font-size: 9px; -fx-font-weight: bold;
+                          -fx-background-radius: 6; -fx-padding: 3 7;
+                          -fx-border-color: #ddd6fe; -fx-border-width: 1; -fx-border-radius: 6;"/>
+        </HBox>
+
+        <!-- Stats -->
+        <HBox spacing="5" style="-fx-padding: 10 0 0 0;">
+            <VBox alignment="CENTER" spacing="1" HBox.hgrow="ALWAYS"
+                  style="-fx-background-color: #fffbeb; -fx-border-color: #fde68a; -fx-border-width: 1;
+                         -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 6 3;">
+                <Label fx:id="statTodo" text="0"
+                       style="-fx-font-size: 15px; -fx-font-weight: bold; -fx-text-fill: #d97706;"/>
+                <Label text="A FAIRE" style="-fx-font-size: 8px; -fx-text-fill: #92400e; -fx-font-weight: 600;"/>
+            </VBox>
+            <VBox alignment="CENTER" spacing="1" HBox.hgrow="ALWAYS"
+                  style="-fx-background-color: #eff6ff; -fx-border-color: #bfdbfe; -fx-border-width: 1;
+                         -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 6 3;">
+                <Label fx:id="statDoing" text="0"
+                       style="-fx-font-size: 15px; -fx-font-weight: bold; -fx-text-fill: #2563eb;"/>
+                <Label text="EN COURS" style="-fx-font-size: 8px; -fx-text-fill: #1d4ed8; -fx-font-weight: 600;"/>
+            </VBox>
+            <VBox alignment="CENTER" spacing="1" HBox.hgrow="ALWAYS"
+                  style="-fx-background-color: #f0fdf4; -fx-border-color: #bbf7d0; -fx-border-width: 1;
+                         -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 6 3;">
+                <Label fx:id="statDone" text="0"
+                       style="-fx-font-size: 15px; -fx-font-weight: bold; -fx-text-fill: #16a34a;"/>
+                <Label text="TERMINE" style="-fx-font-size: 8px; -fx-text-fill: #15803d; -fx-font-weight: 600;"/>
+            </VBox>
+            <VBox alignment="CENTER" spacing="1" HBox.hgrow="ALWAYS"
+                  style="-fx-background-color: #faf5ff; -fx-border-color: #e9d5ff; -fx-border-width: 1;
+                         -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 6 3;">
+                <Label fx:id="statRate" text="0%"
+                       style="-fx-font-size: 15px; -fx-font-weight: bold; -fx-text-fill: #7c3aed;"/>
+                <Label text="TAUX" style="-fx-font-size: 8px; -fx-text-fill: #6d28d9; -fx-font-weight: 600;"/>
+            </VBox>
+        </HBox>
+    </VBox>
+
+    <!-- MESSAGES -->
+    <ScrollPane fx:id="chatScrollPane" fitToWidth="true" VBox.vgrow="ALWAYS"
+                style="-fx-background: #f8f9fc; -fx-background-color: #f8f9fc; -fx-border-color: transparent;">
+        <VBox fx:id="chatMessages" spacing="10"
+              style="-fx-padding: 14 12; -fx-background-color: #f8f9fc;"/>
+    </ScrollPane>
+
+    <!-- BANNIERE — texte dynamique via fx:id -->
+    <HBox fx:id="offlineBanner" spacing="7" alignment="CENTER_LEFT"
+          managed="false" visible="false"
+          style="-fx-padding: 8 14; -fx-background-color: #fffbeb;
+                 -fx-border-color: #fde68a; -fx-border-width: 1 0 0 0;">
+        <Label text="&#x26A0;" style="-fx-font-size: 12px; -fx-text-fill: #d97706;"/>
+        <Label fx:id="bannerLabel" text="Connexion en cours..."
+               style="-fx-font-size: 11px; -fx-text-fill: #92400e;"/>
+    </HBox>
+
+    <!-- CHIPS -->
+    <FlowPane hgap="5" vgap="5"
+              style="-fx-padding: 8 12 6 12; -fx-background-color: white;
+                     -fx-border-color: #f3f4f6; -fx-border-width: 1 0 0 0;">
+        <Button text="Mes taches" onAction="#handleChipTaches"
+                style="-fx-background-color: #faf5ff; -fx-border-color: #ddd6fe; -fx-border-width: 1;
+                       -fx-border-radius: 20; -fx-background-radius: 20; -fx-text-fill: #7c3aed;
+                       -fx-font-size: 11px; -fx-cursor: hand; -fx-padding: 4 10;"/>
+        <Button text="Conseil" onAction="#handleChipConseil"
+                style="-fx-background-color: #faf5ff; -fx-border-color: #ddd6fe; -fx-border-width: 1;
+                       -fx-border-radius: 20; -fx-background-radius: 20; -fx-text-fill: #7c3aed;
+                       -fx-font-size: 11px; -fx-cursor: hand; -fx-padding: 4 10;"/>
+        <Button text="Stats" onAction="#handleChipStats"
+                style="-fx-background-color: #faf5ff; -fx-border-color: #ddd6fe; -fx-border-width: 1;
+                       -fx-border-radius: 20; -fx-background-radius: 20; -fx-text-fill: #7c3aed;
+                       -fx-font-size: 11px; -fx-cursor: hand; -fx-padding: 4 10;"/>
+        <Button text="Urgent" onAction="#handleChipUrgent"
+                style="-fx-background-color: #faf5ff; -fx-border-color: #ddd6fe; -fx-border-width: 1;
+                       -fx-border-radius: 20; -fx-background-radius: 20; -fx-text-fill: #7c3aed;
+                       -fx-font-size: 11px; -fx-cursor: hand; -fx-padding: 4 10;"/>
+    </FlowPane>
+
+    <!-- INPUT -->
+    <HBox spacing="8" alignment="CENTER"
+          style="-fx-padding: 9 12 14 12; -fx-background-color: white;
+                 -fx-border-color: #f3f4f6; -fx-border-width: 1 0 0 0;">
+        <TextField fx:id="chatInput" promptText="Posez une question..."
+                   HBox.hgrow="ALWAYS"
+                   style="-fx-background-color: #f8f9fc; -fx-border-color: #e5e7eb; -fx-border-width: 1;
+                          -fx-border-radius: 20; -fx-background-radius: 20;
+                          -fx-padding: 10 14; -fx-font-size: 12px;"/>
+        <Button fx:id="sendButton" text="&#x27A4;" onAction="#handleSendButton"
+                style="-fx-background-color: #3D1A3B; -fx-text-fill: white; -fx-font-size: 14px;
+                       -fx-background-radius: 20; -fx-min-width: 40; -fx-min-height: 40;
+                       -fx-max-width: 40; -fx-max-height: 40; -fx-cursor: hand;"/>
+    </HBox>
+
+</VBox>

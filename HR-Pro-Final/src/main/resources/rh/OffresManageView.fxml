@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="edu.RhPro.controllers.rh.OffresManageController"
+      spacing="14">
+
+    <Label text="Gestion des Offres"
+           style="-fx-font-size:20px; -fx-font-weight:900; -fx-text-fill:#111827;"/>
+
+    <HBox spacing="16">
+
+        <TableView fx:id="offreTable" prefHeight="560"
+                   style="-fx-background-color:white; -fx-background-radius:18; -fx-border-radius:18; -fx-border-color:#ececf5; -fx-padding:8;">
+            <columns>
+                <TableColumn fx:id="colId" text="ID" prefWidth="60"/>
+                <TableColumn fx:id="colTitre" text="Titre" prefWidth="260"/>
+                <TableColumn fx:id="colLoc" text="Localisation" prefWidth="160"/>
+                <TableColumn fx:id="colType" text="Contrat" prefWidth="140"/>
+                <TableColumn fx:id="colPub" text="Publication" prefWidth="130"/>
+                <TableColumn fx:id="colExp" text="Expiration" prefWidth="130"/>
+                <TableColumn fx:id="colStatut" text="Statut" prefWidth="100"/>
+            </columns>
+        </TableView>
+
+        <VBox spacing="10" prefWidth="420"
+              style="-fx-padding:16; -fx-background-color:white; -fx-background-radius:18; -fx-border-radius:18; -fx-border-color:#ececf5;">
+
+            <Label text="Formulaire Offre" style="-fx-font-weight:900; -fx-font-size:14;"/>
+
+            <TextField fx:id="titreField" promptText="Titre"
+                       style="-fx-background-radius:14; -fx-border-radius:14; -fx-border-color:#ececf5; -fx-padding:12;"/>
+            <TextField fx:id="locField" promptText="Localisation"
+                       style="-fx-background-radius:14; -fx-border-radius:14; -fx-border-color:#ececf5; -fx-padding:12;"/>
+            <TextField fx:id="typeField" promptText="Type contrat (CDI, CDD, Stage...)"
+                       style="-fx-background-radius:14; -fx-border-radius:14; -fx-border-color:#ececf5; -fx-padding:12;"/>
+
+            <DatePicker fx:id="pubPicker" promptText="Date publication"/>
+            <DatePicker fx:id="expPicker" promptText="Date expiration"/>
+
+            <ComboBox fx:id="statutBox" promptText="Statut"/>
+
+            <TextArea fx:id="descArea" promptText="Description" prefHeight="160" wrapText="true"
+                      style="-fx-background-radius:14; -fx-border-radius:14; -fx-border-color:#ececf5; -fx-padding:10;"/>
+
+            <HBox spacing="10">
+                <Button text="➕ Ajouter" onAction="#onAdd"
+                        style="-fx-background-color:#111827; -fx-text-fill:white; -fx-background-radius:14; -fx-padding:12 14; -fx-font-weight:900;"/>
+                <Button text="✏ Modifier" onAction="#onUpdate"
+                        style="-fx-background-color:#2563eb; -fx-text-fill:white; -fx-background-radius:14; -fx-padding:12 14; -fx-font-weight:900;"/>
+            </HBox>
+
+            <HBox spacing="10">
+                <Button text="🗑 Supprimer" onAction="#onDelete"
+                        style="-fx-background-color:#b91c1c; -fx-text-fill:white; -fx-background-radius:14; -fx-padding:12 14; -fx-font-weight:900;"/>
+                <Button text="🔒 Fermer" onAction="#onClose"
+                        style="-fx-background-color:#6b7280; -fx-text-fill:white; -fx-background-radius:14; -fx-padding:12 14; -fx-font-weight:900;"/>
+            </HBox>
+
+            <Button text="🔄 Rafraîchir" onAction="#refresh"
+                    style="-fx-background-color:white; -fx-border-color:#ececf5; -fx-background-radius:14; -fx-border-radius:14; -fx-padding:12 14; -fx-font-weight:900;"/>
+
+            <Label fx:id="msgLabel" text="" style="-fx-text-fill:#b91c1c;"/>
+        </VBox>
+
+    </HBox>
+</VBox>

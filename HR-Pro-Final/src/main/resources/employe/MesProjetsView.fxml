@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="edu.RhPro.controllers.employe.MesProjetsController"
+      spacing="0"
+      style="-fx-background-color:#f3f0fa;">
+
+    <!-- ── HEADER BANNER ─────────────────────────────────────────────── -->
+    <VBox style="-fx-background-color:#6d2269;-fx-padding:22 28 18 28;">
+        <HBox alignment="CENTER_LEFT" spacing="16">
+            <VBox spacing="3">
+                <Label text="Mes projets"
+                       style="-fx-font-size:24px;-fx-font-weight:900;-fx-text-fill:white;"/>
+                <Label text="Projets dont vous êtes responsable"
+                       style="-fx-font-size:12px;-fx-text-fill:rgba(221,214,254,0.85);"/>
+            </VBox>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Label fx:id="pendingBadge"
+                   style="-fx-background-color:rgba(255,255,255,0.15);-fx-text-fill:white;
+                          -fx-background-radius:25;-fx-padding:8 18;-fx-font-weight:700;
+                          -fx-font-size:12px;-fx-border-color:rgba(255,255,255,0.3);
+                          -fx-border-radius:25;-fx-border-width:1;"/>
+        </HBox>
+    </VBox>
+
+    <!-- ── FILTER BAR ────────────────────────────────────────────────── -->
+    <HBox alignment="CENTER_LEFT" spacing="12"
+          style="-fx-background-color:white;-fx-padding:12 28;
+                 -fx-border-color:#ede9fc;-fx-border-width:0 0 1.5 0;">
+        <Label text="Recherche :"
+               style="-fx-font-size:12px;-fx-font-weight:700;-fx-text-fill:#6d2269;"/>
+        <TextField fx:id="searchField" promptText="Rechercher un projet..."
+                   prefWidth="280"
+                   style="-fx-background-radius:20;-fx-border-radius:20;
+                          -fx-border-color:#ddd6fe;-fx-border-width:1.5;
+                          -fx-padding:8 16;-fx-background-color:#fafafa;
+                          -fx-font-size:12px;"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Label fx:id="msgLabel"
+               style="-fx-text-fill:#6d2269;-fx-font-size:12px;-fx-font-weight:600;
+                      -fx-background-color:#f5f0fd;-fx-padding:6 14;-fx-background-radius:20;"/>
+    </HBox>
+
+    <!-- ── CONTENT AREA ──────────────────────────────────────────────── -->
+    <VBox VBox.vgrow="ALWAYS"
+          style="-fx-background-color:white;-fx-padding:16 28 0 28;">
+
+        <!-- Section title -->
+        <HBox alignment="CENTER_LEFT" spacing="8"
+              style="-fx-padding:0 0 12 0;">
+            <Label text="📋"  style="-fx-font-size:14px;"/>
+            <Label text="Liste des projets"
+                   style="-fx-font-size:13px;-fx-font-weight:800;-fx-text-fill:#1a1a1a;"/>
+        </HBox>
+
+        <!-- Table card with both scrollbars -->
+        <ScrollPane VBox.vgrow="ALWAYS"
+                    fitToWidth="true" fitToHeight="true"
+                    hbarPolicy="AS_NEEDED" vbarPolicy="AS_NEEDED"
+                    style="-fx-background-color:transparent;
+                           -fx-background:transparent;
+                           -fx-border-color:#e8e0f5;
+                           -fx-border-radius:12;
+                           -fx-border-width:1.5;">
+            <TableView fx:id="table"
+                       prefWidth="1150" prefHeight="500"
+                       style="-fx-background-color:transparent;
+                              -fx-border-color:transparent;">
+                <columns>
+                    <TableColumn fx:id="colId"      text="ID"           prefWidth="70"  minWidth="60"/>
+                    <TableColumn fx:id="colTitre"   text="Titre"        prefWidth="240" minWidth="160"/>
+                    <TableColumn fx:id="colStatut"  text="Statut"       prefWidth="145" minWidth="110"/>
+                    <TableColumn fx:id="colDebut"   text="Date début"   prefWidth="145" minWidth="110"/>
+                    <TableColumn fx:id="colFin"     text="Date fin"     prefWidth="145" minWidth="110"/>
+                    <TableColumn fx:id="colDesc"    text="Description"  prefWidth="240" minWidth="160"/>
+                    <TableColumn fx:id="colActions" text="Actions"      prefWidth="120" minWidth="100"/>
+                </columns>
+            </TableView>
+        </ScrollPane>
+
+    </VBox>
+
+    <!-- ── BOTTOM BAR ────────────────────────────────────────────────── -->
+    <HBox spacing="10" alignment="CENTER_RIGHT"
+          style="-fx-background-color:white;-fx-padding:14 28;
+                 -fx-border-color:#ede9fc;-fx-border-width:1.5 0 0 0;">
+        <Button text="Rafraîchir" onAction="#refresh"
+                style="-fx-background-color:white;-fx-text-fill:#6d2269;
+                       -fx-border-color:#ddd6fe;-fx-border-width:1.5;
+                       -fx-background-radius:25;-fx-border-radius:25;
+                       -fx-padding:10 22;-fx-font-weight:700;
+                       -fx-font-size:12px;-fx-cursor:hand;"/>
+        <Button text="📋  Gérer les tâches" onAction="#openTasks"
+                style="-fx-background-color:#6d2269;-fx-text-fill:white;
+                       -fx-background-radius:25;-fx-padding:10 22;
+                       -fx-font-weight:700;-fx-font-size:12px;-fx-cursor:hand;
+                       -fx-effect:dropshadow(gaussian,rgba(109,34,105,0.35),10,0,0,3);"/>
+    </HBox>
+
+</VBox>

@@ -1,0 +1,10 @@
+first install python than run these in terminal : 
+ 
+ 
+pip install spacy textblob dateparser
+python -m spacy download en_core_web_sm
+python -m textblob.corpora.download
+
+
+after these to run the project type : 
+python chatbot_server.py        

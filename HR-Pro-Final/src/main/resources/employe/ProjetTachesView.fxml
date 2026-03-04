@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<AnchorPane xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="edu.RhPro.controllers.employe.ProjetTachesController"
+            style="-fx-background-color:#f3f0fa;">
+
+    <!-- Contenu principal : occupe tout SAUF les 52px du bas réservés à la barre -->
+    <VBox spacing="0"
+          AnchorPane.topAnchor="0"
+          AnchorPane.leftAnchor="0"
+          AnchorPane.rightAnchor="0"
+          AnchorPane.bottomAnchor="52">
+
+        <!-- HEADER -->
+        <VBox style="-fx-background-color:#6d2269;-fx-padding:16 26;">
+            <HBox alignment="CENTER_LEFT" spacing="16">
+                <Label fx:id="titleLabel"
+                       style="-fx-font-size:19px;-fx-font-weight:900;-fx-text-fill:white;"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <TextField fx:id="searchField" promptText="Rechercher une tâche..."
+                           prefWidth="250"
+                           style="-fx-background-radius:20;-fx-border-radius:20;
+                                  -fx-border-color:rgba(255,255,255,0.35);-fx-border-width:1.5;
+                                  -fx-padding:7 14;-fx-background-color:rgba(255,255,255,0.12);
+                                  -fx-text-fill:white;-fx-prompt-text-fill:rgba(255,255,255,0.6);
+                                  -fx-font-size:12px;"/>
+            </HBox>
+        </VBox>
+
+        <!-- FORMULAIRE -->
+        <VBox spacing="12"
+              style="-fx-background-color:white;-fx-padding:16 26;
+                     -fx-border-color:#ede9fc;-fx-border-width:0 0 1.5 0;">
+
+            <HBox alignment="CENTER_LEFT" spacing="8">
+                <Label text="✚" style="-fx-font-size:12px;-fx-text-fill:#6d2269;-fx-font-weight:900;"/>
+                <Label fx:id="formTitleLabel" text="Nouvelle tâche"
+                       style="-fx-font-size:12px;-fx-font-weight:800;-fx-text-fill:#1a1a1a;"/>
+            </HBox>
+
+            <HBox spacing="14">
+                <VBox spacing="3" HBox.hgrow="ALWAYS">
+                    <Label text="Titre" style="-fx-font-size:11px;-fx-font-weight:700;-fx-text-fill:#6d2269;"/>
+                    <TextField fx:id="titreField" promptText="Ex: Développer la page d'accueil"
+                               style="-fx-background-radius:10;-fx-border-radius:10;
+                                      -fx-border-color:#ddd6fe;-fx-border-width:1.5;
+                                      -fx-padding:8 12;-fx-font-size:12px;-fx-background-color:#fafafa;"/>
+                    <Label fx:id="titreErrorLabel" text="Le titre est requis"
+                           style="-fx-text-fill:#ef4444;-fx-font-size:10px;"
+                           visible="false" managed="false"/>
+                </VBox>
+                <VBox spacing="3" HBox.hgrow="ALWAYS">
+                    <Label text="Description" style="-fx-font-size:11px;-fx-font-weight:700;-fx-text-fill:#6d2269;"/>
+                    <TextField fx:id="descField" promptText="Description détaillée..."
+                               style="-fx-background-radius:10;-fx-border-radius:10;
+                                      -fx-border-color:#ddd6fe;-fx-border-width:1.5;
+                                      -fx-padding:8 12;-fx-font-size:12px;-fx-background-color:#fafafa;"/>
+                </VBox>
+            </HBox>
+
+            <HBox spacing="14" alignment="BOTTOM_LEFT">
+                <VBox spacing="3">
+                    <Label text="Statut" style="-fx-font-size:11px;-fx-font-weight:700;-fx-text-fill:#6d2269;"/>
+                    <ComboBox fx:id="statutCombo" promptText="Sélectionner" prefWidth="170"
+                              style="-fx-background-radius:10;-fx-border-radius:10;
+                                     -fx-border-color:#ddd6fe;-fx-border-width:1.5;
+                                     -fx-background-color:#fafafa;-fx-font-size:12px;"/>
+                    <Label fx:id="statutErrorLabel" text="Le statut est requis"
+                           style="-fx-text-fill:#ef4444;-fx-font-size:10px;"
+                           visible="false" managed="false"/>
+                </VBox>
+                <VBox spacing="3">
+                    <Label text="Assigné à" style="-fx-font-size:11px;-fx-font-weight:700;-fx-text-fill:#6d2269;"/>
+                    <ComboBox fx:id="employeCombo" promptText="Sélectionner un employé" prefWidth="210"
+                              style="-fx-background-radius:10;-fx-border-radius:10;
+                                     -fx-border-color:#ddd6fe;-fx-border-width:1.5;
+                                     -fx-background-color:#fafafa;-fx-font-size:12px;"/>
+                    <Label fx:id="employeErrorLabel" text="L'employé est requis"
+                           style="-fx-text-fill:#ef4444;-fx-font-size:10px;"
+                           visible="false" managed="false"/>
+                </VBox>
+                <Region HBox.hgrow="ALWAYS"/>
+                <HBox spacing="8" alignment="BOTTOM_RIGHT">
+                    <Button fx:id="cancelButton" text="Annuler" onAction="#cancelEdit"
+                            visible="false" managed="false"
+                            style="-fx-background-color:white;-fx-text-fill:#6d2269;
+                                   -fx-border-color:#ddd6fe;-fx-border-width:1.5;
+                                   -fx-background-radius:20;-fx-border-radius:20;
+                                   -fx-padding:8 18;-fx-font-weight:700;-fx-font-size:12px;-fx-cursor:hand;"/>
+                    <Button fx:id="saveButton" text="Ajouter" onAction="#saveTask"
+                            style="-fx-background-color:#6d2269;-fx-text-fill:white;
+                                   -fx-background-radius:20;-fx-padding:8 22;
+                                   -fx-font-weight:700;-fx-font-size:12px;-fx-cursor:hand;
+                                   -fx-effect:dropshadow(gaussian,rgba(109,34,105,0.35),10,0,0,3);"/>
+                </HBox>
+            </HBox>
+        </VBox>
+
+        <!-- KANBAN avec scroll vertical -->
+        <ScrollPane fitToWidth="true"
+                    VBox.vgrow="ALWAYS"
+                    hbarPolicy="NEVER"
+                    vbarPolicy="AS_NEEDED"
+                    style="-fx-background:transparent;-fx-background-color:transparent;
+                           -fx-border-color:transparent;-fx-padding:0;">
+            <HBox spacing="16" style="-fx-padding:14 22 14 22;">
+                <HBox.margin><Insets/></HBox.margin>
+
+                <!-- À FAIRE -->
+                <VBox spacing="0" HBox.hgrow="ALWAYS" minWidth="280"
+                      style="-fx-background-color:white;-fx-background-radius:12;
+                             -fx-effect:dropshadow(gaussian,rgba(0,0,0,0.06),7,0,0,2);">
+                    <HBox alignment="CENTER_LEFT" spacing="8"
+                          style="-fx-background-color:#fef3c7;-fx-background-radius:12 12 0 0;-fx-padding:10 14;">
+                        <Label text="●" style="-fx-text-fill:#d97706;-fx-font-size:10px;"/>
+                        <Label text="À FAIRE" style="-fx-font-size:11px;-fx-font-weight:800;-fx-text-fill:#b45309;"/>
+                        <Region HBox.hgrow="ALWAYS"/>
+                        <Label fx:id="todoCount" text="0"
+                               style="-fx-background-color:#b45309;-fx-text-fill:white;
+                                      -fx-font-size:10px;-fx-font-weight:800;
+                                      -fx-padding:2 7;-fx-background-radius:20;"/>
+                    </HBox>
+                    <VBox fx:id="todoColumn" spacing="10" style="-fx-padding:10;" minHeight="280"/>
+                </VBox>
+
+                <!-- EN COURS -->
+                <VBox spacing="0" HBox.hgrow="ALWAYS" minWidth="280"
+                      style="-fx-background-color:white;-fx-background-radius:12;
+                             -fx-effect:dropshadow(gaussian,rgba(109,34,105,0.08),7,0,0,2);">
+                    <HBox alignment="CENTER_LEFT" spacing="8"
+                          style="-fx-background-color:#ede9fc;-fx-background-radius:12 12 0 0;-fx-padding:10 14;">
+                        <Label text="⚡" style="-fx-font-size:10px;"/>
+                        <Label text="EN COURS" style="-fx-font-size:11px;-fx-font-weight:800;-fx-text-fill:#6d2269;"/>
+                        <Region HBox.hgrow="ALWAYS"/>
+                        <Label fx:id="doingCount" text="0"
+                               style="-fx-background-color:#6d2269;-fx-text-fill:white;
+                                      -fx-font-size:10px;-fx-font-weight:800;
+                                      -fx-padding:2 7;-fx-background-radius:20;"/>
+                    </HBox>
+                    <VBox fx:id="doingColumn" spacing="10" style="-fx-padding:10;" minHeight="280"/>
+                </VBox>
+
+                <!-- TERMINÉ -->
+                <VBox spacing="0" HBox.hgrow="ALWAYS" minWidth="280"
+                      style="-fx-background-color:white;-fx-background-radius:12;
+                             -fx-effect:dropshadow(gaussian,rgba(0,0,0,0.06),7,0,0,2);">
+                    <HBox alignment="CENTER_LEFT" spacing="8"
+                          style="-fx-background-color:#d1fae5;-fx-background-radius:12 12 0 0;-fx-padding:10 14;">
+                        <Label text="✔" style="-fx-text-fill:#059669;-fx-font-size:10px;"/>
+                        <Label text="TERMINÉ" style="-fx-font-size:11px;-fx-font-weight:800;-fx-text-fill:#065f46;"/>
+                        <Region HBox.hgrow="ALWAYS"/>
+                        <Label fx:id="doneCount" text="0"
+                               style="-fx-background-color:#059669;-fx-text-fill:white;
+                                      -fx-font-size:10px;-fx-font-weight:800;
+                                      -fx-padding:2 7;-fx-background-radius:20;"/>
+                    </HBox>
+                    <VBox fx:id="doneColumn" spacing="10" style="-fx-padding:10;" minHeight="280"/>
+                </VBox>
+
+            </HBox>
+        </ScrollPane>
+
+    </VBox>
+
+    <!-- BARRE DU BAS — ancrée absolument, TOUJOURS visible -->
+    <HBox spacing="10" alignment="CENTER_LEFT"
+          AnchorPane.bottomAnchor="0"
+          AnchorPane.leftAnchor="0"
+          AnchorPane.rightAnchor="0"
+          style="-fx-background-color:white;
+                 -fx-padding:10 26;
+                 -fx-border-color:#ede9fc;
+                 -fx-border-width:1.5 0 0 0;
+                 -fx-pref-height:52;
+                 -fx-min-height:52;
+                 -fx-max-height:52;">
+        <Button text="Rafraîchir" onAction="#refresh"
+                style="-fx-background-color:white;-fx-text-fill:#6d2269;
+                       -fx-border-color:#ddd6fe;-fx-border-width:1.5;
+                       -fx-background-radius:20;-fx-border-radius:20;
+                       -fx-padding:7 16;-fx-font-weight:700;-fx-font-size:11.5px;-fx-cursor:hand;"/>
+        <Button text="🗑  Supprimer" onAction="#deleteSelected"
+                style="-fx-background-color:#fef2f2;-fx-text-fill:#dc2626;
+                       -fx-border-color:#fecaca;-fx-border-width:1.5;
+                       -fx-background-radius:20;-fx-border-radius:20;
+                       -fx-padding:7 16;-fx-font-weight:700;-fx-font-size:11.5px;-fx-cursor:hand;"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Label text="💡 Double-cliquez sur une tâche pour la modifier"
+               style="-fx-text-fill:#9ca3af;-fx-font-size:11px;"/>
+        <Label fx:id="msgLabel"
+               style="-fx-text-fill:#6b7280;-fx-font-size:12px;-fx-font-weight:600;
+                      -fx-padding:0 0 0 8;"/>
+    </HBox>
+
+</AnchorPane>
